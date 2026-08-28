@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#F4EADA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17120E" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="BetStable and ScoreMore — tips that cannot be edited, deleted or retrospectively flattered.">
+<title>BetStable · ScoreMore</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232F5233'/%3E%3Cpath d='M14 34 32 18l18 16v13a3 3 0 0 1-3 3H17a3 3 0 0 1-3-3z' fill='%23E4B363' stroke='%232C2016' stroke-width='3' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fredoka:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   BetStable / ScoreMore — application shell
+   The earthy identity carries over from the brand, but the surfaces here are
+   built for scanning and tapping, not for reading top to bottom.
+   ========================================================================== */
+
+:root {
+  --bg: #F4EADA;
+  --surface: #FFFAF1;
+  --surface-2: #EFE3CE;
+  --surface-3: #E5D6BC;
+  --line: #DDCBAE;
+  --line-soft: #E9DCC3;
+  --ink: #2C2016;
+  --ink-2: #6B5540;
+  --ink-3: #93805F;
+  --forest: #2F5233;
+  --moss: #4C7A3F;
+  --leaf: #6FA24F;
+  --hay: #E4B363;
+  --hay-soft: #F7E3BE;
+  --clay: #C4693D;
+  --clay-soft: #F3DACB;
+  --good: #2E7D4F;
+  --good-soft: #DCEFE0;
+  --bad: #B3452F;
+  --bad-soft: #F7DED6;
+  --warn: #B0791C;
+  --live: #C4362B;
+  --accent: var(--clay);
+  --accent-soft: var(--clay-soft);
+  --shadow-1: 0 1px 0 rgba(44, 32, 22, .06), 0 2px 6px rgba(44, 32, 22, .06);
+  --shadow-2: 0 6px 22px rgba(44, 32, 22, .16);
+  --r-s: 8px; --r-m: 12px; --r-l: 18px;
+  --tap: 44px;
+  --top: 0px;
+  color-scheme: light;
+}
+:root[data-product="football"] { --accent: var(--moss); --accent-soft: #DDEBD3; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17120E; --surface: #221B15; --surface-2: #2C231B; --surface-3: #372C22;
+    --line: #3D3126; --line-soft: #332920;
+    --ink: #F3E8D7; --ink-2: #BFAC92; --ink-3: #8E7C66;
+    --forest: #3E6B43; --moss: #6A9A55; --leaf: #8CC06B;
+    --hay: #E8BC72; --hay-soft: #4A3A22; --clay: #DB7F50; --clay-soft: #4A2E1E;
+    --good: #62B87F; --good-soft: #1F3A28; --bad: #E0745A; --bad-soft: #40231B;
+    --warn: #D9A441; --live: #E4614F;
+    --shadow-1: 0 1px 0 rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.35);
+    --shadow-2: 0 8px 26px rgba(0,0,0,.55);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17120E; --surface: #221B15; --surface-2: #2C231B; --surface-3: #372C22;
+  --line: #3D3126; --line-soft: #332920;
+  --ink: #F3E8D7; --ink-2: #BFAC92; --ink-3: #8E7C66;
+  --forest: #3E6B43; --moss: #6A9A55; --leaf: #8CC06B;
+  --hay: #E8BC72; --hay-soft: #4A3A22; --clay: #DB7F50; --clay-soft: #4A2E1E;
+  --good: #62B87F; --good-soft: #1F3A28; --bad: #E0745A; --bad-soft: #40231B;
+  --warn: #D9A441; --live: #E4614F;
+  --shadow-1: 0 1px 0 rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.35);
+  --shadow-2: 0 8px 26px rgba(0,0,0,.55);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+h1, h2, h3, h4 { margin: 0; font-weight: 650; line-height: 1.2; }
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; background: none; border: 0; padding: 0; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.mono { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------------- app frame ---------------- */
+.app { min-height: 100dvh; display: flex; flex-direction: column; }
+.appbar {
+  position: sticky; top: 0; z-index: 40;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding: 8px max(12px, env(safe-area-inset-left)) 0;
+}
+.appbar-row { display: flex; align-items: center; gap: 10px; max-width: 1180px; margin: 0 auto; width: 100%; }
+
+/* product switch — the two products of the app */
+.switch {
+  display: flex; gap: 3px; padding: 3px;
+  background: var(--surface-2); border-radius: 999px; border: 1px solid var(--line);
+}
+.switch button {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 999px; font-weight: 650; font-size: 14px;
+  color: var(--ink-2); white-space: nowrap; transition: background .14s, color .14s;
+}
+.switch button .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .55; }
+.switch button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); }
+.switch button[aria-selected="true"] .dot { opacity: 1; }
+.switch button:nth-child(1)[aria-selected="true"] .dot { background: var(--clay); }
+.switch button:nth-child(2)[aria-selected="true"] .dot { background: var(--moss); }
+
+.appbar .spacer { margin-left: auto; }
+.icon-btn {
+  width: 38px; height: 38px; display: grid; place-items: center;
+  border-radius: 10px; color: var(--ink-2); border: 1px solid transparent;
+}
+.icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+
+/* feed health */
+.health {
+  display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
+  font-size: 12.5px; font-weight: 650; color: var(--ink-2);
+}
+@media (max-width: 560px) { .hide-sm { display: none; } }
+.health .led { width: 7px; height: 7px; border-radius: 50%; background: var(--good); }
+.health.warn .led { background: var(--warn); }
+.health.down .led { background: var(--bad); }
+
+/* section tabs */
+.tabs { display: flex; gap: 2px; max-width: 1180px; margin: 0 auto; width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button {
+  position: relative; padding: 11px 13px 12px; font-size: 14px; font-weight: 620;
+  color: var(--ink-3); white-space: nowrap;
+}
+.tabs button[aria-selected="true"] { color: var(--ink); }
+.tabs button[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: var(--accent);
+}
+.tabs .count {
+  margin-left: 6px; padding: 1px 6px; border-radius: 999px; font-size: 11.5px;
+  background: var(--surface-2); color: var(--ink-3);
+}
+
+/* ---------------- next-off ticker ---------------- */
+.ticker {
+  display: flex; gap: 8px; padding: 8px 12px; overflow-x: auto; scrollbar-width: none;
+  background: var(--surface-2); border-bottom: 1px solid var(--line);
+}
+.ticker::-webkit-scrollbar { display: none; }
+.ticker-label {
+  display: flex; align-items: center; gap: 6px; flex: none;
+  font-size: 11px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3);
+}
+.ticker-item {
+  flex: none; display: flex; align-items: center; gap: 8px;
+  padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line);
+  background: var(--surface); font-size: 13px; font-weight: 600; box-shadow: var(--shadow-1);
+}
+.ticker-item b { font-weight: 700; }
+.ticker-item .cd { color: var(--clay); font-weight: 750; font-variant-numeric: tabular-nums; }
+.ticker-item.imminent { border-color: var(--clay); background: var(--clay-soft); }
+
+/* ---------------- layout ---------------- */
+main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12px 96px; }
+@media (min-width: 900px) { main { padding-bottom: 40px; } }
+
+.toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
+.search {
+  flex: 1 1 220px; min-width: 0; display: flex; align-items: center; gap: 8px;
+  padding: 0 12px; height: 40px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--surface);
+}
+.search input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14.5px; }
+.search input::placeholder { color: var(--ink-3); }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 13px; font-weight: 620; color: var(--ink-2); white-space: nowrap;
+}
+.chip[aria-pressed="true"], .chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.chip:hover { border-color: var(--ink-3); }
+
+/* day strip for the week view */
+.daystrip { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; margin-bottom: 14px; }
+.daystrip::-webkit-scrollbar { display: none; }
+.day {
+  flex: none; min-width: 74px; padding: 8px 12px; border-radius: var(--r-m);
+  border: 1px solid var(--line); background: var(--surface); text-align: left;
+}
+.day .dow, .day .dnum, .day .dmeta { display: block; }
+.day .dow { font-size: 11px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+.day .dnum { font-size: 15px; font-weight: 700; }
+.day .dmeta { font-size: 11.5px; color: var(--ink-3); }
+.day[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.day[aria-selected="true"] .dow { color: var(--ink-2); }
+
+/* ---------------- region groups ---------------- */
+.region { margin-bottom: 12px; border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); overflow: hidden; }
+.region-head {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 12px 14px; text-align: left; background: var(--surface);
+}
+.region-head:hover { background: var(--surface-2); }
+.region-head .flag { font-size: 20px; line-height: 1; }
+.region-head h2 { font-size: 15.5px; font-weight: 700; }
+.region-head .meta { font-size: 12.5px; color: var(--ink-3); font-weight: 550; }
+.region-head .next {
+  margin-left: auto; display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; font-weight: 650; color: var(--ink-2); white-space: nowrap;
+}
+.region-head > span:nth-child(2) { min-width: 0; }
+@media (max-width: 560px) { .region-head .next { font-size: 11.5px; } .region-head .next b { display: block; } }
+.region-head .caret { color: var(--ink-3); transition: transform .18s ease; }
+.region[data-open="false"] .caret { transform: rotate(-90deg); }
+.region[data-open="false"] .region-body { display: none; }
+.region-body { border-top: 1px solid var(--line-soft); padding: 10px; display: grid; gap: 10px; }
+@media (min-width: 760px) { .region-body { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1080px) { .region-body { grid-template-columns: 1fr 1fr 1fr; } }
+
+/* ---------------- meeting card ---------------- */
+.meeting { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; }
+.meeting-head { display: flex; align-items: baseline; gap: 8px; padding: 10px 12px 8px; }
+.meeting-head .venue { font-weight: 700; font-size: 14.5px; }
+.meeting-head .flag { font-size: 14px; }
+.meeting-head .going { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
+.tag {
+  display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 5px;
+  font-size: 10.5px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase;
+  background: var(--surface-3); color: var(--ink-2);
+}
+.tag.turf { background: var(--good-soft); color: var(--good); }
+.tag.dirt { background: var(--clay-soft); color: var(--clay); }
+.tag.aw { background: var(--hay-soft); color: var(--warn); }
+.race-times { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 12px 12px; }
+.rt {
+  min-width: 56px; padding: 7px 8px; border-radius: 9px; border: 1px solid var(--line);
+  background: var(--surface-2); font-size: 13px; font-weight: 700; text-align: center; line-height: 1.15;
+}
+.rt small { display: block; font-size: 10px; font-weight: 650; color: var(--ink-3); }
+.rt:hover { border-color: var(--accent); }
+.rt.next { background: var(--accent-soft); border-color: var(--accent); }
+.rt.done { opacity: .45; }
+.rt.off { background: var(--bad-soft); border-color: var(--live); color: var(--live); }
+
+/* ---------------- race card ---------------- */
+.detail-head {
+  display: flex; align-items: flex-start; gap: 12px; padding: 14px;
+  border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); margin-bottom: 12px;
+}
+.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 650; color: var(--ink-2); margin-bottom: 10px; }
+.back:hover { color: var(--ink); }
+.detail-head h1 { font-size: 19px; }
+.detail-head .sub { font-size: 13px; color: var(--ink-2); margin-top: 3px; }
+.detail-head .when { margin-left: auto; text-align: right; flex: none; }
+.detail-head .when .t { font-size: 22px; font-weight: 700; }
+.detail-head .when .cd { font-size: 12.5px; font-weight: 700; color: var(--clay); }
+
+.runners { border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); overflow: hidden; }
+.runner {
+  display: grid; grid-template-columns: 30px 26px 1fr auto; gap: 10px; align-items: center;
+  padding: 10px 12px; border-bottom: 1px solid var(--line-soft);
+}
+.runner:last-child { border-bottom: 0; }
+.runner.nonrunner { opacity: .5; }
+.runner .num { font-weight: 750; font-size: 14px; color: var(--ink-2); text-align: center; }
+.runner .name { font-weight: 680; font-size: 14.5px; }
+.runner .who { font-size: 12.5px; color: var(--ink-2); }
+.runner .who .sep { color: var(--ink-3); margin: 0 5px; }
+.runner .form { font-size: 11.5px; color: var(--ink-3); letter-spacing: .08em; }
+.silk { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--line); flex: none; }
+.odds-btn {
+  min-width: 66px; height: 40px; padding: 0 12px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--surface-2);
+  font-weight: 720; font-size: 15px; transition: transform .1s, background .14s, border-color .14s;
+}
+.odds-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.odds-btn:active { transform: scale(.96); }
+.odds-btn[disabled] { opacity: .4; cursor: not-allowed; }
+.odds-btn.taken { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+.pos { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11.5px; font-weight: 750; background: var(--surface-3); color: var(--ink-2); }
+.pos.p1 { background: var(--hay); color: #2C2016; }
+
+/* ---------------- fixtures ---------------- */
+.comp-block { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; }
+.comp-head { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line-soft); }
+.comp-head h3 { font-size: 13px; font-weight: 700; }
+.comp-head .meta { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
+.fixture { display: grid; grid-template-columns: 52px 1fr auto; gap: 10px; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); width: 100%; text-align: left; }
+.fixture:last-child { border-bottom: 0; }
+.fixture:hover { background: var(--surface-2); }
+.fixture .ko { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.fixture .ko small { display: block; font-size: 10.5px; font-weight: 650; color: var(--ink-3); }
+.fixture .teams { min-width: 0; }
+.fixture .team { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 620; }
+.fixture .team .sc { margin-left: auto; font-weight: 750; font-variant-numeric: tabular-nums; }
+.fixture .form { font-size: 10.5px; letter-spacing: .1em; color: var(--ink-3); }
+.mkt { display: flex; gap: 5px; }
+.mkt .odds-btn { min-width: 58px; height: 38px; font-size: 14px; }
+.mkt .lbl { display: block; font-size: 9.5px; font-weight: 700; color: var(--ink-3); letter-spacing: .06em; }
+.livechip { display: inline-flex; align-items: center; gap: 5px; padding: 1px 7px; border-radius: 5px; background: var(--bad-soft); color: var(--live); font-size: 10.5px; font-weight: 750; }
+.livechip .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--live); animation: pulse 1.6s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
+
+/* ---------------- stats & record ---------------- */
+.statgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+@media (min-width: 720px) { .statgrid { grid-template-columns: repeat(4, 1fr); } }
+.stat { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); }
+.stat .k { font-size: 11px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+.stat .v { font-size: 24px; font-weight: 700; margin-top: 2px; letter-spacing: -.01em; }
+.stat .sub { font-size: 11.5px; color: var(--ink-2); }
+.stat .v.good { color: var(--good); } .stat .v.bad { color: var(--bad); }
+
+.panel { border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); margin-bottom: 14px; overflow: hidden; }
+.panel-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
+.panel-head h3 { font-size: 14.5px; }
+.panel-head .meta { margin-left: auto; font-size: 12px; color: var(--ink-3); }
+.panel-body { padding: 14px; }
+
+.tiplist { display: flex; flex-direction: column; }
+.tip-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); }
+.tip-row:last-child { border-bottom: 0; }
+.tip-row .sel { font-weight: 660; font-size: 14px; }
+.tip-row .ev { font-size: 12.5px; color: var(--ink-2); }
+.tip-row .ret { font-weight: 750; font-variant-numeric: tabular-nums; }
+.tip-row .ret.good { color: var(--good); } .tip-row .ret.bad { color: var(--bad); }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.badge.pending { background: var(--hay-soft); color: var(--warn); }
+.badge.won { background: var(--good-soft); color: var(--good); }
+.badge.lost { background: var(--bad-soft); color: var(--bad); }
+
+/* leaderboard */
+.board { width: 100%; border-collapse: collapse; }
+.board th, .board td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+.board th { font-size: 10.5px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.board tr:last-child td { border-bottom: 0; }
+.board tr.me { background: var(--accent-soft); }
+.range { position: relative; display: block; height: 14px; width: 100%; min-width: 120px; max-width: 210px; background: var(--surface-3); border-radius: 999px; }
+.range i { position: absolute; top: 0; bottom: 0; background: var(--leaf); border-radius: 999px; }
+.range i.neg { background: var(--hay); }      /* straddles zero — unproven */
+.range i.up { background: var(--leaf); }       /* whole interval above zero */
+.range i.down { background: var(--bad); }      /* whole interval below zero */
+.range .zero { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--ink-2); opacity: .8; }
+.range b { position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--ink); }
+.rangeval { font-size: 11.5px; color: var(--ink-3); }
+
+/* ---------------- bottom sheet (tip flow) ---------------- */
+.scrim { position: fixed; inset: 0; background: rgba(28, 20, 14, .45); z-index: 60; opacity: 0; animation: fade .16s ease forwards; }
+@keyframes fade { to { opacity: 1 } }
+.sheet {
+  position: fixed; z-index: 61; left: 0; right: 0; bottom: 0;
+  background: var(--surface); border-radius: 20px 20px 0 0; border-top: 1px solid var(--line);
+  box-shadow: var(--shadow-2); padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
+  max-height: 88dvh; overflow-y: auto; transform: translateY(100%); animation: rise .22s cubic-bezier(.2,.8,.3,1) forwards;
+}
+@media (min-width: 620px) {
+  .sheet { left: 50%; right: auto; bottom: auto; top: 50%; width: 460px; transform: translate(-50%, -46%); border-radius: var(--r-l); border: 1px solid var(--line); animation: pop .18s ease forwards; }
+  @keyframes pop { to { transform: translate(-50%, -50%); opacity: 1 } }
+}
+@keyframes rise { to { transform: translateY(0) } }
+.grabber { width: 38px; height: 4px; border-radius: 4px; background: var(--line); margin: 4px auto 12px; }
+@media (min-width: 620px) { .grabber { display: none; } }
+.sheet h3 { font-size: 17px; margin-bottom: 2px; }
+.sheet .sheet-sub { font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
+.freeze { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--line); margin-bottom: 12px; }
+.freeze .big { font-size: 26px; font-weight: 750; }
+.freeze .lbl { font-size: 11px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
+.freeze .note { margin-left: auto; text-align: right; font-size: 11.5px; color: var(--ink-2); }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; }
+.kv:last-of-type { border-bottom: 0; }
+.kv dt { color: var(--ink-2); } .kv dd { margin: 0; font-weight: 650; text-align: right; }
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  height: var(--tap); border-radius: 12px; font-weight: 700; font-size: 15px;
+  background: var(--accent); color: #FFF8EC; border: 1px solid transparent; transition: filter .14s;
+}
+:root[data-theme="dark"] .btn, :root:not([data-theme="light"]) .btn { color: #17120E; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .btn { color: #FFF8EC; } }
+.btn:hover { filter: brightness(1.06); }
+.btn.secondary { background: var(--surface-2); color: var(--ink); border-color: var(--line); }
+.warnbox { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--r-m); background: var(--hay-soft); color: var(--warn); font-size: 12.5px; font-weight: 600; margin-bottom: 12px; }
+
+/* toast */
+.toast {
+  position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  z-index: 70; display: flex; align-items: center; gap: 10px;
+  padding: 11px 16px; border-radius: 999px; background: var(--ink); color: var(--bg);
+  font-size: 13.5px; font-weight: 650; box-shadow: var(--shadow-2); animation: toastIn .2s ease;
+}
+@keyframes toastIn { from { opacity: 0; transform: translate(-50%, 10px) } }
+@media (min-width: 900px) { .toast { bottom: 28px; } }
+
+/* ---------------- bottom nav (mobile) ---------------- */
+.bottomnav {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
+  display: flex; background: var(--surface); border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.bottomnav button { flex: 1; display: grid; place-items: center; gap: 2px; padding: 8px 4px 9px; color: var(--ink-3); font-size: 10.5px; font-weight: 650; }
+.bottomnav button[aria-selected="true"] { color: var(--accent); }
+@media (min-width: 900px) { .bottomnav { display: none; } }
+
+/* ---------------- states ---------------- */
+.empty { text-align: center; padding: 46px 20px; color: var(--ink-2); }
+.empty .glyph { font-size: 34px; margin-bottom: 8px; }
+.empty h3 { font-size: 16px; margin-bottom: 4px; }
+.empty p { font-size: 13.5px; max-width: 40ch; margin: 0 auto; color: var(--ink-3); }
+.skel { background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%); background-size: 400% 100%; animation: shimmer 1.3s ease infinite; border-radius: var(--r-m); }
+@keyframes shimmer { from { background-position: 100% 0 } to { background-position: 0 0 } }
+.skel-row { height: 76px; margin-bottom: 10px; }
+
+.notice { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--line); font-size: 12.5px; color: var(--ink-2); margin-bottom: 12px; }
+.notice b { color: var(--ink); }
+.rg { padding: 18px 12px 10px; text-align: center; font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
+.rg a { color: var(--ink-2); }
+
+@media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <noscript style="display:block;padding:24px;text-align:center">
+    BetStable is an application — please enable JavaScript to use it.
+  </noscript>
+</div>
+
+<script>
+/* core.js — primitives shared by every module.
+   Deterministic randomness, timezone maths, formatting, tiny DOM helpers. */
+(function (BS) {
+  'use strict';
+
+  /* ---------- deterministic randomness ----------
+     Every generated card is seeded from a stable string (date + venue), so the
+     same day always renders the same racecard no matter how often you reload. */
+  function hashStr(str) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  function rng(seed) {
+    let a = hashStr(String(seed));
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  const rint = (r, lo, hi) => lo + Math.floor(r() * (hi - lo + 1));
+  const pick = (r, arr) => arr[Math.floor(r() * arr.length)];
+  function pickN(r, arr, n) {
+    const pool = arr.slice(), out = [];
+    n = Math.min(n, pool.length);
+    for (let i = 0; i < n; i++) out.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
+    return out;
+  }
+  function gauss(r, mean, sd) {
+    const u = Math.max(r(), 1e-9), v = Math.max(r(), 1e-9);
+    return mean + sd * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+  }
+
+  /* ---------- timezones ----------
+     A global racing app lives or dies on times. Venue-local times are converted
+     to real instants through Intl, so DST is handled rather than guessed. */
+  function tzOffsetMs(utcMs, tz) {
+    const dtf = new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, hour12: false, year: 'numeric', month: '2-digit',
+      day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+    const p = {};
+    for (const part of dtf.formatToParts(new Date(utcMs))) p[part.type] = part.value;
+    const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day,
+      p.hour === '24' ? 0 : +p.hour, +p.minute, +p.second);
+    return asUTC - utcMs;
+  }
+  /** Venue-local wall clock -> epoch ms. */
+  function zonedToUtc(y, mo, d, h, mi, tz) {
+    const guess = Date.UTC(y, mo - 1, d, h, mi);
+    let ts = guess - tzOffsetMs(guess, tz);
+    ts = guess - tzOffsetMs(ts, tz);
+    return ts;
+  }
+  /** Calendar date in a given zone, offset by `dayShift` days. */
+  function zonedDateParts(ts, tz, dayShift) {
+    const d = new Date(ts + (dayShift || 0) * 864e5);
+    const p = {};
+    for (const part of new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit'
+    }).formatToParts(d)) p[part.type] = part.value;
+    return { y: +p.year, mo: +p.month, d: +p.day };
+  }
+  const fmtTime = (ts, tz) => new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz
+  }).format(new Date(ts));
+  const fmtTimeSec = (ts, tz) => new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: tz
+  }).format(new Date(ts));
+  const fmtDay = (ts, tz) => new Intl.DateTimeFormat(undefined, {
+    weekday: 'short', day: 'numeric', month: 'short', timeZone: tz
+  }).format(new Date(ts));
+  const fmtDateFull = (ts, tz) => new Intl.DateTimeFormat(undefined, {
+    weekday: 'long', day: 'numeric', month: 'long', timeZone: tz
+  }).format(new Date(ts));
+  const tzAbbr = (ts, tz) => {
+    const parts = new Intl.DateTimeFormat('en-GB', { timeZone: tz, timeZoneName: 'short' })
+      .formatToParts(new Date(ts));
+    const p = parts.find(x => x.type === 'timeZoneName');
+    return p ? p.value : '';
+  };
+  const localTz = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  /** "in 4m" / "in 2h 15m" / "3d" — the app's universal urgency cue. */
+  function countdown(ts, now) {
+    const diff = ts - (now || Date.now());
+    if (diff <= 0) return 'off';
+    const m = Math.floor(diff / 60000);
+    if (m < 60) return m + 'm';
+    const h = Math.floor(m / 60);
+    if (h < 24) return h + 'h ' + (m % 60) + 'm';
+    return Math.floor(h / 24) + 'd ' + (h % 24) + 'h';
+  }
+
+  /* ---------- odds ---------- */
+  /** Decimal odds from probabilities, with a realistic book overround. */
+  function priceUp(probs, overround) {
+    const total = probs.reduce((a, b) => a + b, 0);
+    return probs.map(p => {
+      const implied = (p / total) * (overround || 1.16);
+      const dec = 1 / implied;
+      const step = dec < 3 ? 0.05 : dec < 8 ? 0.25 : dec < 20 ? 1 : 5;
+      return Math.max(1.05, Math.round(dec / step) * step);
+    });
+  }
+  const fmtOdds = o => o >= 10 ? o.toFixed(0) : o.toFixed(2);
+  const fmtUnits = u => (u >= 0 ? '+' : '−') + Math.abs(u).toFixed(2);
+  const fmtPct = p => (p >= 0 ? '+' : '−') + Math.abs(p).toFixed(1) + '%';
+  /** Typographic minus, so a column of figures lines up and reads as one set. */
+  const fmtSigned = (v, dp) => (v < 0 ? '−' : '') + Math.abs(v).toFixed(dp == null ? 1 : dp);
+
+  /* ---------- safe templating ----------
+     Tagged template that escapes every interpolation unless wrapped in raw(). */
+  const esc = s => String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const raw = v => ({ __raw: true, v: v });
+  const unwrap = v => v == null ? '' : (v.__raw ? v.v : esc(v));
+  function html(strings) {
+    const vals = Array.prototype.slice.call(arguments, 1);
+    let out = strings[0];
+    for (let i = 0; i < vals.length; i++) {
+      const v = vals[i];
+      out += Array.isArray(v) ? v.map(unwrap).join('') : unwrap(v);
+      out += strings[i + 1];
+    }
+    return raw(out);
+  }
+
+  /* ---------- dom ---------- */
+  const $ = (sel, root) => (root || document).querySelector(sel);
+  const $$ = (sel, root) => Array.prototype.slice.call((root || document).querySelectorAll(sel));
+  function mount(node, tpl) { node.innerHTML = unwrap(tpl); return node; }
+
+  BS.core = {
+    hashStr, rng, rint, pick, pickN, gauss,
+    zonedToUtc, zonedDateParts, fmtTime, fmtTimeSec, fmtDay, fmtDateFull, tzAbbr, localTz, countdown,
+    priceUp, fmtOdds, fmtUnits, fmtPct, fmtSigned,
+    html, raw, esc, unwrap, $, $$, mount
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* feed-racing.js — generates racecards for every major racing jurisdiction.
+   Names of horses, jockeys and trainers are invented: this is sample data and
+   should never attribute a fabricated record to a real person or animal. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+
+  /* ---------- jurisdictions ----------
+     Regions are the grouping the user sees. Ireland sits inside UK & Ireland,
+     Canada inside USA & Canada, New Zealand inside Australia & NZ. */
+  const REGIONS = [
+    { id: 'uki', name: 'UK & Ireland', flag: '🇬🇧', style: 'euro', order: 1 },
+    { id: 'usa', name: 'USA & Canada', flag: '🇺🇸', style: 'usa', order: 2 },
+    { id: 'fra', name: 'France', flag: '🇫🇷', style: 'euro', order: 3 },
+    { id: 'hkg', name: 'Hong Kong', flag: '🇭🇰', style: 'hkg', order: 4 },
+    { id: 'aus', name: 'Australia & NZ', flag: '🇦🇺', style: 'aus', order: 5 },
+    { id: 'jpn', name: 'Japan', flag: '🇯🇵', style: 'jpn', order: 6 },
+    { id: 'uae', name: 'UAE', flag: '🇦🇪', style: 'euro', order: 7 },
+    { id: 'saf', name: 'South Africa', flag: '🇿🇦', style: 'euro', order: 8 },
+    { id: 'eur', name: 'Rest of Europe', flag: '🇪🇺', style: 'euro', order: 9 }
+  ];
+
+  // [name, country flag, tz, surface, first-race local hour, minute, races]
+  const VENUES = [
+    ['Ascot', 'uki', '🇬🇧', 'Europe/London', 'turf', 13, 50, 7],
+    ['Newmarket', 'uki', '🇬🇧', 'Europe/London', 'turf', 14, 10, 7],
+    ['York', 'uki', '🇬🇧', 'Europe/London', 'turf', 13, 30, 7],
+    ['Doncaster', 'uki', '🇬🇧', 'Europe/London', 'turf', 14, 0, 7],
+    ['Goodwood', 'uki', '🇬🇧', 'Europe/London', 'turf', 13, 15, 6],
+    ['Haydock Park', 'uki', '🇬🇧', 'Europe/London', 'turf', 13, 45, 7],
+    ['Chepstow', 'uki', '🇬🇧', 'Europe/London', 'turf', 14, 25, 6],
+    ['Ayr', 'uki', '🇬🇧', 'Europe/London', 'turf', 13, 20, 7],
+    ['Kempton Park (AW)', 'uki', '🇬🇧', 'Europe/London', 'aw', 17, 45, 8],
+    ['Wolverhampton (AW)', 'uki', '🇬🇧', 'Europe/London', 'aw', 17, 30, 8],
+    ['The Curragh', 'uki', '🇮🇪', 'Europe/Dublin', 'turf', 14, 5, 7],
+    ['Leopardstown', 'uki', '🇮🇪', 'Europe/Dublin', 'turf', 14, 30, 7],
+    ['Galway', 'uki', '🇮🇪', 'Europe/Dublin', 'turf', 17, 20, 7],
+    ['Dundalk (AW)', 'uki', '🇮🇪', 'Europe/Dublin', 'aw', 18, 0, 8],
+    ['Naas', 'uki', '🇮🇪', 'Europe/Dublin', 'turf', 13, 55, 7],
+
+    ['Saratoga', 'usa', '🇺🇸', 'America/New_York', 'dirt', 13, 5, 9],
+    ['Belmont at Aqueduct', 'usa', '🇺🇸', 'America/New_York', 'dirt', 12, 45, 9],
+    ['Gulfstream Park', 'usa', '🇺🇸', 'America/New_York', 'dirt', 12, 30, 10],
+    ['Churchill Downs', 'usa', '🇺🇸', 'America/New_York', 'dirt', 12, 45, 9],
+    ['Keeneland', 'usa', '🇺🇸', 'America/New_York', 'dirt', 13, 0, 9],
+    ['Del Mar', 'usa', '🇺🇸', 'America/Los_Angeles', 'dirt', 14, 0, 9],
+    ['Santa Anita Park', 'usa', '🇺🇸', 'America/Los_Angeles', 'dirt', 12, 30, 8],
+    ['Oaklawn Park', 'usa', '🇺🇸', 'America/Chicago', 'dirt', 13, 0, 9],
+    ['Woodbine', 'usa', '🇨🇦', 'America/Toronto', 'aw', 13, 10, 9],
+
+    ['ParisLongchamp', 'fra', '🇫🇷', 'Europe/Paris', 'turf', 13, 20, 8],
+    ['Deauville', 'fra', '🇫🇷', 'Europe/Paris', 'turf', 13, 5, 8],
+    ['Chantilly', 'fra', '🇫🇷', 'Europe/Paris', 'turf', 13, 40, 8],
+    ['Saint-Cloud', 'fra', '🇫🇷', 'Europe/Paris', 'turf', 14, 0, 8],
+    ['Maisons-Laffitte', 'fra', '🇫🇷', 'Europe/Paris', 'turf', 13, 30, 7],
+
+    ['Sha Tin', 'hkg', '🇭🇰', 'Asia/Hong_Kong', 'turf', 12, 45, 10],
+    ['Happy Valley', 'hkg', '🇭🇰', 'Asia/Hong_Kong', 'turf', 18, 45, 9],
+
+    ['Flemington', 'aus', '🇦🇺', 'Australia/Melbourne', 'turf', 12, 10, 9],
+    ['Caulfield', 'aus', '🇦🇺', 'Australia/Melbourne', 'turf', 12, 30, 9],
+    ['Moonee Valley', 'aus', '🇦🇺', 'Australia/Melbourne', 'turf', 17, 40, 8],
+    ['Randwick', 'aus', '🇦🇺', 'Australia/Sydney', 'turf', 12, 20, 9],
+    ['Rosehill Gardens', 'aus', '🇦🇺', 'Australia/Sydney', 'turf', 12, 45, 8],
+    ['Eagle Farm', 'aus', '🇦🇺', 'Australia/Brisbane', 'turf', 12, 0, 8],
+    ['Ascot (Perth)', 'aus', '🇦🇺', 'Australia/Perth', 'turf', 12, 15, 8],
+    ['Ellerslie', 'aus', '🇳🇿', 'Pacific/Auckland', 'turf', 12, 5, 8],
+    ['Trentham', 'aus', '🇳🇿', 'Pacific/Auckland', 'turf', 12, 25, 8],
+
+    ['Tokyo', 'jpn', '🇯🇵', 'Asia/Tokyo', 'turf', 9, 55, 12],
+    ['Nakayama', 'jpn', '🇯🇵', 'Asia/Tokyo', 'turf', 9, 50, 12],
+    ['Hanshin', 'jpn', '🇯🇵', 'Asia/Tokyo', 'turf', 10, 5, 12],
+    ['Kyoto', 'jpn', '🇯🇵', 'Asia/Tokyo', 'turf', 10, 0, 11],
+    ['Chukyo', 'jpn', '🇯🇵', 'Asia/Tokyo', 'dirt', 9, 45, 11],
+
+    ['Meydan', 'uae', '🇦🇪', 'Asia/Dubai', 'turf', 16, 30, 8],
+    ['Jebel Ali', 'uae', '🇦🇪', 'Asia/Dubai', 'dirt', 14, 15, 7],
+    ['Abu Dhabi', 'uae', '🇦🇪', 'Asia/Dubai', 'turf', 16, 0, 7],
+
+    ['Turffontein', 'saf', '🇿🇦', 'Africa/Johannesburg', 'turf', 12, 20, 8],
+    ['Greyville', 'saf', '🇿🇦', 'Africa/Johannesburg', 'turf', 12, 40, 8],
+    ['Kenilworth', 'saf', '🇿🇦', 'Africa/Johannesburg', 'turf', 13, 0, 8],
+    ['Fairview', 'saf', '🇿🇦', 'Africa/Johannesburg', 'aw', 12, 50, 8],
+
+    ['Baden-Baden', 'eur', '🇩🇪', 'Europe/Berlin', 'turf', 13, 30, 7],
+    ['Cologne', 'eur', '🇩🇪', 'Europe/Berlin', 'turf', 14, 0, 7],
+    ['Capannelle', 'eur', '🇮🇹', 'Europe/Rome', 'turf', 15, 10, 7],
+    ['San Siro', 'eur', '🇮🇹', 'Europe/Rome', 'turf', 15, 30, 7],
+    ['Bro Park', 'eur', '🇸🇪', 'Europe/Stockholm', 'turf', 13, 50, 8],
+    ['Øvrevoll', 'eur', '🇳🇴', 'Europe/Oslo', 'turf', 14, 15, 7]
+  ].map(v => ({
+    id: v[0].toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+    name: v[0], region: v[1], flag: v[2], tz: v[3],
+    surface: v[4], hour: v[5], min: v[6], nRaces: v[7]
+  }));
+
+  /* ---------- name pools (invented) ---------- */
+  const HORSES = {
+    euro: ['Ashcroft Lad', 'Quiet Furlong', 'Blackthorn Bay', 'Marram Grass', 'Copper Kettle',
+      'Salt Marsh', 'Winter Bramble', 'Handsome Devil', 'Ravensworth', 'Little Compton',
+      'Hedgerow King', 'Peat Fire', 'Silver Birch Lane', 'Mistle Thrush', 'Gorse Hill',
+      'Barleycorn', 'Northern Draft', 'Fenwick Rose', 'Tumbledown', 'Lark Ascending',
+      'Old Stone Wall', 'Clover Deep', 'Rowan Tree', 'Thistledown Boy', 'Harrow Gate',
+      'Kestrel Watch', 'Bramblewick', 'Sorrel Meadow', 'Dunmore Prince', 'Cloudberry'],
+    usa: ['Sundown Rambler', 'Bourbon County', 'Cold Creek Kid', 'Prairie Smoke', 'Dixie Freight',
+      'Hard Eight', 'Mesquite Flats', 'Copper Penny Run', 'Nightshift Ned', 'Gulf Wind',
+      'Ranger Station', 'Blue Ridge Holler', 'Tailgate Charlie', 'Sawgrass Silver', 'Diamond Lane',
+      'Rustbelt Rocket', 'Painted Pony Bay', 'Louisiana Line', 'Big Sky Sonny', 'Two Lane Blacktop',
+      'Hickory Switch', 'Cactus Junction', 'Foreman\'s Daughter', 'Roadhouse Red', 'Steamboat Sal',
+      'Kentucky Cold Brew', 'Wildcat Draw', 'Pelican Bay Kid', 'Dust Devil Dan', 'Tin Roof Blues'],
+    hkg: ['Golden Sixty Four', 'Lucky Sword', 'Winning Harbour', 'Beauty Runner', 'Fortune Panda',
+      'Dragon Ascent', 'Happy Merchant', 'Jolly Banker', 'Red Lantern Sprint', 'Prosper Again',
+      'Silver Star Ferry', 'Mighty Cargo', 'Victory Peak', 'Sunny Diamond', 'Rich Harvest Moon',
+      'Kowloon Flyer', 'Ever Brilliant', 'Turbo Fortune', 'Champion Tycoon', 'Grand Bauhinia',
+      'Sky Tower Blaze', 'Money Talks Fast', 'Noble Junction', 'Speedy Jade', 'Perfect Match Ten',
+      'Great Wall Runner', 'Fortune Teller Bay', 'Regal Typhoon', 'Star Of Aberdeen', 'Golden Mile Kid'],
+    jpn: ['Sakura Meteor', 'Kitasan Thunder', 'Meisho Aurora', 'Daiwa Horizon', 'Tosen Lantern',
+      'Admire Falcon', 'Copano Nightfall', 'Satono Comet', 'Win Marigold', 'Shonan Blizzard',
+      'Curren Sandpiper', 'Gold Ship Junior', 'Symboli Voyage', 'Narita Whisper', 'Air Cadenza',
+      'Rey de Kyoto', 'Danon Cascade', 'Hishi Monsoon', 'Tanino Riverside', 'Mejiro Ember',
+      'Seiun Skyline', 'Yamanin Torrent', 'Marvelous Pine', 'Taiki Vagabond', 'Nishino Drifter',
+      'Fuji Kiseki Bay', 'Orfevre Echo', 'Suzuka Lantern', 'Tokai Frontier', 'Buena Serenade'],
+    aus: ['Barcoo Drifter', 'Mallee Bull', 'Sandgroper Sam', 'Bondi Rip', 'Woolshed Winnie',
+      'Ute Full Of Hay', 'Bunyip Express', 'Tallowwood', 'Silverwater Sal', 'Kalgoorlie Gold',
+      'Paddock Bash', 'Coolabah Colt', 'Southerly Buster', 'Cattle Dog Crossing', 'Wattle Seed',
+      'Redgum Rocket', 'Gundagai Grey', 'Snowy River Boy', 'Lorne Point', 'Billabong Blue',
+      'Kiwi Crosswind', 'Waikato Warrior', 'Tasman Tide', 'Jindabyne Jack', 'Boomerang Bay',
+      'Marlborough Sound', 'Dusty Bore', 'Pilbara Prince', 'Northland Nell', 'Great Barrier Gus']
+  };
+  const JOCKEYS = {
+    euro: ['R. Callaghan', 'T. Mowbray', 'J. Devine', 'S. Hartnett', 'D. Fenwick', 'A. Doohan',
+      'K. Rafferty', 'M. Ainsworth', 'P. Kilbride', 'L. Broadhurst', 'C. Naughton', 'E. Marchetti',
+      'F. Lemoine', 'H. Pettigrew', 'N. Gallagher', 'B. Öhman'],
+    usa: ['J. Whitfield', 'M. Delgado', 'R. Santoro', 'T. Beaumont', 'C. Ruiz Jr', 'D. Hollins',
+      'A. Prewitt', 'L. Marchetti', 'K. Boudreaux', 'S. Vasquez', 'W. Tanner', 'P. Okafor',
+      'G. Lindqvist', 'H. Camacho', 'E. Sandoval', 'B. Rowntree'],
+    hkg: ['K. C. Leung', 'A. Badel-Fong', 'M. Chadwick Jr', 'H. T. Mo', 'V. Borges', 'C. Y. Ho',
+      'D. Whyte-Lam', 'J. Poon', 'K. Teetan Jr', 'M. F. Poon', 'R. Maia', 'L. Hewitson Jr',
+      'A. Atzeni Jr', 'Y. L. Chung', 'B. Avdulla Jr', 'K. H. Chan'],
+    jpn: ['Y. Take Jr', 'C. Lemaire Jr', 'K. Matsuyama', 'H. Sakai', 'R. Iwata', 'M. Demuro Jr',
+      'T. Yokoyama', 'S. Kawada Jr', 'A. Fujioka', 'N. Tosaki', 'K. Ikezoe', 'D. Nishimura',
+      'Y. Fukunaga Jr', 'M. Katsuura', 'H. Miyuki', 'T. Danno'],
+    aus: ['J. McDonald Jr', 'K. McEvoy Jr', 'C. Williams Jr', 'B. Melham Jr', 'T. Berry Jr',
+      'R. King', 'D. Yendall Jr', 'M. Zahra Jr', 'L. Currie Jr', 'H. Coffey Jr', 'J. Bowman Jr',
+      'A. Hyeronimus', 'W. Pike Jr', 'S. Collett Jr', 'O. Bosson Jr', 'N. Rawiller Jr']
+  };
+  const TRAINERS = {
+    euro: ['Gosforth Lodge', 'A. Wetherby', 'M. O\'Halloran', 'C. Ridgeway', 'S. Delacroix',
+      'P. Kinsella', 'J. Ashcombe', 'R. Vanderveld', 'T. Brennan', 'L. Moncrieff', 'D. Sartori', 'K. Halvorsen'],
+    usa: ['R. Castellano Sr', 'B. Whitlock', 'M. Aguilar', 'S. Pemberton', 'D. Cruz Stables',
+      'K. Lindstrom', 'T. Ravenwood', 'C. Oyelaran', 'J. Petrosian', 'A. Duquesne', 'H. Barlow', 'N. Ferraro'],
+    hkg: ['C. S. Shum Jr', 'D. Hall-Wong', 'A. Cruz Jr', 'F. Lor Jr', 'P. Yiu Jr', 'M. Newnham Jr',
+      'D. Eustace Jr', 'J. Size Jr', 'C. Fownes Jr', 'K. W. Lui', 'B. Cheung', 'T. P. Yung'],
+    jpn: ['Y. Tomomichi', 'H. Otonashi', 'K. Sugai', 'M. Nakauchida', 'S. Kunieda Jr', 'T. Yasuda Jr',
+      'N. Hori Jr', 'R. Takahashi', 'A. Fujiwara Jr', 'D. Kikuzawa', 'M. Ito', 'S. Shikato'],
+    aus: ['Waller Park', 'C. Maher Jr', 'A. Freedman Jr', 'G. Waterhouse Jr', 'M. Price Jr',
+      'B. Hayes Jr', 'K. Baker', 'J. Cummings Jr', 'T. Busuttin', 'R. Laming', 'S. Marsh Jr', 'P. Baker']
+  };
+
+  const GOING = {
+    turf: ['Good', 'Good to Firm', 'Good to Soft', 'Firm', 'Soft', 'Heavy'],
+    dirt: ['Fast', 'Fast', 'Muddy', 'Sloppy', 'Wet Fast'],
+    aw: ['Standard', 'Standard', 'Standard to Slow', 'Standard to Fast']
+  };
+  const SILK_COLORS = ['#C4693D', '#2F5233', '#E4B363', '#7FB069', '#4A3323', '#F6EDDD',
+    '#2C2016', '#8E4A2E', '#AECBA0', '#6B4A32', '#D9534F', '#3E6B8A'];
+  const SILK_PATTERNS = ['solid', 'halved', 'hoops', 'stripes', 'chevron', 'star', 'sash'];
+
+  function raceTitle(r, region, cls, dist) {
+    const sponsors = ['Betstable', 'Racing Post', 'Tote', 'Watch & Bet', 'Racing TV', 'Bookmakers'];
+    if (region === 'fra') return C.pick(r, ['Prix de la Chapelle', 'Prix des Tourelles', 'Prix du Bois Joli',
+      'Prix de Meautry', 'Prix Vermeille Trial', 'Prix de la Cascade']);
+    if (region === 'jpn') return C.pick(r, ['Yayoi Sho', 'Sapporo Nikkei Open', 'Fuji Stakes',
+      'Kokura Kinen', 'Keisei Hai', 'Sankei Sho']);
+    if (region === 'usa') return C.pick(r, ['Allowance Optional Claiming', 'Maiden Special Weight',
+      'Starter Handicap', 'Claiming $25,000', 'Stakes — Listed', 'Maiden Claiming']);
+    if (region === 'hkg') return C.pick(r, ['Class 3 Handicap', 'Class 4 Handicap', 'Class 2 Handicap',
+      'Griffin Race', 'Class 5 Handicap']);
+    return C.pick(r, sponsors) + ' ' + C.pick(r, ['Handicap', 'Novice Stakes', 'Maiden Stakes',
+      'Classified Stakes', 'Nursery Handicap', 'Fillies\' Handicap']) + ' (' + cls + ')';
+  }
+
+  function distanceFor(r, region) {
+    const metric = ['fra', 'hkg', 'jpn', 'aus', 'uae', 'saf', 'eur'].indexOf(region) >= 0;
+    if (metric) return C.pick(r, [1000, 1200, 1400, 1600, 1800, 2000, 2400, 2800]) + 'm';
+    const f = C.pick(r, [5, 6, 7, 8, 9, 10, 12, 14, 16]);
+    return f < 8 ? f + 'f' : (Math.floor(f / 8) + 'm' + (f % 8 ? ' ' + (f % 8) + 'f' : ''));
+  }
+
+  function makeRunners(r, style, n, declared) {
+    const horses = C.pickN(r, HORSES[style], n);
+    const jockeys = C.pickN(r, JOCKEYS[style], n);
+    const trainers = C.pickN(r, TRAINERS[style], Math.min(n, TRAINERS[style].length));
+    // A plausible market: a couple of short prices, a long tail.
+    const strengths = horses.map((_, i) => Math.pow(Math.max(0.05, C.gauss(r, 1, 0.55)), 2) * (i === 0 ? 2.2 : 1));
+    const odds = C.priceUp(strengths, 1.14 + r() * 0.08);
+    const total = strengths.reduce((a, b) => a + b, 0);
+    return horses.map((horse, i) => ({
+      no: i + 1,
+      horse: horse,
+      jockey: declared ? jockeys[i] : null,
+      trainer: trainers[i % trainers.length],
+      draw: i + 1,
+      age: C.rint(r, 3, 8),
+      weight: (C.rint(r, 8, 9)) + '-' + String(C.rint(r, 0, 13)).padStart(2, '0'),
+      form: Array.from({ length: 5 }, () => C.pick(r, ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'P', 'U'])).join(''),
+      odds: declared ? odds[i] : null,
+      prob: strengths[i] / total,
+      silk: {
+        a: C.pick(r, SILK_COLORS), b: C.pick(r, SILK_COLORS),
+        pattern: C.pick(r, SILK_PATTERNS)
+      }
+    })).sort((a, b) => (a.odds || 99) - (b.odds || 99)).map((x, i) => (x.no = i + 1, x));
+  }
+
+  /** Build one meeting (a venue's card) for a given calendar day. */
+  function buildMeeting(venue, dayOffset, now) {
+    const region = REGIONS.find(x => x.id === venue.region);
+    const parts = C.zonedDateParts(now, venue.tz, dayOffset);
+    const dateKey = parts.y + '-' + String(parts.mo).padStart(2, '0') + '-' + String(parts.d).padStart(2, '0');
+    const r = C.rng(venue.id + '|' + dateKey);
+
+    // Not every course races every day. Deterministic per venue per date.
+    const raceFrequency = venue.region === 'hkg' ? 0.34 : venue.region === 'jpn' ? 0.42 : 0.55;
+    if (r() > raceFrequency) return null;
+
+    const first = C.zonedToUtc(parts.y, parts.mo, parts.d, venue.hour, venue.min, venue.tz);
+    const nRaces = venue.nRaces + C.rint(r, -1, 1);
+    const going = C.pick(r, GOING[venue.surface] || GOING.turf);
+    const races = [];
+    let t = first;
+    for (let i = 0; i < nRaces; i++) {
+      const rr = C.rng(venue.id + '|' + dateKey + '|' + i);
+      // Runners and riders are only published once a race is declared (~48h out).
+      const declared = (t - now) < 48 * 3600e3;
+      const fieldSize = C.rint(rr, 6, venue.region === 'hkg' ? 14 : 12);
+      const cls = C.pick(rr, ['Class 2', 'Class 3', 'Class 4', 'Class 5', 'Group 3', 'Listed']);
+      const dist = distanceFor(rr, venue.region);
+      races.push({
+        id: venue.id + '-' + dateKey + '-' + (i + 1),
+        meetingId: venue.id + '-' + dateKey,
+        no: i + 1,
+        offTs: t,
+        name: raceTitle(rr, venue.region, cls, dist),
+        distance: dist,
+        cls: cls,
+        going: going,
+        prize: C.rint(rr, 4, 90) * 1000,
+        declared: declared,
+        fieldSize: fieldSize,
+        runners: makeRunners(rr, region.style, fieldSize, declared)
+      });
+      t += (25 + Math.floor(rr() * 12)) * 60000;
+    }
+    return {
+      id: venue.id + '-' + dateKey,
+      venue: venue.name, venueId: venue.id, flag: venue.flag, tz: venue.tz,
+      surface: venue.surface, going: going, region: venue.region,
+      regionName: region.name, dateKey: dateKey, dayOffset: dayOffset,
+      races: races, firstOff: races[0].offTs, lastOff: races[races.length - 1].offTs
+    };
+  }
+
+  /** Race state derived from the clock — the same rule everywhere in the app. */
+  function raceState(race, now) {
+    if (now < race.offTs) return 'upcoming';
+    if (now < race.offTs + 4 * 60000) return 'off';
+    return 'result';
+  }
+
+  /** Deterministic result, weighted by the market. Used for auto-settlement. */
+  function resultFor(race) {
+    const r = C.rng('result|' + race.id);
+    const pool = race.runners.map(x => ({ no: x.no, w: Math.pow(x.prob, 0.9) * (0.5 + r()) }));
+    pool.sort((a, b) => b.w - a.w);
+    return { positions: pool.slice(0, 4).map(x => x.no) };
+  }
+
+  function meetingsFor(dayOffset, now) {
+    const out = [];
+    for (const v of VENUES) {
+      const m = buildMeeting(v, dayOffset, now);
+      if (m) out.push(m);
+    }
+    return out;
+  }
+
+  BS.racing = { REGIONS, VENUES, meetingsFor, raceState, resultFor, buildMeeting };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* feed-football.js — global fixture list for ScoreMore.
+   Club and competition names are real; every price, score, lineup and player
+   name below is generated sample data. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+
+  const REGIONS = [
+    { id: 'eng', name: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', order: 1 },
+    { id: 'ucl', name: 'European club', flag: '🏆', order: 2 },
+    { id: 'esp', name: 'Spain', flag: '🇪🇸', order: 3 },
+    { id: 'ita', name: 'Italy', flag: '🇮🇹', order: 4 },
+    { id: 'ger', name: 'Germany', flag: '🇩🇪', order: 5 },
+    { id: 'fra', name: 'France', flag: '🇫🇷', order: 6 },
+    { id: 'eur', name: 'Rest of Europe', flag: '🇪🇺', order: 7 },
+    { id: 'nam', name: 'North America', flag: '🇺🇸', order: 8 },
+    { id: 'sam', name: 'South America', flag: '🇧🇷', order: 9 },
+    { id: 'apc', name: 'Asia & Pacific', flag: '🌏', order: 10 }
+  ];
+
+  // [id, name, region, tz, kickoff slots (local 24h), days (0=Sun), teams]
+  const COMPS = [
+    ['epl', 'Premier League', 'eng', 'Europe/London', ['12:30', '15:00', '17:30', '20:00'], [6, 0, 2, 3],
+      ['Arsenal', 'Aston Villa', 'Brighton', 'Chelsea', 'Crystal Palace', 'Everton', 'Fulham',
+        'Liverpool', 'Manchester City', 'Manchester United', 'Newcastle United', 'Nottingham Forest',
+        'Tottenham Hotspur', 'West Ham United', 'Wolves', 'Brentford', 'Bournemouth', 'Leeds United']],
+    ['championship', 'EFL Championship', 'eng', 'Europe/London', ['12:30', '15:00', '19:45'], [6, 2],
+      ['Norwich City', 'Leicester City', 'Southampton', 'Middlesbrough', 'Coventry City', 'Watford',
+        'Sheffield United', 'Stoke City', 'Millwall', 'Preston North End', 'Bristol City', 'Swansea City']],
+    ['ucl', 'UEFA Champions League', 'ucl', 'Europe/Berlin', ['18:45', '21:00'], [2, 3],
+      ['Real Madrid', 'Bayern Munich', 'Manchester City', 'Inter Milan', 'Paris Saint-Germain',
+        'Barcelona', 'Liverpool', 'Bayer Leverkusen', 'Atlético Madrid', 'Borussia Dortmund',
+        'Napoli', 'Benfica', 'PSV Eindhoven', 'Sporting CP', 'Arsenal', 'Juventus']],
+    ['uel', 'UEFA Europa League', 'ucl', 'Europe/Berlin', ['18:45', '21:00'], [4],
+      ['Roma', 'Villarreal', 'Ajax', 'Feyenoord', 'Lazio', 'Real Betis', 'Rangers', 'Celtic',
+        'Olympique Lyonnais', 'Eintracht Frankfurt', 'Fenerbahçe', 'Galatasaray']],
+    ['laliga', 'La Liga', 'esp', 'Europe/Madrid', ['14:00', '16:15', '18:30', '21:00'], [6, 0, 5],
+      ['Real Madrid', 'Barcelona', 'Atlético Madrid', 'Athletic Club', 'Real Sociedad', 'Real Betis',
+        'Villarreal', 'Valencia', 'Sevilla', 'Girona', 'Celta Vigo', 'Osasuna', 'Rayo Vallecano', 'Mallorca']],
+    ['seriea', 'Serie A', 'ita', 'Europe/Rome', ['15:00', '18:00', '20:45'], [6, 0, 1],
+      ['Inter Milan', 'AC Milan', 'Juventus', 'Napoli', 'Roma', 'Lazio', 'Atalanta', 'Fiorentina',
+        'Bologna', 'Torino', 'Udinese', 'Genoa', 'Como', 'Cagliari']],
+    ['bundesliga', 'Bundesliga', 'ger', 'Europe/Berlin', ['15:30', '18:30', '20:30'], [6, 0, 5],
+      ['Bayern Munich', 'Bayer Leverkusen', 'RB Leipzig', 'Borussia Dortmund', 'Eintracht Frankfurt',
+        'VfB Stuttgart', 'Werder Bremen', 'Freiburg', 'Wolfsburg', 'Hoffenheim', 'Mainz 05', 'Union Berlin']],
+    ['ligue1', 'Ligue 1', 'fra', 'Europe/Paris', ['17:00', '19:00', '21:00'], [6, 0, 5],
+      ['Paris Saint-Germain', 'Marseille', 'Monaco', 'Lille', 'Olympique Lyonnais', 'Nice', 'Lens',
+        'Rennes', 'Strasbourg', 'Nantes', 'Toulouse', 'Brest']],
+    ['eredivisie', 'Eredivisie', 'eur', 'Europe/Amsterdam', ['14:30', '16:45', '20:00'], [6, 0],
+      ['Ajax', 'PSV Eindhoven', 'Feyenoord', 'AZ Alkmaar', 'Twente', 'Utrecht', 'Sparta Rotterdam', 'Heerenveen']],
+    ['primeira', 'Primeira Liga', 'eur', 'Europe/Lisbon', ['15:30', '18:00', '20:30'], [6, 0, 5],
+      ['Benfica', 'Porto', 'Sporting CP', 'Braga', 'Vitória Guimarães', 'Boavista', 'Famalicão', 'Rio Ave']],
+    ['spfl', 'Scottish Premiership', 'eur', 'Europe/London', ['12:30', '15:00', '19:45'], [6, 0, 3],
+      ['Celtic', 'Rangers', 'Hearts', 'Hibernian', 'Aberdeen', 'Dundee United', 'Motherwell', 'Kilmarnock']],
+    ['mls', 'Major League Soccer', 'nam', 'America/New_York', ['19:30', '20:30', '22:00'], [6, 3],
+      ['Inter Miami', 'LAFC', 'LA Galaxy', 'Seattle Sounders', 'Atlanta United', 'Columbus Crew',
+        'New York City FC', 'New York Red Bulls', 'Philadelphia Union', 'Portland Timbers',
+        'FC Cincinnati', 'Austin FC']],
+    ['ligamx', 'Liga MX', 'nam', 'America/Mexico_City', ['17:00', '19:00', '21:05'], [6, 0, 5],
+      ['Club América', 'Chivas Guadalajara', 'Cruz Azul', 'Tigres UANL', 'Monterrey', 'Pumas UNAM',
+        'Toluca', 'Santos Laguna', 'León', 'Pachuca']],
+    ['brasileirao', 'Brasileirão Série A', 'sam', 'America/Sao_Paulo', ['16:00', '18:30', '21:00'], [6, 0, 3],
+      ['Flamengo', 'Palmeiras', 'Botafogo', 'São Paulo', 'Corinthians', 'Fluminense', 'Grêmio',
+        'Internacional', 'Atlético Mineiro', 'Cruzeiro', 'Vasco da Gama', 'Bahia']],
+    ['argentina', 'Liga Profesional', 'sam', 'America/Argentina/Buenos_Aires', ['17:00', '19:15', '21:30'], [6, 0, 1],
+      ['River Plate', 'Boca Juniors', 'Racing Club', 'Independiente', 'San Lorenzo', 'Estudiantes',
+        'Vélez Sarsfield', 'Talleres', 'Lanús', 'Newell\'s Old Boys']],
+    ['j1', 'J1 League', 'apc', 'Asia/Tokyo', ['14:00', '16:00', '19:00'], [6, 0],
+      ['Kawasaki Frontale', 'Yokohama F. Marinos', 'Vissel Kobe', 'Urawa Red Diamonds', 'FC Tokyo',
+        'Sanfrecce Hiroshima', 'Cerezo Osaka', 'Gamba Osaka', 'Kashima Antlers', 'Nagoya Grampus']],
+    ['saudi', 'Saudi Pro League', 'apc', 'Asia/Riyadh', ['18:00', '20:00', '21:45'], [4, 5, 6],
+      ['Al Hilal', 'Al Nassr', 'Al Ittihad', 'Al Ahli', 'Al Shabab', 'Al Ettifaq', 'Al Taawoun', 'Al Fateh']],
+    ['aleague', 'A-League Men', 'apc', 'Australia/Sydney', ['15:00', '17:45', '19:45'], [6, 0],
+      ['Melbourne City', 'Melbourne Victory', 'Sydney FC', 'Western Sydney Wanderers', 'Adelaide United',
+        'Brisbane Roar', 'Central Coast Mariners', 'Wellington Phoenix']]
+  ].map(c => ({
+    id: c[0], name: c[1], region: c[2], tz: c[3], slots: c[4], days: c[5], teams: c[6]
+  }));
+
+  const SURNAMES = ['Okonkwo', 'Vasilev', 'Lindqvist', 'Moreau', 'Baptista', 'Halvorsen', 'Ferrante',
+    'Nakagawa', 'Rasmussen', 'Delgado', 'Kowalczyk', 'Aitken', 'Mbeki', 'Sorrentino', 'Bakker',
+    'Petrov', 'Duarte', 'Novak', 'Haugen', 'Marchetti', 'Yilmaz', 'Dembélé', 'Ferreira', 'Kováč',
+    'Bergström', 'Salvatore', 'Adeyemi', 'Toskić', 'Renard', 'Whitlow'];
+  const FORMATIONS = ['4-3-3', '4-2-3-1', '3-5-2', '4-4-2', '3-4-2-1'];
+
+  function lineup(r) {
+    const names = C.pickN(r, SURNAMES, 11);
+    return { formation: C.pick(r, FORMATIONS), players: names };
+  }
+
+  /** Goal times generated up front so an in-play score is consistent all match. */
+  function goalScript(r, pH, pA) {
+    const goals = [];
+    const expH = 0.6 + pH * 2.4, expA = 0.4 + pA * 2.2;
+    for (const side of ['H', 'A']) {
+      const lambda = side === 'H' ? expH : expA;
+      let n = 0, p = Math.exp(-lambda), cum = p, u = r();
+      while (u > cum && n < 6) { n++; p = p * lambda / n; cum += p; }
+      for (let i = 0; i < n; i++) goals.push({ minute: C.rint(r, 2, 93), side: side });
+    }
+    return goals.sort((a, b) => a.minute - b.minute);
+  }
+
+  function buildFixtures(comp, dayOffset, now) {
+    const parts = C.zonedDateParts(now, comp.tz, dayOffset);
+    const dateKey = parts.y + '-' + String(parts.mo).padStart(2, '0') + '-' + String(parts.d).padStart(2, '0');
+    const dow = new Date(Date.UTC(parts.y, parts.mo - 1, parts.d)).getUTCDay();
+    const r = C.rng(comp.id + '|' + dateKey);
+    const isMatchday = comp.days.indexOf(dow) >= 0;
+    if (!isMatchday || r() > 0.82) return [];
+
+    const teams = C.pickN(r, comp.teams, Math.min(comp.teams.length, C.rint(r, 4, 10) * 2 / 2 * 2));
+    const out = [];
+    for (let i = 0; i + 1 < teams.length; i += 2) {
+      const fr = C.rng(comp.id + '|' + dateKey + '|' + i);
+      const slot = C.pick(fr, comp.slots).split(':');
+      const koTs = C.zonedToUtc(parts.y, parts.mo, parts.d, +slot[0], +slot[1], comp.tz);
+      // Home edge plus a random quality gap, converted into a priced-up book.
+      const sH = Math.max(0.15, C.gauss(fr, 1.35, 0.45));
+      const sA = Math.max(0.15, C.gauss(fr, 1.0, 0.45));
+      const sD = 0.78 + fr() * 0.25;
+      const odds = C.priceUp([sH, sD, sA], 1.06 + fr() * 0.04);
+      const tot = sH + sD + sA;
+      const goals = goalScript(fr, sH / tot, sA / tot);
+      const ouProbs = [0.52 + fr() * 0.16, 0.48 - fr() * 0.16];
+      const bttsProbs = [0.5 + fr() * 0.14, 0.5 - fr() * 0.14];
+      out.push({
+        id: comp.id + '-' + dateKey + '-' + i,
+        compId: comp.id, comp: comp.name, region: comp.region, tz: comp.tz,
+        home: teams[i], away: teams[i + 1], koTs: koTs, dateKey: dateKey, dayOffset: dayOffset,
+        odds: { home: odds[0], draw: odds[1], away: odds[2] },
+        ou25: C.priceUp(ouProbs, 1.05), btts: C.priceUp(bttsProbs, 1.05),
+        probs: { home: sH / tot, draw: sD / tot, away: sA / tot },
+        form: {
+          home: Array.from({ length: 5 }, () => C.pick(fr, ['W', 'W', 'D', 'L'])).join(''),
+          away: Array.from({ length: 5 }, () => C.pick(fr, ['W', 'D', 'L', 'L'])).join('')
+        },
+        goals: goals,
+        lineups: { home: lineup(fr), away: lineup(fr) },
+        venue: teams[i] + ' Stadium'
+      });
+    }
+    return out;
+  }
+
+  /** upcoming | live | ft — plus the minute and score for a live match. */
+  function fixtureState(fx, now) {
+    const elapsedMs = now - fx.koTs;
+    if (elapsedMs < 0) return { state: 'upcoming', minute: 0, score: [0, 0] };
+    const minute = Math.floor(elapsedMs / 60000);
+    const played = minute >= 105 ? 95 : minute > 50 ? Math.min(95, minute - 15) : minute;
+    const score = [0, 0];
+    for (const g of fx.goals) if (g.minute <= played) score[g.side === 'H' ? 0 : 1]++;
+    if (minute >= 115) return { state: 'ft', minute: 90, score: score };
+    return { state: 'live', minute: Math.min(90, played), score: score, ht: minute > 45 && minute <= 60 };
+  }
+
+  const finalScore = fx => fx.goals.reduce((a, g) => (a[g.side === 'H' ? 0 : 1]++, a), [0, 0]);
+
+  /** Lineups firm up as kick-off approaches, like the real feeds do. */
+  function lineupState(fx, now) {
+    const mins = (fx.koTs - now) / 60000;
+    if (mins <= 60) return 'confirmed';
+    if (mins <= 48 * 60) return 'probable';
+    return 'squad';
+  }
+
+  function fixturesFor(dayOffset, now) {
+    const out = [];
+    for (const c of COMPS) out.push.apply(out, buildFixtures(c, dayOffset, now));
+    return out;
+  }
+
+  BS.football = { REGIONS, COMPS, fixturesFor, fixtureState, lineupState, finalScore };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* provider.js — the single interface the UI talks to.
+   Nothing in the views knows where data comes from. Swapping the sample feeds
+   for a real odds/results provider means reimplementing these methods only. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+
+  const LATENCY = [90, 260];          // simulated network, so loading states are real
+  const cache = new Map();
+
+  const delay = () => new Promise(res =>
+    setTimeout(res, LATENCY[0] + Math.random() * (LATENCY[1] - LATENCY[0])));
+
+  async function memo(key, fn) {
+    if (cache.has(key)) return cache.get(key);
+    await delay();
+    const val = fn();
+    cache.set(key, val);
+    return val;
+  }
+
+  /* Feed health. The framework's first killer is a settlement job that fails
+     quietly, so the app surfaces feed state rather than hiding it. */
+  const health = {
+    odds: { name: 'Odds feed', status: 'ok', lastSuccess: Date.now() - 42000, latencyMs: 180 },
+    results: { name: 'Results feed', status: 'ok', lastSuccess: Date.now() - 118000, latencyMs: 240 },
+    settlement: { name: 'Settlement job', status: 'ok', lastSuccess: Date.now() - 300000, pending: 0 }
+  };
+
+  const provider = {
+    id: 'sample-feed',
+    label: 'Sample feed',
+
+    /** Race meetings for a day offset, grouped by region, empty cards removed. */
+    async meetings(dayOffset) {
+      const now = Date.now();
+      const key = 'r:' + dayOffset + ':' + C.zonedDateParts(now, 'UTC', dayOffset).d;
+      const list = await memo(key, () => BS.racing.meetingsFor(dayOffset, now));
+      health.odds.lastSuccess = Date.now();
+      return list;
+    },
+
+    async fixtures(dayOffset) {
+      const now = Date.now();
+      const key = 'f:' + dayOffset + ':' + C.zonedDateParts(now, 'UTC', dayOffset).d;
+      const list = await memo(key, () => BS.football.fixturesFor(dayOffset, now));
+      health.odds.lastSuccess = Date.now();
+      return list;
+    },
+
+    /** Re-read the price at the instant a tip is submitted (the odds freeze). */
+    freezeOdds(quotedOdds) {
+      const drift = Math.random();
+      let odds = quotedOdds;
+      if (drift > 0.82) {                    // the market moved while you tapped
+        const step = quotedOdds < 3 ? 0.05 : quotedOdds < 8 ? 0.25 : 1;
+        odds = Math.max(1.05, quotedOdds + step * (Math.random() < 0.5 ? -1 : 1));
+      }
+      return { odds: Math.round(odds * 100) / 100, at: Date.now(), moved: odds !== quotedOdds };
+    },
+
+    /** Result lookup used by settlement. Never supplied by a user. */
+    raceResult(race) { return BS.racing.resultFor(race); },
+    fixtureResult(fx) { return BS.football.finalScore(fx); },
+
+    health() { return health; },
+    setPending(n) { health.settlement.pending = n; },
+    invalidate() { cache.clear(); }
+  };
+
+  BS.provider = provider;
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* store.js — the tip ledger and the statistics drawn from it.
+   Tips are append-only: there is an add, there is no edit and no delete. A
+   correction is a void record that points at the original. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+  const KEY = 'betstable.ledger.v1';
+
+  let ledger = null;
+
+  function fnv(str) {
+    let h = 2166136261 >>> 0;
+    for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return (h >>> 0).toString(16).padStart(8, '0');
+  }
+  /** Stand-in for the real record hash — same shape, same guarantee to explain. */
+  const tipHash = t => (fnv(t.id + t.selection + t.odds) + fnv(t.event + t.postedAt) +
+    fnv(String(t.odds) + t.market) + fnv(t.product + t.id)).slice(0, 32);
+
+  /** Daily Merkle root over the day's tip hashes. */
+  function merkleRoot(hashes) {
+    if (!hashes.length) return null;
+    let level = hashes.slice();
+    while (level.length > 1) {
+      const next = [];
+      for (let i = 0; i < level.length; i += 2)
+        next.push(fnv(level[i] + (level[i + 1] || level[i])) + fnv((level[i + 1] || level[i]) + level[i]));
+      level = next;
+    }
+    return (level[0] + fnv(level[0]) + fnv(level[0] + 'x')).slice(0, 32);
+  }
+
+  // Chosen so the founder's record is what the brand promises: real, checkable
+  // and thoroughly unremarkable — a small edge buried in a lot of variance.
+  const SEED = 'betstable-seed-v17';
+  const N_SEED = 134;
+
+  /* ---------- seeded starting record ----------
+     The founder's own honest, unremarkable record, so every view has substance
+     on first run. Deterministic, and plainly labelled as sample data. */
+  function seedLedger() {
+    const r = C.rng(SEED);
+    const tips = [];
+    const now = Date.now();
+    const racingEvents = [
+      ['Ascot', 'Quiet Furlong'], ['The Curragh', 'Blackthorn Bay'], ['Saratoga', 'Bourbon County'],
+      ['Deauville', 'Marram Grass'], ['Sha Tin', 'Lucky Sword'], ['Flemington', 'Mallee Bull'],
+      ['Meydan', 'Copper Kettle'], ['Tokyo', 'Sakura Meteor'], ['Del Mar', 'Prairie Smoke'],
+      ['Leopardstown', 'Peat Fire'], ['York', 'Gorse Hill'], ['Turffontein', 'Rowan Tree'],
+      ['Kempton Park (AW)', 'Barleycorn'], ['Randwick', 'Bondi Rip'], ['ParisLongchamp', 'Lark Ascending']
+    ];
+    const footballEvents = [
+      ['Arsenal v Everton', 'Arsenal'], ['Napoli v Lazio', 'Over 2.5 goals'],
+      ['Bayern Munich v Freiburg', 'Bayern Munich'], ['Celtic v Hearts', 'Both teams to score'],
+      ['Real Betis v Girona', 'Draw'], ['Flamengo v Grêmio', 'Flamengo'],
+      ['Inter Miami v Austin FC', 'Over 2.5 goals'], ['Porto v Braga', 'Porto'],
+      ['Kawasaki Frontale v FC Tokyo', 'Both teams to score'], ['Lens v Nice', 'Away']
+    ];
+    for (let i = 0; i < N_SEED; i++) {
+      const isRacing = r() < 0.62;
+      const daysAgo = 168 - Math.floor(i * 1.24) - Math.floor(r() * 2);
+      const postedAt = now - daysAgo * 864e5 - Math.floor(r() * 36e5);
+      const odds = isRacing
+        ? Math.round((1.8 + Math.pow(r(), 1.7) * 8.5) * 20) / 20
+        : Math.round((1.55 + Math.pow(r(), 1.5) * 3.6) * 20) / 20;
+      const ev = isRacing ? C.pick(r, racingEvents) : C.pick(r, footballEvents);
+      // A genuine, unspectacular edge: implied probability plus a couple of points.
+      const won = r() < (1 / odds) * 1.06;
+      const tip = {
+        id: 'seed-' + i,
+        product: isRacing ? 'racing' : 'football',
+        event: isRacing ? ev[0] + ' ' + (13 + (i % 6)) + ':' + ((i * 7) % 6) + '5' : ev[0],
+        market: isRacing ? 'Win' : (ev[1].indexOf('goals') > 0 ? 'Over/Under' :
+          ev[1].indexOf('score') > 0 ? 'BTTS' : 'Match result'),
+        selection: ev[1],
+        odds: odds,
+        stake: 1,
+        postedAt: postedAt,
+        status: 'settled',
+        settledAt: postedAt + 3.2e6,
+        won: won,
+        ret: won ? odds - 1 : -1
+      };
+      tip.hash = tipHash(tip);
+      tips.push(tip);
+    }
+    tips.sort((a, b) => a.postedAt - b.postedAt);
+    return { version: 1, handle: '@thefounder', tips: tips };
+  }
+
+  function load() {
+    if (ledger) return ledger;
+    try {
+      const rawStr = localStorage.getItem(KEY);
+      ledger = rawStr ? JSON.parse(rawStr) : seedLedger();
+    } catch (e) { ledger = seedLedger(); }
+    save();
+    return ledger;
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(ledger)); } catch (e) { /* private mode */ }
+  }
+
+  /* ---------- the one write path ---------- */
+  function addTip(tip) {
+    const l = load();
+    const rec = Object.assign({
+      id: 'tip-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 4096).toString(36),
+      stake: 1, status: 'pending', postedAt: Date.now()
+    }, tip);
+    rec.hash = tipHash(rec);
+    l.tips.push(rec);
+    save();
+    return rec;
+  }
+
+  /** Settlement runs over pending tips using feed results only. */
+  function settle(tipId, won, ret, detail) {
+    const l = load();
+    const t = l.tips.find(x => x.id === tipId);
+    if (!t || t.status !== 'pending') return;
+    t.status = 'settled'; t.settledAt = Date.now();
+    t.won = won; t.ret = ret; t.resultDetail = detail || null;
+    save();
+  }
+
+  /* ---------- statistics ---------- */
+  function stats(tips) {
+    const settled = tips.filter(t => t.status === 'settled');
+    const n = settled.length;
+    if (!n) return { n: 0, roi: 0, lo: 0, hi: 0, profit: 0, strike: 0, maxDD: 0, equity: [], enough: false };
+    const rets = settled.map(t => t.ret);
+    const profit = rets.reduce((a, b) => a + b, 0);
+    const mean = profit / n;
+    const varSum = rets.reduce((a, x) => a + Math.pow(x - mean, 2), 0);
+    const sd = Math.sqrt(varSum / Math.max(1, n - 1));
+    const se = sd / Math.sqrt(n);
+    let cum = 0, peak = 0, maxDD = 0;
+    const equity = settled.map(t => {
+      cum += t.ret;
+      peak = Math.max(peak, cum);
+      maxDD = Math.min(maxDD, cum - peak);
+      return { ts: t.settledAt || t.postedAt, cum: cum, dd: cum - peak };
+    });
+    return {
+      n: n, roi: mean * 100, lo: (mean - 1.96 * se) * 100, hi: (mean + 1.96 * se) * 100,
+      profit: profit, strike: settled.filter(t => t.won).length / n * 100,
+      maxDD: maxDD, equity: equity, enough: n >= 100,
+      pending: tips.filter(t => t.status === 'pending').length
+    };
+  }
+
+  /* ---------- rankings ----------
+     Other tipsters are generated so the table has shape; the same thresholds
+     and interval maths are applied to them as to the user. */
+  function leaderboard(band, product) {
+    const handles = ['@quietfurlong', '@marketmoss', '@barnowl', '@softground', '@paddockmath',
+      '@thirdfavourite', '@drawbias', '@lateshow', '@stallsix', '@cheltenhamcold',
+      '@xgdiet', '@lowblockliker', '@setpiecesam', '@ninetyplus', '@overroundolly'];
+    const r = C.rng('board|' + band + '|' + product);
+    const rows = handles.map(h => {
+      const n = C.rint(r, 84, 620);
+      const edge = C.gauss(r, 0.02, 0.055);
+      const sd = 1.6 + r() * 1.5;
+      const se = sd / Math.sqrt(n);
+      return {
+        handle: h, n: n, roi: edge * 100,
+        lo: (edge - 1.96 * se) * 100, hi: (edge + 1.96 * se) * 100,
+        maxDD: -(8 + r() * 34), ranked: n >= 100
+      };
+    });
+    rows.sort((a, b) => b.lo - a.lo);   // ranked on the conservative end of the range
+    return rows;
+  }
+
+  BS.store = {
+    load, save, addTip, settle, stats, leaderboard, merkleRoot, tipHash,
+    tips: () => load().tips,
+    handle: () => load().handle,
+    reset: () => { try { localStorage.removeItem(KEY); } catch (e) {} ledger = null; }
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* ui.js — shared pieces every view uses: silks, odds buttons, the tip sheet,
+   toasts, and the time formatting that respects the user's clock preference. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+
+  const state = BS.state = {
+    product: 'racing', section: 'today', detail: null,
+    day: 0, q: '', tzMode: 'local', showFinished: false,
+    collapsed: {}, loading: false
+  };
+
+  /* Every race and fixture seen this session, so settlement and detail views
+     can find an event after the user has navigated away. */
+  const index = BS.index = { races: new Map(), fixtures: new Map(), meetings: new Map() };
+
+  const tzFor = venueTz => state.tzMode === 'venue' ? venueTz : undefined;
+  const time = (ts, venueTz) => C.fmtTime(ts, tzFor(venueTz));
+  const day = (ts, venueTz) => C.fmtDay(ts, tzFor(venueTz));
+
+  const SILK = {
+    halved: (a, b) => '<rect width="13" height="26" fill="' + b + '"/>',
+    hoops: (a, b) => '<rect y="4" width="26" height="5" fill="' + b + '"/><rect y="15" width="26" height="5" fill="' + b + '"/>',
+    stripes: (a, b) => '<rect x="4" width="5" height="26" fill="' + b + '"/><rect x="15" width="5" height="26" fill="' + b + '"/>',
+    chevron: (a, b) => '<path d="M0 20 13 8l13 12v6H0z" fill="' + b + '"/>',
+    star: (a, b) => '<path d="M13 5l2.6 5.6 6 .8-4.4 4.2 1.1 6-5.3-3-5.3 3 1.1-6L4.4 11.4l6-.8z" fill="' + b + '"/>',
+    sash: (a, b) => '<path d="M0 26 26 0v7L7 26z" fill="' + b + '"/>',
+    solid: () => ''
+  };
+  function silk(s) {
+    const fn = SILK[s.pattern] || SILK.solid;
+    return C.raw('<svg class="silk" viewBox="0 0 26 26" aria-hidden="true">' +
+      '<rect width="26" height="26" fill="' + s.a + '"/>' + fn(s.a, s.b) + '</svg>');
+  }
+
+  const empty = (glyph, title, body) => C.html`
+    <div class="empty"><div class="glyph">${glyph}</div><h3>${title}</h3><p>${body}</p></div>`;
+
+  const skeleton = n => C.raw(Array.from({ length: n || 4 },
+    () => '<div class="skel skel-row"></div>').join(''));
+
+  /* ---------- toast ---------- */
+  let toastTimer;
+  function toast(msg, icon) {
+    const old = C.$('.toast'); if (old) old.remove();
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.setAttribute('role', 'status');
+    el.innerHTML = C.unwrap(C.html`<span>${icon || '✓'}</span><span>${msg}</span>`);
+    document.body.appendChild(el);
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.remove(), 3200);
+  }
+
+  /* ---------- tip sheet ----------
+     One flow for both products. The odds are re-read from the feed at the
+     moment the sheet opens; that captured price is what gets written. */
+  let sheetCtx = null;
+
+  function openTipSheet(ctx) {
+    if (ctx.startTs <= Date.now()) {
+      toast('That event has started — tips are closed', '⛔');
+      return;
+    }
+    const frozen = BS.provider.freezeOdds(ctx.quotedOdds);
+    sheetCtx = Object.assign({}, ctx, { frozen: frozen });
+    renderSheet();
+  }
+  function closeSheet() {
+    const s = C.$('.sheet'), sc = C.$('.scrim');
+    if (s) s.remove(); if (sc) sc.remove();
+    sheetCtx = null;
+    document.body.style.overflow = '';
+  }
+
+  function renderSheet() {
+    closeSheetNodesOnly();
+    const c = sheetCtx, f = c.frozen;
+    const scrim = document.createElement('div');
+    scrim.className = 'scrim';
+    scrim.addEventListener('click', closeSheet);
+    const sheet = document.createElement('div');
+    sheet.className = 'sheet';
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-label', 'Post a tip');
+    sheet.innerHTML = C.unwrap(C.html`
+      <div class="grabber"></div>
+      <h3>${c.selection}</h3>
+      <p class="sheet-sub">${c.market} · ${c.event}</p>
+
+      ${f.moved ? C.raw('<div class="warnbox"><span>⚡</span><span>The price moved while you were tapping. ' +
+        C.fmtOdds(c.quotedOdds) + ' is gone — this is the live price, and it is the one that gets written.</span></div>') : ''}
+
+      <div class="freeze">
+        <div>
+          <div class="lbl">Odds frozen</div>
+          <div class="big">${C.fmtOdds(f.odds)}</div>
+        </div>
+        <div class="note">
+          captured ${C.fmtTimeSec(f.at)}<br>
+          <span class="mono">server clock</span>
+        </div>
+      </div>
+
+      <dl style="margin:0 0 16px">
+        <div class="kv"><dt>Stake</dt><dd>1.00 unit — flat, always</dd></div>
+        <div class="kv"><dt>Starts</dt><dd>${time(c.startTs, c.tz)} · in ${C.countdown(c.startTs)}</dd></div>
+        <div class="kv"><dt>Settles</dt><dd>From the results feed, automatically</dd></div>
+        <div class="kv"><dt>After posting</dt><dd>Cannot be edited or deleted</dd></div>
+      </dl>
+
+      <div style="display:flex;gap:10px">
+        <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
+        <button class="btn" data-act="sheet-confirm">Post tip at ${C.fmtOdds(f.odds)}</button>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink-3);margin:12px 0 0;text-align:center">
+        18+ · one unit per tip · this record is permanent
+      </p>
+    `);
+    document.body.appendChild(scrim);
+    document.body.appendChild(sheet);
+    document.body.style.overflow = 'hidden';
+    const btn = sheet.querySelector('[data-act="sheet-confirm"]');
+    if (btn) btn.focus();
+  }
+  function closeSheetNodesOnly() {
+    const s = C.$('.sheet'), sc = C.$('.scrim');
+    if (s) s.remove(); if (sc) sc.remove();
+  }
+
+  function confirmTip() {
+    const c = sheetCtx;
+    if (!c) return;
+    if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', '⛔'); return; }
+    const rec = BS.store.addTip({
+      product: c.product, event: c.event, market: c.market, selection: c.selection,
+      odds: c.frozen.odds, refId: c.refId, refKind: c.refKind, startTs: c.startTs
+    });
+    closeSheet();
+    toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', '🔒');
+    BS.app.render();
+  }
+
+  const hasTipOn = (refId, selection) => BS.store.tips().some(
+    t => t.refId === refId && t.selection === selection);
+
+  /* ---------- odds button ---------- */
+  function oddsButton(opts) {
+    const taken = hasTipOn(opts.refId, opts.selection);
+    const closed = opts.startTs <= Date.now();
+    const attrs = 'data-act="tip" data-ref="' + C.esc(opts.refId) + '" data-sel="' + C.esc(opts.selection) +
+      '" data-odds="' + opts.odds + '" data-market="' + C.esc(opts.market) + '" data-event="' + C.esc(opts.event) +
+      '" data-start="' + opts.startTs + '" data-kind="' + C.esc(opts.refKind) + '" data-tz="' + C.esc(opts.tz || '') + '"';
+    return C.raw('<button class="odds-btn' + (taken ? ' taken' : '') + '" ' + attrs +
+      (closed || taken ? ' disabled' : '') + ' aria-label="Tip ' + C.esc(opts.selection) + ' at ' + C.fmtOdds(opts.odds) + '">' +
+      (opts.label ? '<span class="lbl">' + C.esc(opts.label) + '</span>' : '') +
+      (taken ? 'Tipped' : C.fmtOdds(opts.odds)) + '</button>');
+  }
+
+  BS.ui = {
+    state, index, silk, empty, skeleton, toast, time, day, tzFor,
+    openTipSheet, closeSheet, confirmTip, oddsButton, hasTipOn
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* views-racing.js — BetStable. Today's cards grouped by jurisdiction, the week
+   ahead, and the racecard itself. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui;
+  const S = BS.racing;
+
+  const matches = (m, q) => !q || (m.venue + ' ' + m.regionName).toLowerCase().indexOf(q) >= 0;
+
+  /** A meeting is only shown while it still has a race to come. */
+  function liveRaces(meeting, now) {
+    return meeting.races.filter(r => S.raceState(r, now) !== 'result');
+  }
+
+  function meetingCard(m, now, opts) {
+    const remaining = liveRaces(m, now);
+    const next = remaining[0];
+    return C.html`
+      <div class="meeting">
+        <div class="meeting-head">
+          <span class="flag">${m.flag}</span>
+          <span class="venue">${m.venue}</span>
+          <span class="tag ${m.surface}">${m.surface === 'aw' ? 'All-weather' : m.surface}</span>
+          <span class="going">${m.going}</span>
+        </div>
+        <div class="race-times">
+          ${m.races.map(r => {
+            const st = S.raceState(r, now);
+            const cls = st === 'result' ? 'rt done' : st === 'off' ? 'rt off' : (next && r.id === next.id ? 'rt next' : 'rt');
+            // Countdown where it matters — the next race here, or anything close
+            // to the off. Everything else shows its field size instead.
+            const soon = next && (r.id === next.id || r.offTs - now < 30 * 60000);
+            const sub = st === 'result' ? 'result' : st === 'off' ? 'off' :
+              (soon && (!opts || opts.showCountdown !== false)
+                ? C.countdown(r.offTs, now)
+                : (r.declared ? r.runners.length + ' rnr' : 'entries'));
+            return C.html`<button class="${cls}" data-act="race" data-id="${r.id}">
+              ${U.time(r.offTs, m.tz)}<small>${sub}</small></button>`;
+          })}
+        </div>
+      </div>`;
+  }
+
+  function regionBlock(regionId, meetings, now, opts) {
+    const region = S.REGIONS.find(r => r.id === regionId);
+    const races = meetings.reduce((a, m) => a + m.races.length, 0);
+    const upcoming = meetings.reduce((a, m) => a.concat(liveRaces(m, now)), []).sort((a, b) => a.offTs - b.offTs);
+    const open = U.state.collapsed['r:' + regionId] !== true;
+    return C.html`
+      <section class="region" data-open="${String(open)}">
+        <button class="region-head" data-act="toggle-region" data-id="r:${regionId}" aria-expanded="${String(open)}">
+          <span class="flag">${region.flag}</span>
+          <span>
+            <h2>${region.name}</h2>
+            <span class="meta">${meetings.length} ${meetings.length === 1 ? 'meeting' : 'meetings'} · ${races} races</span>
+          </span>
+          <span class="next">
+            ${upcoming.length ? C.html`<span>next off <b>${U.time(upcoming[0].offTs, upcoming[0].tzRef || '')}</b> · ${C.countdown(upcoming[0].offTs, now)}</span>` : C.raw('<span style="color:var(--ink-3)">card complete</span>')}
+            <span class="caret">▾</span>
+          </span>
+        </button>
+        <div class="region-body">
+          ${meetings.map(m => meetingCard(m, now, opts))}
+        </div>
+      </section>`;
+  }
+
+  /** Group meetings into the regional buckets the user actually thinks in. */
+  function groupByRegion(meetings) {
+    const groups = new Map();
+    for (const m of meetings) {
+      if (!groups.has(m.region)) groups.set(m.region, []);
+      groups.get(m.region).push(m);
+    }
+    return S.REGIONS.filter(r => groups.has(r.id)).map(r => ({
+      id: r.id,
+      meetings: groups.get(r.id).sort((a, b) => a.firstOff - b.firstOff)
+    }));
+  }
+
+  async function today(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${toolbar(false)}<div>${U.skeleton(4)}</div>`);
+    const all = await BS.provider.meetings(0);
+    all.forEach(m => {
+      U.index.meetings.set(m.id, m);
+      m.races.forEach(r => { r.tzRef = m.tz; r.venue = m.venue; r.flag = m.flag; U.index.races.set(r.id, r); });
+    });
+
+    const q = U.state.q.toLowerCase();
+    let visible = all.filter(m => matches(m, q));
+    if (!U.state.showFinished) visible = visible.filter(m => liveRaces(m, now).length > 0);
+
+    const groups = groupByRegion(visible);
+    const hidden = all.length - visible.length;
+
+    C.mount(root, C.html`
+      ${toolbar(false)}
+      ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now)) :
+        U.empty('🐴', 'No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
+          'Every meeting on the feed has finished for the day. Tomorrow\'s cards are in Next 7 days.')}
+      ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
+    `);
+  }
+
+  function toolbar(isWeek) {
+    return C.html`
+      <div class="toolbar">
+        <label class="search">
+          <span aria-hidden="true">🔍</span>
+          <input type="search" placeholder="Course, country or region" value="${U.state.q}" data-act="search" aria-label="Search meetings">
+        </label>
+        <button class="chip" data-act="tz" aria-pressed="${String(U.state.tzMode === 'venue')}">
+          🕑 ${U.state.tzMode === 'venue' ? 'Course time' : 'My time'}
+        </button>
+        ${isWeek ? '' : C.html`<button class="chip" data-act="finished" aria-pressed="${String(U.state.showFinished)}">Show finished</button>`}
+      </div>`;
+  }
+
+  /* ---------- next 7 days ---------- */
+  async function week(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${toolbar(true)}${daystrip(now, [])}<div>${U.skeleton(3)}</div>`);
+    const counts = [];
+    for (let d = 0; d <= 6; d++) counts.push(BS.provider.meetings(d));
+    const days = await Promise.all(counts);
+    days.forEach(list => list.forEach(m => {
+      U.index.meetings.set(m.id, m);
+      m.races.forEach(r => { r.tzRef = m.tz; r.venue = m.venue; r.flag = m.flag; U.index.races.set(r.id, r); });
+    }));
+
+    const sel = U.state.day;
+    const q = U.state.q.toLowerCase();
+    let list = days[sel].filter(m => matches(m, q));
+    if (sel === 0) list = list.filter(m => liveRaces(m, now).length > 0);
+
+    const groups = groupByRegion(list);
+    const declared = list.reduce((a, m) => a + m.races.filter(r => r.declared).length, 0);
+    const total = list.reduce((a, m) => a + m.races.length, 0);
+
+    C.mount(root, C.html`
+      ${toolbar(true)}
+      ${daystrip(now, days)}
+      ${sel > 0 ? C.html`<div class="notice"><span>📋</span><span>
+        <b>${declared} of ${total} races declared.</b> Runners and riders are published about 48 hours out —
+        until then a race shows its entries and expected field size, with no jockeys and no prices.
+      </span></div>` : ''}
+      ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now, { showCountdown: sel === 0 })) :
+        U.empty('📅', 'Nothing scheduled', 'No meetings on the feed for this day yet.')}
+    `);
+  }
+
+  function daystrip(now, days) {
+    return C.html`
+      <div class="daystrip" role="tablist" aria-label="Choose a day">
+        ${Array.from({ length: 7 }, (_, d) => {
+          const ts = now + d * 864e5;
+          const list = days[d] || [];
+          const nRaces = list.reduce((a, m) => a + m.races.length, 0);
+          return C.html`
+            <button class="day" role="tab" aria-selected="${String(U.state.day === d)}" data-act="day" data-day="${d}">
+              <span class="dow">${d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : C.fmtDay(ts).split(' ')[0]}</span>
+              <span class="dnum">${new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' }).format(new Date(ts))}</span>
+              <span class="dmeta">${days.length ? (list.length + ' mtgs · ' + nRaces + ' races') : '—'}</span>
+            </button>`;
+        })}
+      </div>`;
+  }
+
+  /* ---------- racecard ---------- */
+  function racecard(root, raceId) {
+    const race = U.index.races.get(raceId);
+    if (!race) { C.mount(root, U.empty('🤷', 'Race not loaded', 'Go back and pick the meeting again.')); return; }
+    const meeting = U.index.meetings.get(race.meetingId);
+    const now = Date.now();
+    const st = S.raceState(race, now);
+    const result = st === 'result' ? S.resultFor(race) : null;
+
+    C.mount(root, C.html`
+      <button class="back" data-act="back">← ${meeting ? meeting.venue : 'Back'}</button>
+      <div class="detail-head">
+        <div>
+          <h1>${race.no}. ${race.name}</h1>
+          <div class="sub">
+            ${meeting ? meeting.flag + ' ' + meeting.venue : ''} · ${race.distance} · ${race.cls} ·
+            ${race.going} · £${race.prize.toLocaleString()} · ${race.runners.length} runners
+          </div>
+        </div>
+        <div class="when">
+          <div class="t">${U.time(race.offTs, race.tzRef)}</div>
+          <div class="cd">${st === 'result' ? 'Result' : st === 'off' ? 'Off' : 'in ' + C.countdown(race.offTs, now)}</div>
+        </div>
+      </div>
+
+      ${!race.declared ? C.html`<div class="notice"><span>⏳</span><span>
+        <b>Not yet declared.</b> These are entries. Final runners, riders and prices arrive about 48 hours
+        before the off — you can't post a tip until then, because there is no price to freeze.</span></div>` : ''}
+
+      ${st === 'result' ? C.html`<div class="notice"><span>🏁</span><span>
+        <b>Result in.</b> Any tip on this race has been settled from the results feed. Nobody marked it by hand.</span></div>` : ''}
+
+      <div class="runners">
+        ${race.runners.map(r => {
+          const pos = result ? result.positions.indexOf(r.no) + 1 : 0;
+          return C.html`
+            <div class="runner">
+              <span class="num">${pos ? C.html`<span class="pos ${pos === 1 ? 'p1' : ''}">${pos}</span>` : r.no}</span>
+              ${U.silk(r.silk)}
+              <span>
+                <div class="name">${r.horse}</div>
+                <div class="who">
+                  ${r.jockey ? C.html`${r.jockey}<span class="sep">·</span>` : C.raw('<span style="color:var(--ink-3)">Rider TBC</span><span class="sep">·</span>')}
+                  ${r.trainer}
+                </div>
+                <div class="form">${r.age}yo · ${r.weight} · form ${r.form}</div>
+              </span>
+              ${race.declared && st === 'upcoming'
+                ? U.oddsButton({
+                    refId: race.id, refKind: 'race', selection: r.horse, odds: r.odds,
+                    market: 'Win', event: (meeting ? meeting.venue : '') + ' ' + U.time(race.offTs, race.tzRef),
+                    startTs: race.offTs, tz: race.tzRef
+                  })
+                : C.raw('<span style="font-weight:700;color:var(--ink-3)">' + (r.odds ? C.fmtOdds(r.odds) : '—') + '</span>')}
+            </div>`;
+        })}
+      </div>`);
+  }
+
+  BS.viewsRacing = { today, week, racecard, liveRaces };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* views-football.js — ScoreMore. Global fixture list grouped by region and
+   competition, live scores, and the match page with its markets. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui;
+  const F = BS.football;
+
+  const done = (fx, now) => F.fixtureState(fx, now).state === 'ft';
+
+  function fixtureRow(fx, now) {
+    const st = F.fixtureState(fx, now);
+    const live = st.state === 'live', ft = st.state === 'ft';
+    return C.html`
+      <div class="fixture">
+        <span class="ko">
+          ${live ? C.html`<span class="livechip"><span class="pulse"></span>${st.minute}'</span>`
+            : ft ? C.raw('<span style="color:var(--ink-3)">FT</span>') : U.time(fx.koTs, fx.tz)}
+          ${!live && !ft ? C.html`<small>${C.countdown(fx.koTs, now)}</small>` : ''}
+        </span>
+        <button class="teams" data-act="match" data-id="${fx.id}" style="text-align:left;width:100%">
+          <span class="team">${fx.home}${(live || ft) ? C.html`<span class="sc">${st.score[0]}</span>` : ''}</span>
+          <span class="team">${fx.away}${(live || ft) ? C.html`<span class="sc">${st.score[1]}</span>` : ''}</span>
+          <span class="form">${fx.form.home} · ${fx.form.away}</span>
+        </button>
+        ${st.state === 'upcoming' ? C.html`
+          <span class="mkt">
+            ${U.oddsButton({ refId: fx.id, refKind: 'fixture', selection: fx.home, label: '1', odds: fx.odds.home, market: 'Match result', event: fx.home + ' v ' + fx.away, startTs: fx.koTs, tz: fx.tz })}
+            ${U.oddsButton({ refId: fx.id, refKind: 'fixture', selection: 'Draw', label: 'X', odds: fx.odds.draw, market: 'Match result', event: fx.home + ' v ' + fx.away, startTs: fx.koTs, tz: fx.tz })}
+            ${U.oddsButton({ refId: fx.id, refKind: 'fixture', selection: fx.away, label: '2', odds: fx.odds.away, market: 'Match result', event: fx.home + ' v ' + fx.away, startTs: fx.koTs, tz: fx.tz })}
+          </span>` : C.raw('<span style="font-size:12px;color:var(--ink-3);font-weight:600">' +
+            (live ? 'in play' : 'settled') + '</span>')}
+      </div>`;
+  }
+
+  function compBlock(compId, list, now) {
+    const comp = F.COMPS.find(c => c.id === compId);
+    const upcoming = list.filter(f => !done(f, now)).length;
+    return C.html`
+      <div class="comp-block">
+        <div class="comp-head">
+          <h3>${comp ? comp.name : compId}</h3>
+          <span class="meta">${list.length} ${list.length === 1 ? 'match' : 'matches'}${upcoming ? ' · ' + upcoming + ' to come' : ''}</span>
+        </div>
+        ${list.sort((a, b) => a.koTs - b.koTs).map(f => fixtureRow(f, now))}
+      </div>`;
+  }
+
+  function regionBlock(regionId, fixtures, now) {
+    const region = F.REGIONS.find(r => r.id === regionId);
+    const open = U.state.collapsed['f:' + regionId] !== true;
+    const byComp = new Map();
+    for (const f of fixtures) {
+      if (!byComp.has(f.compId)) byComp.set(f.compId, []);
+      byComp.get(f.compId).push(f);
+    }
+    const next = fixtures.filter(f => F.fixtureState(f, now).state === 'upcoming').sort((a, b) => a.koTs - b.koTs)[0];
+    const liveN = fixtures.filter(f => F.fixtureState(f, now).state === 'live').length;
+    return C.html`
+      <section class="region" data-open="${String(open)}">
+        <button class="region-head" data-act="toggle-region" data-id="f:${regionId}" aria-expanded="${String(open)}">
+          <span class="flag">${region.flag}</span>
+          <span>
+            <h2>${region.name}</h2>
+            <span class="meta">${byComp.size} ${byComp.size === 1 ? 'competition' : 'competitions'} · ${fixtures.length} matches</span>
+          </span>
+          <span class="next">
+            ${liveN ? C.html`<span class="livechip"><span class="pulse"></span>${liveN} live</span>` :
+              next ? C.html`<span>next <b>${U.time(next.koTs, next.tz)}</b></span>` : C.raw('<span style="color:var(--ink-3)">all played</span>')}
+            <span class="caret">▾</span>
+          </span>
+        </button>
+        <div class="region-body" style="grid-template-columns:1fr">
+          ${Array.from(byComp.entries()).map(e => compBlock(e[0], e[1], now))}
+        </div>
+      </section>`;
+  }
+
+  function group(fixtures) {
+    const g = new Map();
+    for (const f of fixtures) {
+      if (!g.has(f.region)) g.set(f.region, []);
+      g.get(f.region).push(f);
+    }
+    return F.REGIONS.filter(r => g.has(r.id)).map(r => ({ id: r.id, fixtures: g.get(r.id) }));
+  }
+
+  function toolbar(isWeek) {
+    return C.html`
+      <div class="toolbar">
+        <label class="search">
+          <span aria-hidden="true">🔍</span>
+          <input type="search" placeholder="Team, competition or country" value="${U.state.q}" data-act="search" aria-label="Search fixtures">
+        </label>
+        <button class="chip" data-act="tz" aria-pressed="${String(U.state.tzMode === 'venue')}">
+          🕑 ${U.state.tzMode === 'venue' ? 'Local kick-off' : 'My time'}
+        </button>
+        ${isWeek ? '' : C.html`<button class="chip" data-act="finished" aria-pressed="${String(U.state.showFinished)}">Show finished</button>`}
+      </div>`;
+  }
+
+  const hit = (f, q) => !q || (f.home + ' ' + f.away + ' ' + f.comp).toLowerCase().indexOf(q) >= 0;
+
+  async function today(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${toolbar(false)}<div>${U.skeleton(4)}</div>`);
+    const all = await BS.provider.fixtures(0);
+    all.forEach(f => U.index.fixtures.set(f.id, f));
+
+    const q = U.state.q.toLowerCase();
+    let visible = all.filter(f => hit(f, q));
+    if (!U.state.showFinished) visible = visible.filter(f => !done(f, now));
+    const groups = group(visible);
+    const hidden = all.length - visible.length;
+
+    C.mount(root, C.html`
+      ${toolbar(false)}
+      ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
+        U.empty('⚽', 'No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
+          'Every match on today\'s feed has finished. Tomorrow\'s fixtures are in Next 7 days.')}
+      ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
+    `);
+  }
+
+  async function week(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${toolbar(true)}<div>${U.skeleton(3)}</div>`);
+    const days = await Promise.all(Array.from({ length: 7 }, (_, d) => BS.provider.fixtures(d)));
+    days.forEach(list => list.forEach(f => U.index.fixtures.set(f.id, f)));
+
+    const sel = U.state.day, q = U.state.q.toLowerCase();
+    let list = days[sel].filter(f => hit(f, q));
+    if (sel === 0) list = list.filter(f => !done(f, now));
+    const groups = group(list);
+
+    C.mount(root, C.html`
+      ${toolbar(true)}
+      <div class="daystrip" role="tablist" aria-label="Choose a day">
+        ${Array.from({ length: 7 }, (_, d) => C.html`
+          <button class="day" role="tab" aria-selected="${String(sel === d)}" data-act="day" data-day="${d}">
+            <span class="dow">${d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : C.fmtDay(now + d * 864e5).split(' ')[0]}</span>
+            <span class="dnum">${new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' }).format(new Date(now + d * 864e5))}</span>
+            <span class="dmeta">${days[d].length} matches</span>
+          </button>`)}
+      </div>
+      ${sel > 0 ? C.html`<div class="notice"><span>📋</span><span>
+        <b>Line-ups firm up closer to kick-off.</b> Expected XIs appear inside 48 hours and are confirmed about an hour before.
+      </span></div>` : ''}
+      ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
+        U.empty('📅', 'No fixtures', 'Nothing scheduled on the feed for this day.')}
+    `);
+  }
+
+  function match(root, id) {
+    const fx = U.index.fixtures.get(id);
+    if (!fx) { C.mount(root, U.empty('🤷', 'Match not loaded', 'Go back and pick the fixture again.')); return; }
+    const now = Date.now();
+    const st = F.fixtureState(fx, now);
+    const ls = F.lineupState(fx, now);
+    const open = st.state === 'upcoming';
+    const ev = fx.home + ' v ' + fx.away;
+    const mk = (sel, odds, market, label) => U.oddsButton({
+      refId: fx.id, refKind: 'fixture', selection: sel, odds: odds, market: market,
+      event: ev, startTs: fx.koTs, tz: fx.tz, label: label
+    });
+
+    C.mount(root, C.html`
+      <button class="back" data-act="back">← ${fx.comp}</button>
+      <div class="detail-head">
+        <div>
+          <h1>${fx.home} v ${fx.away}</h1>
+          <div class="sub">${fx.comp} · ${U.day(fx.koTs, fx.tz)} · form ${fx.form.home} v ${fx.form.away}</div>
+        </div>
+        <div class="when">
+          <div class="t">${st.state === 'upcoming' ? U.time(fx.koTs, fx.tz) : st.score[0] + '–' + st.score[1]}</div>
+          <div class="cd">${st.state === 'live' ? st.minute + "' live" : st.state === 'ft' ? 'Full time' : 'in ' + C.countdown(fx.koTs, now)}</div>
+        </div>
+      </div>
+
+      ${open ? C.html`
+        <div class="panel">
+          <div class="panel-head"><h3>Match result</h3><span class="meta">1 unit, flat</span></div>
+          <div class="panel-body" style="display:flex;gap:8px">
+            ${mk(fx.home, fx.odds.home, 'Match result', 'Home')}
+            ${mk('Draw', fx.odds.draw, 'Match result', 'Draw')}
+            ${mk(fx.away, fx.odds.away, 'Match result', 'Away')}
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h3>Goals</h3></div>
+          <div class="panel-body" style="display:flex;gap:8px;flex-wrap:wrap">
+            ${mk('Over 2.5 goals', fx.ou25[0], 'Over/Under', 'Over 2.5')}
+            ${mk('Under 2.5 goals', fx.ou25[1], 'Over/Under', 'Under 2.5')}
+            ${mk('Both teams to score', fx.btts[0], 'BTTS', 'BTTS yes')}
+            ${mk('Not both teams to score', fx.btts[1], 'BTTS', 'BTTS no')}
+          </div>
+        </div>` : C.html`<div class="notice"><span>🏁</span><span>
+          <b>Betting closed.</b> ${st.state === 'live' ? 'The match is in play.' : 'Tips on this match have been settled from the results feed.'}
+        </span></div>`}
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>${ls === 'confirmed' ? 'Confirmed line-ups' : ls === 'probable' ? 'Probable line-ups' : 'Squads'}</h3>
+          <span class="meta">${ls === 'squad' ? 'XIs published 48h out' : fx.lineups.home.formation + ' v ' + fx.lineups.away.formation}</span>
+        </div>
+        <div class="panel-body" style="display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:13.5px">
+          ${[['home', fx.home], ['away', fx.away]].map(side => C.html`
+            <div>
+              <div style="font-weight:700;margin-bottom:6px">${side[1]}</div>
+              ${ls === 'squad' ? C.raw('<div style="color:var(--ink-3)">Not yet published</div>') :
+                fx.lineups[side[0]].players.map(p => C.html`<div style="color:var(--ink-2);padding:1px 0">${p}</div>`)}
+            </div>`)}
+        </div>
+      </div>`);
+  }
+
+  BS.viewsFootball = { today, week, match, done };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* views-record.js — the user's own ledger and the ranked tables.
+   Everything here is drawn from settled tips only; pending tips are shown but
+   never counted, because an unsettled tip is not evidence of anything. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui;
+
+  /* ---------- equity curve ----------
+     One series, so no legend: the panel title names it. Grid and axes stay
+     recessive; the drawdown is shaded rather than given a second scale. */
+  function equityChart(equity) {
+    if (equity.length < 2) return C.raw('');
+    const W = 720, H = 200, PL = 44, PR = 14, PT = 14, PB = 24;
+    const xs = i => PL + (i / (equity.length - 1)) * (W - PL - PR);
+    const vals = equity.map(e => e.cum);
+    const lo = Math.min(0, Math.min.apply(null, vals)) - 1;
+    const hi = Math.max(0, Math.max.apply(null, vals)) + 1;
+    const ys = v => PT + (1 - (v - lo) / (hi - lo)) * (H - PT - PB);
+
+    const line = equity.map((e, i) => (i ? 'L' : 'M') + xs(i).toFixed(1) + ' ' + ys(e.cum).toFixed(1)).join(' ');
+    const area = line + ' L' + xs(equity.length - 1).toFixed(1) + ' ' + ys(0).toFixed(1) +
+      ' L' + xs(0).toFixed(1) + ' ' + ys(0).toFixed(1) + ' Z';
+
+    // Peak-to-trough: the number that tells you what holding this record felt like.
+    let peak = -Infinity, peakI = 0, worst = 0, ddFrom = 0, ddTo = 0;
+    equity.forEach((e, i) => {
+      if (e.cum > peak) { peak = e.cum; peakI = i; }
+      if (e.cum - peak < worst) { worst = e.cum - peak; ddFrom = peakI; ddTo = i; }
+    });
+
+    // Anchor the scale on zero — it is the only value on this axis that means
+    // anything on its own — then one tick each side of it.
+    const ticks = [Math.round(lo), 0, Math.round(hi)]
+      .filter((v, i, a) => a.indexOf(v) === i);
+    return C.raw(
+      '<div class="chartwrap" style="position:relative">' +
+      '<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block;height:auto;overflow:visible" ' +
+      'role="img" aria-label="Cumulative units returned over the settled record">' +
+      ticks.map(t => '<g><line x1="' + PL + '" x2="' + (W - PR) + '" y1="' + ys(t).toFixed(1) + '" y2="' + ys(t).toFixed(1) +
+        '" stroke="var(--line)" stroke-width="1"/><text x="' + (PL - 8) + '" y="' + (ys(t) + 4).toFixed(1) +
+        '" text-anchor="end" font-size="11" fill="var(--ink-3)">' + (t > 0 ? '+' : t < 0 ? '−' : '') + Math.abs(t) + '</text></g>').join('') +
+      '<line x1="' + PL + '" x2="' + (W - PR) + '" y1="' + ys(0).toFixed(1) + '" y2="' + ys(0).toFixed(1) +
+        '" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>' +
+      (worst < -0.5 ? '<rect x="' + xs(ddFrom).toFixed(1) + '" y="' + PT + '" width="' +
+        Math.max(2, xs(ddTo) - xs(ddFrom)).toFixed(1) + '" height="' + (H - PT - PB) +
+        '" fill="var(--bad)" opacity=".08"/>' : '') +
+      '<path d="' + area + '" fill="var(--accent)" opacity=".12"/>' +
+      '<path d="' + line + '" fill="none" stroke="var(--accent)" stroke-width="2" ' +
+        'stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>' +
+      '<circle cx="' + xs(equity.length - 1).toFixed(1) + '" cy="' + ys(vals[vals.length - 1]).toFixed(1) +
+        '" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>' +
+      '<line class="cross" x1="0" x2="0" y1="' + PT + '" y2="' + (H - PB) + '" stroke="var(--ink-3)" stroke-width="1" opacity="0"/>' +
+      '<circle class="crossdot" r="4.5" fill="var(--accent)" stroke="var(--surface)" stroke-width="2" opacity="0"/>' +
+      '<rect class="hit" x="' + PL + '" y="' + PT + '" width="' + (W - PL - PR) + '" height="' + (H - PT - PB) + '" fill="transparent"/>' +
+      '</svg>' +
+      '<div class="charttip" style="position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,-120%);' +
+      'background:var(--ink);color:var(--bg);padding:6px 9px;border-radius:8px;font-size:12px;font-weight:650;white-space:nowrap"></div>' +
+      '<div style="display:flex;gap:14px;margin-top:8px;font-size:11.5px;color:var(--ink-3)">' +
+      '<span><b style="color:var(--accent)">━</b> cumulative units</span>' +
+      (worst < -0.5 ? '<span><b style="color:var(--bad)">▨</b> deepest drawdown ' + C.fmtSigned(worst) + ' units</span>' : '') +
+      '</div></div>');
+  }
+
+  /** Wire the crosshair after the chart is in the document. */
+  function initChart(root, equity) {
+    const wrap = C.$('.chartwrap', root);
+    if (!wrap || equity.length < 2) return;
+    const svg = C.$('svg', wrap), hit = C.$('.hit', wrap);
+    const cross = C.$('.cross', wrap), dot = C.$('.crossdot', wrap), tip = C.$('.charttip', wrap);
+    const W = 720, PL = 44, PR = 14, PT = 14, PB = 24, H = 200;
+    const vals = equity.map(e => e.cum);
+    const lo = Math.min(0, Math.min.apply(null, vals)) - 1;
+    const hi = Math.max(0, Math.max.apply(null, vals)) + 1;
+    const xs = i => PL + (i / (equity.length - 1)) * (W - PL - PR);
+    const ys = v => PT + (1 - (v - lo) / (hi - lo)) * (H - PT - PB);
+
+    function move(ev) {
+      const box = svg.getBoundingClientRect();
+      const px = (ev.clientX - box.left) / box.width * W;
+      let i = Math.round((px - PL) / (W - PL - PR) * (equity.length - 1));
+      i = Math.max(0, Math.min(equity.length - 1, i));
+      const e = equity[i];
+      cross.setAttribute('x1', xs(i)); cross.setAttribute('x2', xs(i)); cross.setAttribute('opacity', '.4');
+      dot.setAttribute('cx', xs(i)); dot.setAttribute('cy', ys(e.cum)); dot.setAttribute('opacity', '1');
+      tip.style.opacity = '1';
+      tip.style.left = (xs(i) / W * box.width) + 'px';
+      tip.style.top = (ys(e.cum) / H * box.height) + 'px';
+      tip.textContent = 'Tip ' + (i + 1) + ' · ' + C.fmtUnits(e.cum) + ' units · ' +
+        new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' }).format(new Date(e.ts));
+    }
+    hit.addEventListener('pointermove', move);
+    hit.addEventListener('pointerleave', () => {
+      cross.setAttribute('opacity', '0'); dot.setAttribute('opacity', '0'); tip.style.opacity = '0';
+    });
+  }
+
+  /* ---------- my record ---------- */
+  function record(root) {
+    const product = U.state.product;
+    const all = BS.store.tips();
+    const mine = all.filter(t => t.product === product);
+    const s = BS.store.stats(mine);
+    const pending = mine.filter(t => t.status === 'pending').sort((a, b) => b.postedAt - a.postedAt);
+    const settled = mine.filter(t => t.status === 'settled').sort((a, b) => (b.settledAt || 0) - (a.settledAt || 0));
+
+    // Today's tips, hashed into the day's published root.
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const todays = all.filter(t => t.postedAt >= startOfDay.getTime());
+    const root32 = BS.store.merkleRoot(todays.map(t => t.hash));
+
+    C.mount(root, C.html`
+      <div class="statgrid">
+        <div class="stat">
+          <div class="k">ROI · 95% range</div>
+          <div class="v ${s.roi >= 0 ? 'good' : 'bad'}">${s.n ? C.fmtPct(s.roi) : '—'}</div>
+          <div class="sub">${s.n ? C.fmtPct(s.lo) + ' to ' + C.fmtPct(s.hi) : 'no settled tips yet'}</div>
+        </div>
+        <div class="stat">
+          <div class="k">Settled tips</div>
+          <div class="v">${s.n}</div>
+          <div class="sub">${s.enough ? 'above the 100 ranking threshold' : (100 - s.n) + ' more to be ranked'}</div>
+        </div>
+        <div class="stat">
+          <div class="k">Profit</div>
+          <div class="v ${s.profit >= 0 ? 'good' : 'bad'}">${s.n ? C.fmtUnits(s.profit) : '—'}</div>
+          <div class="sub">units, flat 1.00 stake</div>
+        </div>
+        <div class="stat">
+          <div class="k">Max drawdown</div>
+          <div class="v">${s.n ? C.fmtSigned(s.maxDD) : '—'}</div>
+          <div class="sub">deepest peak-to-trough</div>
+        </div>
+      </div>
+
+      ${s.n >= 2 ? C.html`
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Cumulative units</h3>
+            <span class="meta">${s.n} settled · strike rate ${s.strike.toFixed(1)}%</span>
+          </div>
+          <div class="panel-body">${equityChart(s.equity)}</div>
+        </div>` : ''}
+
+      ${pending.length ? C.html`
+        <div class="panel">
+          <div class="panel-head"><h3>Pending</h3><span class="meta">${pending.length} awaiting the results feed</span></div>
+          <div class="tiplist">
+            ${pending.map(t => C.html`
+              <div class="tip-row">
+                <span class="badge pending">Pending</span>
+                <span>
+                  <div class="sel">${t.selection}</div>
+                  <div class="ev">${t.market} · ${t.event} · frozen at ${C.fmtOdds(t.odds)}</div>
+                </span>
+                <span class="mono" style="font-size:10.5px;color:var(--ink-3)">${t.hash.slice(0, 8)}</span>
+              </div>`)}
+          </div>
+        </div>` : ''}
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Settled record</h3>
+          <span class="meta">newest first · nothing here can be removed</span>
+        </div>
+        ${settled.length ? C.html`<div class="tiplist">
+          ${settled.slice(0, 40).map(t => C.html`
+            <div class="tip-row">
+              <span class="badge ${t.won ? 'won' : 'lost'}">${t.won ? 'Won' : 'Lost'}</span>
+              <span>
+                <div class="sel">${t.selection}</div>
+                <div class="ev">${t.market} · ${t.event} · ${C.fmtOdds(t.odds)}</div>
+              </span>
+              <span class="ret ${t.ret >= 0 ? 'good' : 'bad'}">${C.fmtUnits(t.ret)}</span>
+            </div>`)}
+        </div>` : U.empty('📒', 'Nothing settled yet', 'Post a tip from today\'s card and it will settle here automatically once the result comes in.')}
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Today's proof</h3><span class="meta">${todays.length} tips hashed</span></div>
+        <div class="panel-body" style="font-size:13px;color:var(--ink-2)">
+          ${root32 ? C.html`
+            <div class="mono" style="font-size:12px;word-break:break-all;color:var(--ink)">${root32}</div>
+            <p style="margin:8px 0 0">Every tip posted today is hashed and folded into this single root. Publish the
+            root and anyone can check a tip existed, in exactly this form, on this date — without trusting us.</p>`
+            : C.raw('<p style="margin:0">No tips posted today yet. The day\'s root is published once there are.</p>')}
+        </div>
+      </div>
+
+      <div class="notice"><span>🔒</span><span><b>Append-only.</b> There is no edit and no delete in this app.
+        A correction is published as a void that points at the original, and the original stays where it is.</span></div>
+    `);
+    if (s.n >= 2) initChart(root, s.equity);
+  }
+
+  /* ---------- rankings ---------- */
+  const BANDS = [['all', 'All prices'], ['short', '1.0 – 2.0'], ['mid', '2.0 – 5.0'], ['long', '5.0 +']];
+  let band = 'all';
+
+  function rankings(root) {
+    const product = U.state.product;
+    const rows = BS.store.leaderboard(band, product).slice();
+    const mine = BS.store.stats(BS.store.tips().filter(t => t.product === product));
+    if (mine.enough) {
+      rows.push({ handle: BS.store.handle(), n: mine.n, roi: mine.roi, lo: mine.lo, hi: mine.hi, maxDD: mine.maxDD, me: true });
+      rows.sort((a, b) => b.lo - a.lo);
+    }
+    const SCALE = 34;                       // ±34% covers every plausible interval
+    const pos = v => Math.max(0, Math.min(100, (v + SCALE) / (2 * SCALE) * 100));
+
+    C.mount(root, C.html`
+      <div class="toolbar">
+        ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-band="${b[0]}">${b[1]}</button>`)}
+      </div>
+
+      <div class="notice"><span>📏</span><span>
+        Ranked on the <b>bottom of the 95% range</b>, not the headline figure — a big number from a small sample
+        does not outrank a solid one from a long record. Minimum 100 settled tips to appear at all.
+      </span></div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>${product === 'racing' ? 'BetStable' : 'ScoreMore'} · ROI table</h3>
+          <span class="meta">${BANDS.find(b => b[0] === band)[1]}</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="board">
+            <thead><tr><th>#</th><th>Tipster</th><th>Settled</th><th>ROI · 95% range</th><th>Max DD</th></tr></thead>
+            <tbody>
+              ${rows.filter(r => r.n >= 100).map((r, i) => C.html`
+                <tr class="${r.me ? 'me' : ''}">
+                  <td style="color:var(--ink-3);font-weight:700">${i + 1}</td>
+                  <td style="font-weight:700">${r.handle}${r.me ? C.raw(' <span class="badge won" style="margin-left:6px">you</span>') : ''}</td>
+                  <td>${r.n}</td>
+                  <td>
+                    <span class="range">
+                      <i class="${r.lo > 0 ? 'up' : r.hi < 0 ? 'down' : 'neg'}" style="left:${pos(r.lo).toFixed(1)}%;right:${(100 - pos(r.hi)).toFixed(1)}%"></i>
+                      <span class="zero" style="left:50%"></span>
+                      <b style="left:${pos(r.roi).toFixed(1)}%"></b>
+                    </span>
+                    <span class="rangeval">${C.fmtPct(r.lo)} to ${C.fmtPct(r.hi)}</span>
+                  </td>
+                  <td style="color:var(--ink-2)">${C.fmtSigned(r.maxDD)}</td>
+                </tr>`)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      ${!mine.enough ? C.html`<div class="notice"><span>🌱</span><span>
+        Your ${product === 'racing' ? 'racing' : 'football'} record has <b>${mine.n} settled tips</b>.
+        You appear in this table at 100.</span></div>` : ''}
+    `);
+  }
+
+  BS.viewsRecord = { record, rankings, setBand: b => { band = b; } };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* app.js — shell, routing, the settlement job and the clock.
+   The UI never settles a tip itself; it only reads what the results feed says. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui, S = BS.ui.state;
+
+  const SECTIONS = [
+    { id: 'today', label: 'Today', icon: '📅' },
+    { id: 'week', label: 'Next 7 days', icon: '🗓' },
+    { id: 'record', label: 'My tips', icon: '📒' },
+    { id: 'rankings', label: 'Table', icon: '🏅' }
+  ];
+  const PRODUCTS = [
+    { id: 'racing', name: 'BetStable', sub: 'Horse racing', icon: '🐴' },
+    { id: 'football', name: 'ScoreMore', sub: 'Football', icon: '⚽' }
+  ];
+
+  /* ---------------- routing ---------------- */
+  function readHash() {
+    const parts = (location.hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
+    if (!parts.length) return;
+    if (parts[0] === 'racing' || parts[0] === 'football') S.product = parts[0];
+    if (parts[1] === 'race' || parts[1] === 'match') {
+      S.detail = { type: parts[1], id: parts.slice(2).join('/') };
+      S.section = 'today';
+    } else {
+      S.detail = null;
+      if (parts[1] && SECTIONS.some(s => s.id === parts[1])) S.section = parts[1];
+    }
+  }
+  function writeHash() {
+    const h = S.detail
+      ? '#' + S.product + '/' + S.detail.type + '/' + S.detail.id
+      : '#' + S.product + '/' + S.section;
+    if (location.hash !== h) history.replaceState(null, '', h);
+  }
+
+  /* ---------------- chrome ---------------- */
+  function appbar() {
+    const health = BS.provider.health();
+    const bad = Object.keys(health).filter(k => health[k].status !== 'ok').length;
+    return C.html`
+      <div class="appbar">
+        <div class="appbar-row">
+          <div class="switch" role="tablist" aria-label="Choose a product">
+            ${PRODUCTS.map(p => C.html`
+              <button role="tab" aria-selected="${String(S.product === p.id)}" data-act="product" data-id="${p.id}">
+                <span class="dot"></span>${p.name}
+              </button>`)}
+          </div>
+          <span class="spacer"></span>
+          <button class="health ${bad ? 'warn' : ''}" data-act="health" title="Feed status">
+            <span class="led"></span><span class="hide-sm">${bad ? bad + ' degraded' : 'Feeds live'}</span>
+          </button>
+          <button class="icon-btn" data-act="theme" aria-label="Switch theme">◐</button>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Sections">
+          ${SECTIONS.map(s => C.html`
+            <button role="tab" aria-selected="${String(S.section === s.id && !S.detail)}" data-act="section" data-id="${s.id}">
+              ${s.label}${s.id === 'record' && pendingCount() ? C.html`<span class="count">${pendingCount()}</span>` : ''}
+            </button>`)}
+        </div>
+      </div>`;
+  }
+
+  const pendingCount = () => BS.store.tips().filter(t => t.status === 'pending' && t.product === S.product).length;
+
+  /** Next three events across every jurisdiction — the app's most-used strip. */
+  function ticker() {
+    const now = Date.now();
+    let items;
+    if (S.product === 'racing') {
+      items = Array.from(U.index.races.values())
+        .filter(r => r.offTs > now && r.declared)
+        .sort((a, b) => a.offTs - b.offTs).slice(0, 6)
+        .map(r => ({ id: r.id, kind: 'race', label: r.venue, flag: r.flag, ts: r.offTs, tz: r.tzRef }));
+    } else {
+      items = Array.from(U.index.fixtures.values())
+        .filter(f => f.koTs > now)
+        .sort((a, b) => a.koTs - b.koTs).slice(0, 6)
+        .map(f => ({ id: f.id, kind: 'match', label: f.home + ' v ' + f.away, flag: '', ts: f.koTs, tz: f.tz }));
+    }
+    if (!items.length) return C.raw('');
+    return C.html`
+      <div class="ticker">
+        <span class="ticker-label">${S.product === 'racing' ? 'Next off' : 'Next up'}</span>
+        ${items.map(it => C.html`
+          <button class="ticker-item ${it.ts - now < 6e5 ? 'imminent' : ''}" data-act="${it.kind}" data-id="${it.id}">
+            <b>${U.time(it.ts, it.tz)}</b> ${it.flag} ${it.label}
+            <span class="cd">${C.countdown(it.ts, now)}</span>
+          </button>`)}
+      </div>`;
+  }
+
+  function bottomnav() {
+    return C.html`
+      <nav class="bottomnav" aria-label="Sections">
+        ${SECTIONS.map(s => C.html`
+          <button aria-selected="${String(S.section === s.id && !S.detail)}" data-act="section" data-id="${s.id}">
+            <span style="font-size:17px" aria-hidden="true">${s.icon}</span><span>${s.label}</span>
+          </button>`)}
+      </nav>`;
+  }
+
+  /* ---------------- render ---------------- */
+  let rendering = false;
+  async function render() {
+    if (rendering) return;
+    rendering = true;
+    document.documentElement.setAttribute('data-product', S.product);
+    writeHash();
+
+    const app = C.$('#app');
+    let shell = C.$('#shell');
+    if (!shell) {
+      app.innerHTML = '<div id="shell"></div><main id="view"></main>' + C.unwrap(bottomnav()) +
+        '<div class="rg">18+ · Sample data, not a live feed · Betting involves a risk of loss · ' +
+        '<a href="https://www.begambleaware.org" target="_blank" rel="noopener nofollow">BeGambleAware.org</a></div>';
+      shell = C.$('#shell');
+    }
+    C.mount(shell, C.html`${appbar()}${S.detail ? '' : ticker()}`);
+    C.$$('.bottomnav button').forEach(b =>
+      b.setAttribute('aria-selected', String(b.dataset.id === S.section && !S.detail)));
+
+    const view = C.$('#view');
+    try {
+      if (S.detail) {
+        await ensureLoaded();
+        if (S.detail.type === 'race') BS.viewsRacing.racecard(view, S.detail.id);
+        else BS.viewsFootball.match(view, S.detail.id);
+      } else if (S.section === 'record') {
+        BS.viewsRecord.record(view);
+      } else if (S.section === 'rankings') {
+        BS.viewsRecord.rankings(view);
+      } else if (S.product === 'racing') {
+        await (S.section === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
+      } else {
+        await (S.section === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
+      }
+      C.mount(shell, C.html`${appbar()}${S.detail ? '' : ticker()}`);
+    } finally { rendering = false; }
+  }
+
+  /** Deep links land before any list has loaded, so fill the index first. */
+  let loadedOnce = false;
+  async function ensureLoaded() {
+    if (loadedOnce) return;
+    const days = [0, 1, 2, 3, 4, 5, 6];
+    const [meets, fixes] = await Promise.all([
+      Promise.all(days.map(d => BS.provider.meetings(d))),
+      Promise.all(days.map(d => BS.provider.fixtures(d)))
+    ]);
+    meets.forEach(list => list.forEach(m => {
+      U.index.meetings.set(m.id, m);
+      m.races.forEach(r => { r.tzRef = m.tz; r.venue = m.venue; r.flag = m.flag; U.index.races.set(r.id, r); });
+    }));
+    fixes.forEach(list => list.forEach(f => U.index.fixtures.set(f.id, f)));
+    loadedOnce = true;
+  }
+
+  /* ---------------- settlement job ----------------
+     Scheduled, never user-triggered. A tipster cannot reach this code. */
+  function runSettlement() {
+    const now = Date.now();
+    const pending = BS.store.tips().filter(t => t.status === 'pending');
+    BS.provider.setPending(pending.length);
+    let settled = 0;
+    for (const t of pending) {
+      if (t.refKind === 'race') {
+        const race = U.index.races.get(t.refId);
+        if (!race || BS.racing.raceState(race, now) !== 'result') continue;
+        const res = BS.provider.raceResult(race);
+        const runner = race.runners.find(r => r.horse === t.selection);
+        const won = !!runner && res.positions[0] === runner.no;
+        BS.store.settle(t.id, won, won ? t.odds - 1 : -1, 'Won by ' + (race.runners.find(r => r.no === res.positions[0]) || {}).horse);
+        settled++;
+      } else if (t.refKind === 'fixture') {
+        const fx = U.index.fixtures.get(t.refId);
+        if (!fx || BS.football.fixtureState(fx, now).state !== 'ft') continue;
+        const sc = BS.provider.fixtureResult(fx);
+        const total = sc[0] + sc[1];
+        let won = false;
+        if (t.market === 'Match result') {
+          won = t.selection === 'Draw' ? sc[0] === sc[1]
+            : t.selection === fx.home ? sc[0] > sc[1] : sc[1] > sc[0];
+        } else if (t.market === 'Over/Under') {
+          won = t.selection.indexOf('Over') === 0 ? total > 2.5 : total < 2.5;
+        } else if (t.market === 'BTTS') {
+          const btts = sc[0] > 0 && sc[1] > 0;
+          won = t.selection.indexOf('Not') === 0 ? !btts : btts;
+        }
+        BS.store.settle(t.id, won, won ? t.odds - 1 : -1, sc[0] + '–' + sc[1]);
+        settled++;
+      }
+    }
+    const h = BS.provider.health();
+    h.settlement.lastSuccess = now;
+    h.results.lastSuccess = now;
+    if (settled) {
+      U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', '⚙️');
+      render();
+    }
+  }
+
+  /* ---------------- events ---------------- */
+  document.addEventListener('click', function (ev) {
+    const el = ev.target.closest('[data-act]');
+    if (!el) return;
+    const act = el.dataset.act;
+
+    if (act === 'product') { S.product = el.dataset.id; S.detail = null; S.q = ''; render(); }
+    else if (act === 'section') { S.section = el.dataset.id; S.detail = null; render(); }
+    else if (act === 'race') { S.detail = { type: 'race', id: el.dataset.id }; render(); window.scrollTo(0, 0); }
+    else if (act === 'match') { S.detail = { type: 'match', id: el.dataset.id }; render(); window.scrollTo(0, 0); }
+    else if (act === 'back') { S.detail = null; render(); }
+    else if (act === 'day') { S.day = +el.dataset.day; render(); }
+    else if (act === 'tz') { S.tzMode = S.tzMode === 'local' ? 'venue' : 'local'; render(); }
+    else if (act === 'finished') { S.showFinished = !S.showFinished; render(); }
+    else if (act === 'band') { BS.viewsRecord.setBand(el.dataset.band); render(); }
+    else if (act === 'toggle-region') {
+      S.collapsed[el.dataset.id] = !S.collapsed[el.dataset.id];
+      const sec = el.closest('.region');
+      sec.dataset.open = String(!S.collapsed[el.dataset.id]);
+      el.setAttribute('aria-expanded', sec.dataset.open);
+    }
+    else if (act === 'theme') cycleTheme();
+    else if (act === 'health') showHealth();
+    else if (act === 'tip') {
+      U.openTipSheet({
+        product: S.product, refId: el.dataset.ref, refKind: el.dataset.kind,
+        selection: el.dataset.sel, market: el.dataset.market, event: el.dataset.event,
+        quotedOdds: parseFloat(el.dataset.odds), startTs: +el.dataset.start, tz: el.dataset.tz
+      });
+    }
+    else if (act === 'sheet-cancel') U.closeSheet();
+    else if (act === 'sheet-confirm') U.confirmTip();
+    else if (act === 'agegate') {
+      try { localStorage.setItem('betstable.age.v1', String(Date.now())); } catch (e) {}
+      C.$('#agegate').remove();
+      boot();
+    }
+  });
+
+  document.addEventListener('input', function (ev) {
+    const el = ev.target.closest('[data-act="search"]');
+    if (!el) return;
+    S.q = el.value;
+    clearTimeout(el._t);
+    el._t = setTimeout(() => {
+      const pos = el.selectionStart;
+      render().then(() => {
+        const again = C.$('[data-act="search"]');
+        if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (e) {} }
+      });
+    }, 220);
+  });
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && C.$('.sheet')) U.closeSheet();
+  });
+  window.addEventListener('hashchange', () => { readHash(); render(); });
+
+  function cycleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';
+    if (next) document.documentElement.setAttribute('data-theme', next);
+    else document.documentElement.removeAttribute('data-theme');
+    try { localStorage.setItem('betstable.theme', next); } catch (e) {}
+    U.toast(next ? next[0].toUpperCase() + next.slice(1) + ' theme' : 'Matching your system', '◐');
+  }
+
+  function showHealth() {
+    const h = BS.provider.health();
+    const ago = ts => Math.max(0, Math.round((Date.now() - ts) / 1000)) + 's ago';
+    U.toast('Odds ' + ago(h.odds.lastSuccess) + ' · Results ' + ago(h.results.lastSuccess) +
+      ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', '📡');
+  }
+
+  /* ---------------- age gate ----------------
+     A compliance requirement that belongs in code, not in a policy page. */
+  function ageGate() {
+    let seen = null;
+    try { seen = localStorage.getItem('betstable.age.v1'); } catch (e) {}
+    if (seen) return false;
+    const el = document.createElement('div');
+    el.id = 'agegate';
+    el.innerHTML = '<div class="scrim"></div><div class="sheet" role="dialog" aria-label="Age check">' +
+      '<div class="grabber"></div><h3>Are you 18 or over?</h3>' +
+      '<p class="sheet-sub">BetStable and ScoreMore are for adults only. We store this answer on this device.</p>' +
+      '<div class="warnbox"><span>⚠️</span><span>Betting involves a risk of loss. Never stake money you cannot ' +
+      'afford to lose. Free, confidential help: BeGambleAware.org.</span></div>' +
+      '<button class="btn" data-act="agegate">I am 18 or over</button>' +
+      '<p style="font-size:11.5px;color:var(--ink-3);margin:12px 0 0;text-align:center">' +
+      'If you are under 18, please close this page.</p></div>';
+    document.body.appendChild(el);
+    return true;
+  }
+
+  /* ---------------- boot ---------------- */
+  function boot() {
+    try {
+      const t = localStorage.getItem('betstable.theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+    readHash();
+    render().then(() => { runSettlement(); });
+
+    setInterval(runSettlement, 15000);
+    // Countdowns go stale fast; refresh the list views while nothing is in hand.
+    setInterval(function () {
+      if (document.hidden || C.$('.sheet')) return;
+      const active = document.activeElement;
+      if (active && active.matches && active.matches('input')) return;
+      if (S.section === 'record' || S.section === 'rankings') return;
+      const y = window.scrollY;
+      render().then(() => window.scrollTo(0, y));
+    }, 30000);
+  }
+
+  BS.app = { render, boot, runSettlement };
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!ageGate()) boot();
+  });
+})(window.BS = window.BS || {});
+
+</script>
+</body>
+</html>

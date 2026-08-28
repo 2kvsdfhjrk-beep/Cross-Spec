@@ -1,0 +1,87 @@
+# BetStable · ScoreMore
+
+A working prototype of the app: two products in one shell, driven by a feed
+interface that a real odds/results provider can be dropped into.
+
+- **BetStable** — horse racing across nine jurisdictions
+- **ScoreMore** — football across eighteen competitions
+
+## Run it
+
+```
+open index.html            # no build step, no server, no dependencies
+python3 build.py           # optional: inline everything into dist/
+```
+
+Every script is a classic `<script>` tag, so the app runs straight off the file
+system as well as from a server.
+
+## What is real and what is sample data
+
+The **mechanism** is real: server-side timestamps, an odds freeze at the moment
+of posting, an append-only ledger with no edit or delete path, a scheduled
+settlement job the user cannot reach, per-tip hashes and a daily Merkle root,
+ROI with confidence intervals, and drawdown.
+
+The **data** is generated. There is no odds API and no results API yet, so
+`src/feed-racing.js` and `src/feed-football.js` synthesise cards and fixtures
+from a seeded PRNG. The same day always produces the same card, and times are
+converted from venue-local to real instants through `Intl`, so DST is handled
+rather than assumed.
+
+Horse, jockey and trainer names are **invented** — a fabricated record should
+never be attached to a real person or animal. Club and competition names are
+real; every price, score and line-up attached to them is not.
+
+## Swapping in real feeds
+
+`src/provider.js` is the only module that knows where data comes from. Nothing
+in the views touches a feed directly. Reimplement these and the app is live:
+
+| Method | Returns |
+|---|---|
+| `meetings(dayOffset)` | race meetings for a day, each with its races and runners |
+| `fixtures(dayOffset)` | football fixtures for a day |
+| `freezeOdds(quoted)` | the authoritative price at this instant, plus its timestamp |
+| `raceResult(race)` / `fixtureResult(fx)` | settlement input, from the results feed only |
+| `health()` | per-feed status, surfaced in the header |
+
+Keep the shapes and the rest of the app is unchanged. This is the abstraction
+that lets a provider be swapped without touching a view.
+
+## Layout
+
+```
+index.html              shell and script order
+assets/app.css          design system: tokens, light + dark, components
+src/core.js             seeded PRNG, timezone maths, formatting, safe templating
+src/feed-racing.js      jurisdictions, venues, racecard generation
+src/feed-football.js    competitions, fixture and in-play generation
+src/provider.js         the feed interface — the swap-in point
+src/store.js            append-only ledger, ROI/CI/drawdown, hashes, Merkle root
+src/ui.js               tip sheet, silks, odds buttons, toasts
+src/views-racing.js     today, next 7 days, racecard
+src/views-football.js   today, next 7 days, match page
+src/views-record.js     my record with equity curve, ranked tables
+src/app.js              routing, settlement job, clock, age gate
+```
+
+## Product rules that live in the code
+
+- A course or competition only appears while it still has an event to come.
+- Runners and riders publish about 48 hours out; before that a race shows
+  entries, no jockeys and no prices — you cannot tip what has no price.
+- Tips are rejected once an event has started.
+- Stakes are fixed at one unit. There is no stake field.
+- The ledger has `addTip` and `settle`. There is no update and no delete.
+- Rankings sort on the **bottom** of the 95% interval, with a 100-tip minimum.
+- Age gate on first load, stored on the device; 18+ and BeGambleAware on every
+  screen.
+
+## Known gaps
+
+- Settlement resolves against events loaded in the current session. With a real
+  results feed this becomes a server-side job over the whole ledger.
+- The ledger is `localStorage`, so it is per-device and per-browser.
+- Odds bands in the ranked table re-seed the sample rather than filtering a real
+  tip history.
