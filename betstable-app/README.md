@@ -10,6 +10,18 @@ feed interface a real odds/results provider can be dropped into.
 - **Hot** — every live tip, ranked by agreement, filterable by sport
 - **Me** — your own record: ROI with its interval, drawdown, the ledger
 
+## Navigation
+
+One model, three presentations, all rendering from `MENU` in `src/menu.js`, so a
+route added once appears in all of them:
+
+- **Drawer** — hamburger, top left. Everything grouped, with the product switch
+  at the top and theme/settings in the footer.
+- **Bottom bar popovers** — on a phone, Tips and You raise a menu above the bar;
+  Home, Racing and Football go straight there.
+- **Top dropdowns** — from 900px the menu bar takes over, one dropdown per
+  section.
+
 ## Design
 
 The front page is a stack of plain modules — header, optional sort, rows, one
@@ -17,8 +29,16 @@ action — so the whole thing is scannable in a single pass and every route to a
 tip is two taps. The design effort goes into rhythm, hierarchy and tap targets
 rather than decoration.
 
-Palette and mark are taken from the logo: pine `#00231F`, grass `#065B07`,
-barn tan `#AF6E4B`, cream `#F6F0E1`. The roundel is redrawn from the logo —
+Two products, two visual worlds, one app. Every colour, radius and shadow is a
+token, so setting `data-product` on the root element repaints the interface:
+
+- **BetStable** — pine `#00231F`, grass `#065B07`, barn tan `#AF6E4B`, cream
+  `#F6F0E1`, straight off the logo. Rounded, warm, a little agricultural.
+- **ScoreMore** — light blue on white, cooler ink, tighter corners and more air.
+  A broadcast scoreboard rather than a stable yard.
+
+Each has its own mark: the barn for BetStable, a football for ScoreMore, so the
+two are never confused at 32px in a tab bar. Both have full dark variants. The roundel is redrawn from the logo —
 wide overhanging dark roof, planked tan walls, green cross-braced door, fence
 rails running out to the ring — with a simplified variant below 40px where the
 planks, horseshoe and fence turn to mud. Dark grounds carry
@@ -86,6 +106,8 @@ src/views-football.js   today, next 7 days, match page
 src/views-record.js     my record with equity curve, ranked tables
 src/views-home.js       the front page
 src/views-hot.js        hot tips, tipster directory, tipster profile
+src/views-extra.js      favourites and settings
+src/menu.js             the navigation model and its three presentations
 src/app.js              routing, settlement job, clock, age gate
 ```
 

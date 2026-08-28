@@ -23,7 +23,7 @@
           <span class="form">${fx.form.home} · ${fx.form.away}</span>
         </button>
         ${st.state === 'upcoming' ? C.html`
-          <span class="mkt">
+          <span class="mkt-row">
             ${U.oddsButton({ refId: fx.id, refKind: 'fixture', selection: fx.home, label: '1', odds: fx.odds.home, market: 'Match result', event: fx.home + ' v ' + fx.away, startTs: fx.koTs, tz: fx.tz })}
             ${U.oddsButton({ refId: fx.id, refKind: 'fixture', selection: 'Draw', label: 'X', odds: fx.odds.draw, market: 'Match result', event: fx.home + ' v ' + fx.away, startTs: fx.koTs, tz: fx.tz })}
             ${U.oddsButton({ refId: fx.id, refKind: 'fixture', selection: fx.away, label: '2', odds: fx.odds.away, market: 'Match result', event: fx.home + ' v ' + fx.away, startTs: fx.koTs, tz: fx.tz })}
@@ -183,7 +183,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       ${open ? C.html`
         <div class="panel">
           <div class="panel-head"><h3>Match result</h3><span class="meta">1 unit, flat</span></div>
-          <div class="panel-body" style="display:flex;gap:8px">
+          <div class="panel-body" class="mkt-row" style="flex-wrap:wrap">
             ${mk(fx.home, fx.odds.home, 'Match result', 'Home')}
             ${mk('Draw', fx.odds.draw, 'Match result', 'Draw')}
             ${mk(fx.away, fx.odds.away, 'Match result', 'Away')}
@@ -191,7 +191,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         </div>
         <div class="panel">
           <div class="panel-head"><h3>Goals</h3></div>
-          <div class="panel-body" style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="panel-body" class="mkt-row" style="flex-wrap:wrap">
             ${mk('Over 2.5 goals', fx.ou25[0], 'Over/Under', 'Over 2.5')}
             ${mk('Under 2.5 goals', fx.ou25[1], 'Over/Under', 'Under 2.5')}
             ${mk('Both teams to score', fx.btts[0], 'BTTS', 'BTTS yes')}

@@ -89,7 +89,7 @@
         ? C.html`<div class="mod"><div class="rows">${list.map(t => BS.viewsHome.tipsterRow(t, dirSort))}</div></div>`
         : U.empty('You are not following anyone yet',
             'Follow a tipster and they appear here, on your front page, and highlighted in every table.',
-            C.html`<button class="btn" data-act="dir" data-id="all">Browse everyone</button>`)}
+            C.html`<button class="btn" data-act="go" data-route="tipsters">Browse everyone</button>`)}
     `);
   }
 
@@ -158,8 +158,8 @@
           ${open.map(o => C.html`
             <div class="tip-row">
               <span class="badge pending">${C.countdown(o.event.startTs, now)}</span>
-              <button data-act="${o.event.kind}" data-id="${o.event.id}" style="text-align:left">
-                <span class="sel" style="display:block">${o.selection}</span>
+              <button data-act="${o.event.kind}" data-id="${o.event.id}" style="text-align:left;min-width:0">
+                <span class="sel2" style="display:block">${o.selection}</span>
                 <span class="ev">${o.market} · ${o.event.title} · ${o.event.subtitle}</span>
               </button>
               <span class="ret">${C.fmtOdds(o.odds)}</span>

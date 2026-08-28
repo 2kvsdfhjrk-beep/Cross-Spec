@@ -5,7 +5,7 @@
   const C = BS.core;
 
   const state = BS.state = {
-    view: 'home', sub: 'today', detailId: null, product: 'racing',
+    route: 'home', product: 'racing',
     day: 0, q: '', tzMode: 'local', showFinished: false,
     collapsed: {}, loading: false
   };
@@ -37,6 +37,47 @@
   /* ---------- brand mark ----------
      The logo, rebuilt as vector so it can be a favicon, a watermark, an empty
      state and a loading mark without ever going fuzzy. */
+  /* ScoreMore's own mark: a ball, in the blue world, so the two products are
+     never mistaken for one another at 32px in a tab bar. */
+  function ballMark(cls, opts) {
+    const o = opts || {};
+    const ring = o.ring || '#134B74';
+    const ground = o.ground || '#FFFFFF';
+    const panel = o.panel || '#134B74';
+    const poly = function (cx, cy, r, rot) {
+      return [0, 1, 2, 3, 4].map(function (i) {
+        const a = (rot + i * 72) * Math.PI / 180;
+        return (i ? 'L' : 'M') + (cx + Math.cos(a) * r).toFixed(1) + ' ' + (cy + Math.sin(a) * r).toFixed(1);
+      }).join(' ') + 'Z';
+    };
+    // A football reads from its panels, not from spokes: one pentagon at the
+    // centre, five on the rim, seams only joining them.
+    const rim = [-90, -18, 54, 126, 198].map(function (a) {
+      const rad = a * Math.PI / 180;
+      return { x: 50 + Math.cos(rad) * 21, y: 50 + Math.sin(rad) * 21, a: a };
+    });
+    const seams = o.simple ? '' : rim.map(function (p) {
+      const rad = p.a * Math.PI / 180;
+      return '<path d="M' + (50 + Math.cos(rad) * 10).toFixed(1) + ' ' + (50 + Math.sin(rad) * 10).toFixed(1) +
+        'L' + (50 + Math.cos(rad) * 16).toFixed(1) + ' ' + (50 + Math.sin(rad) * 16).toFixed(1) +
+        '" stroke="' + panel + '" stroke-width="2.6" stroke-linecap="round"/>';
+    }).join('');
+    return C.raw('<svg class="roundel ' + (cls || '') + '" viewBox="0 0 100 100" aria-hidden="true">' +
+      '<circle cx="50" cy="50" r="41" fill="' + ground + '"/>' +
+      '<path d="' + poly(50, 50, 11, -90) + '" fill="' + panel + '"/>' +
+      seams +
+      rim.map(function (p) { return '<path d="' + poly(p.x, p.y, o.simple ? 8 : 7, p.a + 180) + '" fill="' + panel + '"/>'; }).join('') +
+      '<circle cx="50" cy="50" r="41" fill="none" stroke="' + ring + '" stroke-width="' + (o.simple ? 9 : 7.5) + '"/>' +
+      '</svg>');
+  }
+
+  /** The mark for whichever product is on screen. */
+  function mark(cls, opts) {
+    const o = opts || {};
+    const product = o.product || BS.ui.state.product;
+    return product === 'football' ? ballMark(cls, o) : roundel(cls, o);
+  }
+
   function roundel(cls, opts) {
     const o = opts || {};
     const ring = o.ring || '#00231F';       // pine — the circle and the roof
@@ -100,7 +141,7 @@
     <div class="empty">${roundel()}<h3>${title}</h3><p>${body}</p>${action || ''}</div>`;
   /** Compact variant for a prompt sitting inside a busy page. */
   const emptyRow = (title, body, action) => C.html`
-    <div class="empty row">${roundel()}<div><h3>${title}</h3><p>${body}</p></div>${action || ''}</div>`;
+    <div class="empty row2">${roundel()}<div><h3>${title}</h3><p>${body}</p></div>${action || ''}</div>`;
 
   const skeleton = n => C.raw(Array.from({ length: n || 4 },
     () => '<div class="skel skel-row"></div>').join(''));
@@ -224,7 +265,7 @@
   }
 
   BS.ui = {
-    state, index, silk: silkSvg, silkSvg, roundel, avatar, wordmark, empty, emptyRow, skeleton, toast, time, day, tzFor,
+    state, index, silk: silkSvg, silkSvg, roundel, ballMark, mark, avatar, wordmark, empty, emptyRow, skeleton, toast, time, day, tzFor,
     openTipSheet, closeSheet, confirmTip, oddsButton, hasTipOn
   };
 })(window.BS = window.BS || {});

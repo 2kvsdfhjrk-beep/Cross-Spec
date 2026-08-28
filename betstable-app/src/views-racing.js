@@ -208,7 +208,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + race.id + '" aria-p
           const pos = result ? result.positions.indexOf(r.no) + 1 : 0;
           return C.html`
             <div class="runner">
-              <span class="num">${pos ? C.html`<span class="pos ${pos === 1 ? 'p1' : ''}">${pos}</span>` : r.no}</span>
+              <span class="num2">${pos ? C.html`<span class="pos ${pos === 1 ? 'p1' : ''}">${pos}</span>` : r.no}</span>
               ${U.silk(r.silk)}
               <span>
                 <div class="name">${r.horse}</div>

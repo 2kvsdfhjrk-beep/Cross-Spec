@@ -1,131 +1,106 @@
 /* app.js — shell, routing, the settlement job and the clock.
-   The UI never settles a tip itself; it only reads what the results feed says. */
+   Everything navigable is a route string, so the drawer, the bottom-bar
+   popovers and the desktop dropdowns all drive the same function. */
 (function (BS) {
   'use strict';
   const C = BS.core, U = BS.ui, S = BS.ui.state;
 
-  const ICON = {
-    home: 'M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5',
-    racing: 'M8 20c-2-2.6-3.2-5-3.2-8a7.2 7.2 0 0 1 14.4 0c0 3-1.2 5.4-3.2 8M6.4 19.4h3.2M14.4 19.4h3.2',
-    football: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.6l3.7 2.7-1.4 4.4H9.7L8.3 10.3zM12 3v4.6M19.6 9.6l-3.9.7M16.9 19l-2.6-4.3M7.1 19l2.6-4.3M4.4 9.6l3.9.7',
-    hot: 'M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z',
-    me: 'M5 4h11l3 3v13H5zM8.5 9.5h7M8.5 13h7M8.5 16.5h4',
-    people: 'M9.4 11.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2zM3.6 19.4c0-3 2.6-5.2 5.8-5.2s5.8 2.2 5.8 5.2M16.6 11a2.6 2.6 0 1 0 0-5.2M17.2 14.4c2.4.3 4.2 2.2 4.2 4.8',
-    star: 'M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z'
+  const TITLES = {
+    home: 'Home', hot: 'Hot tips', 'hot/racing': 'Hot racing tips', 'hot/football': 'Hot football tips',
+    tipsters: 'Tipsters', following: 'Following', me: 'My tips',
+    favourites: 'Favourites', settings: 'Settings',
+    'racing/today': "Today's racing", 'racing/week': 'Racing · next 7 days', 'racing/table': 'Racing table',
+    'football/today': "Today's football", 'football/week': 'Football · next 7 days', 'football/table': 'Football table'
   };
-  const icon = k => C.raw('<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
-    'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' +
-    ICON[k] + '"/></svg>');
 
-  const NAV = [
-    { id: 'home', label: 'Home', icon: 'home' },
-    { id: 'hot', label: 'Hot tips', icon: 'hot' },
-    { id: 'racing', label: 'BetStable', icon: 'racing' },
-    { id: 'football', label: 'ScoreMore', icon: 'football' },
-    { id: 'tipsters', label: 'Tipsters', icon: 'people' }
-  ];
-  const SUBS = [
-    { id: 'today', label: 'Today' },
-    { id: 'week', label: 'Next 7 days' },
-    { id: 'table', label: 'Table' }
-  ];
+  /** Which top-level menu entry should look active for a given route. */
+  function activeId(route) {
+    if (route.indexOf('racing') === 0) return 'racing';
+    if (route.indexOf('football') === 0) return 'football';
+    if (route.indexOf('hot') === 0) return 'tips';
+    if (route === 'tipsters' || route === 'following' || route.indexOf('tipster/') === 0) return 'tipsters';
+    if (route === 'me' || route === 'settings' || route === 'favourites') return 'me';
+    return 'home';
+  }
+  const bottomId = route => {
+    const a = activeId(route);
+    return a === 'tipsters' ? 'me' : a;
+  };
 
   /* ---------------- routing ---------------- */
   function readHash() {
-    const p = (location.hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
-    if (!p.length) { S.view = 'home'; return; }
-    const head = decodeURIComponent(p[0]);
-    if (head === 'racing' || head === 'football') {
-      S.product = head;
-      if (p[1] === 'race' || p[1] === 'match') { S.view = p[1]; S.detailId = decodeURIComponent(p.slice(2).join('/')); }
-      else { S.view = head; S.sub = SUBS.some(s => s.id === p[1]) ? p[1] : 'today'; }
-      return;
-    }
-    if (head === 'tipster' && p[1]) { S.view = 'tipster'; S.detailId = decodeURIComponent(p[1]); return; }
-    if (['home', 'hot', 'me', 'tipsters', 'following'].indexOf(head) >= 0) { S.view = head; return; }
-    S.view = 'home';
+    const h = decodeURIComponent((location.hash || '').replace(/^#\/?/, ''));
+    S.route = h || 'home';
+    syncProduct();
+  }
+  function syncProduct() {
+    if (S.route.indexOf('racing') === 0 || S.route === 'hot/racing') S.product = 'racing';
+    else if (S.route.indexOf('football') === 0 || S.route === 'hot/football') S.product = 'football';
   }
   function writeHash() {
-    let h = '#' + S.view;
-    if (S.view === 'racing' || S.view === 'football') h = '#' + S.view + '/' + S.sub;
-    else if (S.view === 'race' || S.view === 'match') h = '#' + S.product + '/' + S.view + '/' + S.detailId;
-    else if (S.view === 'tipster') h = '#tipster/' + encodeURIComponent(S.detailId);
+    const h = '#' + S.route;
     if (location.hash !== h) history.replaceState(null, '', h);
   }
-  const navFor = v => (v === 'race' || v === 'match') ? S.product
-    : (v === 'tipster' || v === 'following') ? 'tipsters' : v;
+  function go(route) {
+    if (!route) return;
+    BS.menu.closeAll();
+    S.route = route;
+    S.q = '';
+    syncProduct();
+    render();
+    window.scrollTo(0, 0);
+  }
 
   /* ---------------- chrome ---------------- */
   function appbar() {
     const health = BS.provider.health();
     const bad = Object.keys(health).filter(k => health[k].status !== 'ok').length;
-    const inProduct = S.view === 'racing' || S.view === 'football';
-    const active = navFor(S.view);
+    const id = activeId(S.route);
+    const pending = BS.store.tips().filter(t => t.status === 'pending').length;
     return C.html`
       <div class="appbar">
         <div class="appbar-row">
-          <button class="brandlink" data-act="nav" data-id="home" aria-label="Home">
-            ${U.roundel("", { simple: true })}
-            ${S.product === 'football' && S.view !== 'home' ? U.wordmark('Score', 'More') : U.wordmark('Bet', 'Stable')}
+          <button class="icon-btn" data-act="drawer" aria-label="Open menu">${BS.menu.icon('menu')}</button>
+          <button class="brandlink" data-act="go" data-route="home" aria-label="Home">
+            ${U.mark('', { simple: true })}
+            <span class="hide-sm">${S.product === 'football' ? U.wordmark('Score', 'More') : U.wordmark('Bet', 'Stable')}</span>
           </button>
+          <span style="width:8px"></span>
+          ${BS.menu.menubar(S.route, id)}
           <span class="spacer"></span>
-          ${inProduct ? C.html`<div class="tabs hide-sm" role="tablist" aria-label="Section">
-            ${SUBS.map(s => C.html`<button role="tab" aria-selected="${String(S.sub === s.id)}" data-act="sub" data-id="${s.id}">${s.label}</button>`)}
-          </div>` : ''}
-          <button class="health ${bad ? 'warn' : ''}" data-act="health" title="Feed status">
+          <button class="health" data-act="health" title="Feed status">
             <span class="led"></span><span class="hide-sm">${bad ? bad + ' degraded' : 'Feeds live'}</span>
           </button>
-          <button class="icon-btn" data-act="theme" aria-label="Switch theme">◐</button>
-          <button class="icon-btn profile ${navFor(S.view) === 'me' ? 'on' : ''}" data-act="nav" data-id="me"
-            aria-label="My record">${icon('me')}${pendingCount() ? C.raw('<span class="dot"></span>') : ''}</button>
+          <button class="icon-btn ${id === 'me' ? 'on' : ''}" data-act="go" data-route="me" aria-label="My record">
+            ${BS.menu.icon('me')}${pending ? C.raw('<span class="dot"></span>') : ''}
+          </button>
         </div>
-        <div class="mainnav" role="tablist" aria-label="Main">
-          ${NAV.map(n => C.html`
-            <button role="tab" aria-selected="${String(active === n.id)}" data-act="nav" data-id="${n.id}">
-              ${n.label}
-            </button>`)}
-        </div>
-        ${inProduct ? C.html`<div class="mainnav subnav" style="border-top:1px solid var(--line-soft)">
-          ${SUBS.map(s => C.html`<button class="sub-sm" role="tab" aria-selected="${String(S.sub === s.id)}" data-act="sub" data-id="${s.id}">${s.label}</button>`)}
-        </div>` : ''}
       </div>`;
   }
 
-  const pendingCount = () => BS.store.tips().filter(t => t.status === 'pending').length;
-
+  const TICKER_ON = ['home', 'racing/today', 'racing/week', 'football/today', 'football/week', 'hot', 'hot/racing', 'hot/football'];
   function ticker() {
+    if (TICKER_ON.indexOf(S.route) < 0) return C.raw('');
     const now = Date.now();
-    const showRacing = S.view !== 'football' && S.view !== 'match';
-    let items = [];
-    if (showRacing) {
-      items = Array.from(U.index.races.values())
-        .filter(r => r.offTs > now && r.declared)
-        .sort((a, b) => a.offTs - b.offTs).slice(0, 6)
-        .map(r => ({ id: r.id, kind: 'race', label: r.venue, flag: r.flag, ts: r.offTs, tz: r.tzRef }));
-    } else {
-      items = Array.from(U.index.fixtures.values())
-        .filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs).slice(0, 6)
-        .map(f => ({ id: f.id, kind: 'match', label: f.home + ' v ' + f.away, flag: '', ts: f.koTs, tz: f.tz }));
-    }
+    const racing = S.product !== 'football';
+    const items = racing
+      ? Array.from(U.index.races.values()).filter(r => r.offTs > now && r.declared)
+          .sort((a, b) => a.offTs - b.offTs).slice(0, 6)
+          .map(r => ({ id: r.id, route: 'racing/race/' + r.id, label: r.venue, flag: r.flag, ts: r.offTs, tz: r.tzRef }))
+      : Array.from(U.index.fixtures.values()).filter(f => f.koTs > now)
+          .sort((a, b) => a.koTs - b.koTs).slice(0, 6)
+          .map(f => ({ id: f.id, route: 'football/match/' + f.id, label: f.home + ' v ' + f.away, flag: '', ts: f.koTs, tz: f.tz }));
     if (!items.length) return C.raw('');
     return C.html`
       <div class="ticker">
-        <span class="ticker-label">${showRacing ? 'Next off' : 'Next up'}</span>
+        <span class="ticker-label">${racing ? 'Next off' : 'Next up'}</span>
         ${items.map(it => C.html`
-          <button class="ticker-item ${it.ts - now < 6e5 ? 'imminent' : ''}" data-act="${it.kind}" data-id="${it.id}">
+          <button class="ticker-item ${it.ts - now < 6e5 ? 'imminent' : ''}" data-act="go" data-route="${it.route}">
             <b>${U.time(it.ts, it.tz)}</b> ${it.flag} ${it.label}
             <span class="cd">${C.countdown(it.ts, now)}</span>
           </button>`)}
       </div>`;
   }
-
-  const bottomnav = () => C.html`
-    <nav class="bottomnav" aria-label="Main">
-      ${NAV.map(n => C.html`
-        <button aria-selected="${String(navFor(S.view) === n.id)}" data-act="nav" data-id="${n.id}">
-          ${icon(n.icon)}<span>${n.label}</span>
-        </button>`)}
-    </nav>`;
 
   /* ---------------- render ---------------- */
   let rendering = false;
@@ -134,41 +109,46 @@
     rendering = true;
     document.documentElement.setAttribute('data-product', S.product);
     writeHash();
+    document.title = (TITLES[S.route] || 'BetStable') + ' · ' +
+      (S.product === 'football' ? 'ScoreMore' : 'BetStable');
 
-    const app = C.$('#app');
     if (!C.$('#shell')) {
-      app.innerHTML = '<div id="shell"></div><main id="view"></main>' +
+      C.$('#app').innerHTML = '<div id="shell"></div><main id="view"></main>' +
         '<div class="rg">18+ · Sample data, not a live feed · Betting involves a risk of loss · ' +
         '<a href="https://www.begambleaware.org" target="_blank" rel="noopener nofollow">BeGambleAware.org</a></div>' +
         '<div id="bnav"></div>';
     }
-    const shell = C.$('#shell');
+    const shell = C.$('#shell'), view = C.$('#view');
     const chrome = () => {
-      C.mount(shell, C.html`${appbar()}${['home', 'me', 'tipsters', 'tipster', 'following'].indexOf(S.view) >= 0 ? '' : ticker()}`);
-      C.mount(C.$('#bnav'), bottomnav());
+      C.mount(shell, C.html`${appbar()}${ticker()}`);
+      C.mount(C.$('#bnav'), BS.menu.bottomnav(bottomId(S.route)));
     };
     chrome();
 
-    const view = C.$('#view');
+    const r = S.route, part = r.split('/');
     try {
-      switch (S.view) {
-        case 'home': await BS.viewsHome.home(view); break;
-        case 'hot': await BS.viewsHot.hot(view); break;
-        case 'tipsters':
-        case 'following': BS.viewsHot.tipsters(view); break;
-        case 'tipster': await BS.viewsHot.profile(view, S.detailId); break;
-        case 'me': BS.viewsRecord.record(view); break;
-        case 'race': await ensureLoaded(); BS.viewsRacing.racecard(view, S.detailId); break;
-        case 'match': await ensureLoaded(); BS.viewsFootball.match(view, S.detailId); break;
-        case 'racing':
-          if (S.sub === 'table') BS.viewsRecord.rankings(view);
-          else await (S.sub === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
-          break;
-        case 'football':
-          if (S.sub === 'table') BS.viewsRecord.rankings(view);
-          else await (S.sub === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
-          break;
+      if (r === 'home') await BS.viewsHome.home(view);
+      else if (r === 'hot' || r === 'hot/racing' || r === 'hot/football') {
+        BS.viewsHot.setSport(part[1] || 'all');
+        await BS.viewsHot.hot(view);
       }
+      else if (r === 'tipsters') { BS.viewsHot.setDir('all'); BS.viewsHot.tipsters(view); }
+      else if (r === 'following') { BS.viewsHot.setDir('following'); BS.viewsHot.tipsters(view); }
+      else if (part[0] === 'tipster') await BS.viewsHot.profile(view, part.slice(1).join('/'));
+      else if (r === 'me') BS.viewsRecord.record(view);
+      else if (r === 'favourites') { await ensureLoaded(); BS.viewsExtra.favourites(view); }
+      else if (r === 'settings') BS.viewsExtra.settings(view);
+      else if (part[1] === 'race') { await ensureLoaded(); BS.viewsRacing.racecard(view, part.slice(2).join('/')); }
+      else if (part[1] === 'match') { await ensureLoaded(); BS.viewsFootball.match(view, part.slice(2).join('/')); }
+      else if (part[0] === 'racing') {
+        if (part[1] === 'table') BS.viewsRecord.rankings(view);
+        else await (part[1] === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
+      }
+      else if (part[0] === 'football') {
+        if (part[1] === 'table') BS.viewsRecord.rankings(view);
+        else await (part[1] === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
+      }
+      else await BS.viewsHome.home(view);
       chrome();
     } finally { rendering = false; }
   }
@@ -189,8 +169,7 @@
     loadedOnce = true;
   }
 
-  /* ---------------- settlement job ----------------
-     Scheduled, never user-triggered. A tipster cannot reach this code. */
+  /* ---------------- settlement job ---------------- */
   function runSettlement() {
     const now = Date.now();
     const pending = BS.store.tips().filter(t => t.status === 'pending');
@@ -201,9 +180,9 @@
         const race = U.index.races.get(t.refId);
         if (!race || BS.racing.raceState(race, now) !== 'result') continue;
         const res = BS.provider.raceResult(race);
-        const runner = race.runners.find(r => r.horse === t.selection);
+        const runner = race.runners.find(x => x.horse === t.selection);
         const won = !!runner && res.positions[0] === runner.no;
-        const winner = race.runners.find(r => r.no === res.positions[0]);
+        const winner = race.runners.find(x => x.no === res.positions[0]);
         BS.store.settle(t.id, won, won ? t.odds - 1 : -1, 'Won by ' + (winner ? winner.horse : '—'));
         settled++;
       } else if (t.refKind === 'fixture') {
@@ -234,32 +213,28 @@
   }
 
   /* ---------------- events ---------------- */
-  function go(view, id) {
-    S.view = view;
-    if (id) S.detailId = id;
-    if (view === 'racing' || view === 'football') S.product = view;
-    if (view === 'race' || view === 'match') S.product = view === 'race' ? 'racing' : 'football';
-    S.q = '';
-    render();
-    window.scrollTo(0, 0);
-  }
-
   document.addEventListener('click', function (ev) {
     const el = ev.target.closest('[data-act]');
-    if (!el) return;
+    if (!el) {
+      if (BS.menu.anyOpen()) BS.menu.closeAll();
+      return;
+    }
     const act = el.dataset.act, id = el.dataset.id;
 
-    if (act === 'nav') go(id === 'following' ? 'tipsters' : id, null);
-    else if (act === 'sub') { S.sub = id; render(); }
-    else if (act === 'race') go('race', id);
-    else if (act === 'match') go('match', id);
-    else if (act === 'tipster') go('tipster', id);
+    if (act === 'go') go(el.dataset.route);
+    else if (act === 'drawer') BS.menu.openDrawer(S.route);
+    else if (act === 'drawer-close') BS.menu.closeDrawer();
+    else if (act === 'dropdown') { BS.menu.setDropdown(id); render(); }
+    else if (act === 'popover') BS.menu.openPopover(el, id, S.route);
+    else if (act === 'race') go('racing/race/' + id);
+    else if (act === 'match') go('football/match/' + id);
+    else if (act === 'tipster') go('tipster/' + id);
     else if (act === 'back') history.length > 1 ? history.back() : go('home');
     else if (act === 'day') { S.day = +el.dataset.day; render(); }
     else if (act === 'tz') { S.tzMode = S.tzMode === 'local' ? 'venue' : 'local'; render(); }
     else if (act === 'finished') { S.showFinished = !S.showFinished; render(); }
     else if (act === 'band') { BS.viewsRecord.setBand(id); render(); }
-    else if (act === 'sport') { BS.viewsHot.setSport(id); render(); }
+    else if (act === 'sport') { go(id === 'all' ? 'hot' : 'hot/' + id); }
     else if (act === 'sort') { BS.viewsHot.setSort(id); render(); }
     else if (act === 'dir') { BS.viewsHot.setDir(id); render(); }
     else if (act === 'fav') {
@@ -268,9 +243,8 @@
       render();
     }
     else if (act === 'follow') {
-      const nowFollowing = BS.tipsters.toggleFollow(id);
-      U.toast(nowFollowing ? 'Following ' + id + ' — their tips are on your front page' : 'Unfollowed ' + id,
-        nowFollowing ? '✓' : '·');
+      const on = BS.tipsters.toggleFollow(id);
+      U.toast(on ? 'Following ' + id : 'Unfollowed ' + id, on ? '✓' : '·');
       render();
     }
     else if (act === 'toggle-region') {
@@ -280,6 +254,15 @@
       el.setAttribute('aria-expanded', sec.dataset.open);
     }
     else if (act === 'theme') cycleTheme();
+    else if (act === 'set-theme') setTheme(id === 'auto' ? '' : id);
+    else if (act === 'set-tz') { S.tzMode = id; render(); }
+    else if (act === 'set-product') { S.product = id; render(); }
+    else if (act === 'set-finished') { S.showFinished = id === 'true'; render(); }
+    else if (act === 'reset') {
+      BS.store.reset();
+      try { localStorage.removeItem('betstable.following.v1'); localStorage.removeItem('betstable.favourites.v1'); } catch (e) {}
+      location.reload();
+    }
     else if (act === 'health') showHealth();
     else if (act === 'tip') {
       U.openTipSheet({
@@ -321,16 +304,24 @@
       });
     }, 220);
   });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && C.$('.sheet')) U.closeSheet(); });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (C.$('.sheet') && !C.$('#agegate')) U.closeSheet();
+    else if (BS.menu.anyOpen()) BS.menu.closeAll();
+    else if (C.$('.dropdown')) { BS.menu.closeDropdown(); render(); }
+  });
   window.addEventListener('hashchange', () => { readHash(); render(); });
 
-  function cycleTheme() {
-    const cur = document.documentElement.getAttribute('data-theme');
-    const next = cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark';
+  function setTheme(next) {
     if (next) document.documentElement.setAttribute('data-theme', next);
     else document.documentElement.removeAttribute('data-theme');
     try { localStorage.setItem('betstable.theme', next); } catch (e) {}
-    U.toast(next ? next[0].toUpperCase() + next.slice(1) + ' theme' : 'Matching your system', '◐');
+    render();
+  }
+  function cycleTheme() {
+    const cur = document.documentElement.getAttribute('data-theme');
+    setTheme(cur === 'dark' ? 'light' : cur === 'light' ? '' : 'dark');
   }
   function showHealth() {
     const h = BS.provider.health();
@@ -339,7 +330,6 @@
       ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', '📡');
   }
 
-  /* ---------------- age gate ---------------- */
   function ageGate() {
     let seen = null;
     try { seen = localStorage.getItem('betstable.age.v1'); } catch (e) {}
@@ -362,7 +352,6 @@
     return true;
   }
 
-  /* ---------------- boot ---------------- */
   function boot() {
     try {
       const t = localStorage.getItem('betstable.theme');
@@ -372,10 +361,10 @@
     render().then(runSettlement);
     setInterval(runSettlement, 15000);
     setInterval(function () {
-      if (document.hidden || C.$('.sheet')) return;
+      if (document.hidden || C.$('.sheet') || BS.menu.anyOpen()) return;
       const a = document.activeElement;
-      if (a && a.matches && a.matches('input')) return;
-      if (['me', 'tipsters', 'tipster'].indexOf(S.view) >= 0) return;
+      if (a && a.matches && a.matches('input, select')) return;
+      if (['me', 'settings', 'tipsters', 'following'].indexOf(S.route) >= 0) return;
       const y = window.scrollY;
       render().then(() => window.scrollTo(0, y));
     }, 30000);

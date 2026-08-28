@@ -13,13 +13,13 @@
     return C.html`
       <section class="mod">
         <div class="mod-head">
-          <span class="mod-ic ${opts.tone ? 't-' + opts.tone : ''}">${C.raw(opts.icon)}</span>
+          <span class="mod-ic">${C.raw(opts.icon)}</span>
           <h2>${opts.title}</h2>
           ${opts.meta ? C.html`<span class="mod-meta">${opts.meta}</span>` : ''}
           ${opts.tools || ''}
         </div>
         ${opts.body}
-        ${opts.cta ? C.html`<button class="mod-cta" data-act="${opts.ctaAct}" data-id="${opts.ctaId || ''}">${opts.cta}</button>` : ''}
+        ${opts.cta ? C.html`<button class="mod-cta" data-act="go" data-route="${opts.ctaRoute}">${opts.cta}</button>` : ''}
       </section>`;
   }
 
@@ -42,25 +42,27 @@
 
   /* ---------- rows ---------- */
   function tipRow(g, now) {
-    const who = g.tips.slice(0, 3).map(t => t.tipster.handle);
-    const others = g.tips.length - 1;
-    const followed = g.followed.length;
+    const n = g.tips.length, mine = g.followed.length;
+    const soon = g.startTs - now < 15 * 60000;
     return C.html`
-      <button class="row" data-act="${g.kind}" data-id="${g.eventId}">
+      <button class="row" data-act="go" data-route="${g.kind === 'race' ? 'racing/race/' : 'football/match/'}${g.eventId}">
         ${sportIcon(g.sport)}
         <span class="row-main">
-          <span class="row-title">${g.selection} <b>@ ${C.fmtOdds(g.odds)}</b></span>
+          <span class="row-title">
+            <span class="nm">${g.selection}</span>
+            <span class="odds">${C.fmtOdds(g.odds)}</span>
+          </span>
           <span class="row-sub">${U.time(g.startTs, g.tz)} ${g.flag} ${g.title.replace(/\s\d{2}:\d{2}$/, '')} · ${g.market}</span>
-          <span class="consensus ${followed ? 'mine' : ''}">
+          <span class="backers ${mine ? 'mine' : ''}">
             <span class="avatars">${g.tips.slice(0, 3).map(t => U.avatar(t.tipster.silk, 'xs'))}</span>
-            ${followed
-              ? C.html`${g.followed[0].tipster.handle}${followed > 1 ? ' and ' + (followed - 1) + ' more you follow' : ''} back this`
-              : C.html`${who[0]}${others ? ' and ' + others + ' more' : ''} back this`}
+            <span class="txt">${mine
+              ? mine + (mine === 1 ? ' you follow' : ' you follow') + (n > mine ? ' of ' + n : '') + ' back this'
+              : n + (n === 1 ? ' tipster backs' : ' tipsters back') + ' this'}</span>
           </span>
         </span>
         <span class="row-end">
-          <span class="cd">${C.countdown(g.startTs, now)}</span>
-          <span class="heatpill" title="Agreement between tipsters with a record">${g.heat}</span>
+          <span class="cd ${soon ? 'soon' : ''}">${C.countdown(g.startTs, now)}</span>
+          <span class="heatpill" title="How much agreement there is, close to the off">${g.heat}</span>
         </span>
       </button>`;
   }
@@ -73,9 +75,9 @@
       : { n: C.fmtPct(t.roi), k: 'ROI', good: t.roi >= 0 };
     return C.html`
       <div class="row row-static">
-        <button class="row-av" data-act="tipster" data-id="${t.handle}" aria-label="${t.handle}">${U.avatar(t.silk)}</button>
-        <button class="row-main" data-act="tipster" data-id="${t.handle}">
-          <span class="row-title">${t.handle}</span>
+        <button data-act="go" data-route="tipster/${t.handle}" aria-label="${t.handle}" style="flex:none">${U.avatar(t.silk, 'md')}</button>
+        <button class="row-main" data-act="go" data-route="tipster/${t.handle}">
+          <span class="row-title"><span class="nm">${t.handle}</span></span>
           <span class="row-sub">${t.followers.toLocaleString()} followers · ${t.n} settled
             ${t.ranked ? '' : C.raw('· <span class="mini-warn">unranked</span>')}</span>
         </button>
@@ -89,10 +91,10 @@
 
   function eventRow(ev, now) {
     return C.html`
-      <button class="row" data-act="${ev.kind}" data-id="${ev.id}">
+      <button class="row" data-act="go" data-route="${ev.kind === 'race' ? 'racing/race/' : 'football/match/'}${ev.id}">
         ${sportIcon(ev.sport)}
         <span class="row-main">
-          <span class="row-title">${ev.title}</span>
+          <span class="row-title"><span class="nm">${ev.title}</span></span>
           <span class="row-sub">${U.time(ev.startTs, ev.tz)} · ${ev.subtitle}</span>
         </span>
         <span class="row-end"><span class="cd">${C.countdown(ev.startTs, now)}</span><span class="chev">›</span></span>
@@ -144,12 +146,12 @@
       </div>
 
       <div class="doors">
-        <button class="door racing" data-act="nav" data-id="racing">
+        <button class="door racing" data-act="go" data-route="racing/today">
           <span class="kicker">Horse racing</span>
           <span class="name">BetStable</span>
           <span class="meta">${openMeetings.length} meetings · ${racesToCome.length} races</span>
         </button>
-        <button class="door football" data-act="nav" data-id="football">
+        <button class="door football" data-act="go" data-route="football/today">
           <span class="kicker">Football</span>
           <span class="name">ScoreMore</span>
           <span class="meta">${matchesLeft.length} today · ${fxTomorrow.length} tomorrow</span>
@@ -157,40 +159,40 @@
       </div>
 
       ${mod({
-        icon: ICONS.flame, tone: 'hot', title: 'Hot tips', meta: 'both sports',
+        icon: ICONS.flame, title: 'Hot tips', meta: 'both sports',
         tools: select('sort-hot', sortState.hot,
           [['heat', 'Most agreed'], ['time', 'Off soonest'], ['price', 'Biggest price']]),
         body: hotTop.length
           ? C.html`<div class="rows">${hotTop.map(g => tipRow(g, now))}</div>`
           : C.html`<div class="rows"><p class="row-empty">No tipster has posted on an upcoming event yet. Tips cluster in the hour before the off.</p></div>`,
-        cta: 'See all ' + hot.length + ' hot tips', ctaAct: 'nav', ctaId: 'hot'
+        cta: 'See all ' + hot.length + ' hot tips', ctaRoute: 'hot'
       })}
 
       ${mod({
-        icon: ICONS.people, tone: 'follow', title: 'Your tipsters', meta: following.length ? following.length + ' followed' : '',
+        icon: ICONS.people, title: 'Your tipsters', meta: following.length ? following.length + ' followed' : '',
         body: following.length
           ? (consensus.length
             ? C.html`<div class="rows">${consensus.map(g => tipRow(g, now))}</div>`
             : C.html`<div class="rows"><p class="row-empty">Nobody you follow has posted yet. Their tips land here the moment they do.</p></div>`)
           : C.html`<div class="rows"><p class="row-empty">Follow a tipster and their tips appear here, on every table, and in the hot list. Records are public and permanent, so you can check before you follow.</p></div>`,
-        cta: following.length ? 'Manage who you follow' : 'Browse tipsters', ctaAct: 'nav', ctaId: 'tipsters'
+        cta: following.length ? 'Manage who you follow' : 'Browse tipsters', ctaRoute: following.length ? 'following' : 'tipsters'
       })}
 
       ${mod({
-        icon: ICONS.chart, tone: 'form', title: 'In form', meta: 'short-run, not a record',
+        icon: ICONS.chart, title: 'In form', meta: 'short-run, not a record',
         tools: select('sort-tipsters', sortState.tipsters,
           [['streak', 'Profit streak'], ['last7', 'Last 7 days'], ['last30', 'Last 30 days'],
            ['roi', 'ROI, all time'], ['followers', 'Most followed']]),
         body: C.html`<div class="rows">${inForm.map(t => tipsterRow(t, sortState.tipsters))}</div>`,
-        cta: 'Browse all ' + T.all().length + ' tipsters', ctaAct: 'nav', ctaId: 'tipsters'
+        cta: 'Browse all ' + T.all().length + ' tipsters', ctaRoute: 'tipsters'
       })}
 
       ${mod({
-        icon: ICONS.star, tone: 'fav', title: 'Your favourites', meta: favs.length ? favs.length + ' upcoming' : '',
+        icon: ICONS.star, title: 'Your favourites', meta: favs.length ? favs.length + ' upcoming' : '',
         body: favs.length
           ? C.html`<div class="rows">${favs.map(e => eventRow(e, now))}</div>`
           : C.html`<div class="rows"><p class="row-empty">Star a race or a match and it waits for you here. Look for ☆ on any racecard or fixture.</p></div>`,
-        cta: favs.length ? '' : null
+        cta: favs.length ? 'All favourites' : null, ctaRoute: 'favourites'
       })}
 
       <p class="foot-note">

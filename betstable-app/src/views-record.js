@@ -149,7 +149,7 @@
               <div class="tip-row">
                 <span class="badge pending">Pending</span>
                 <span>
-                  <div class="sel">${t.selection}</div>
+                  <div class="sel2">${t.selection}</div>
                   <div class="ev">${t.market} · ${t.event} · frozen at ${C.fmtOdds(t.odds)}</div>
                 </span>
                 <span class="mono" style="font-size:10.5px;color:var(--ink-3)">${t.hash.slice(0, 8)}</span>
@@ -167,7 +167,7 @@
             <div class="tip-row">
               <span class="badge ${t.won ? 'won' : 'lost'}">${t.won ? 'Won' : 'Lost'}</span>
               <span>
-                <div class="sel">${t.selection}</div>
+                <div class="sel2">${t.selection}</div>
                 <div class="ev">${t.market} · ${t.event} · ${C.fmtOdds(t.odds)}</div>
               </span>
               <span class="ret ${t.ret >= 0 ? 'good' : 'bad'}">${C.fmtUnits(t.ret)}</span>
