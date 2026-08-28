@@ -628,6 +628,43 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .rg { padding: 18px 12px 12px; text-align: center; font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
 .rg a { color: var(--ink-2); }
 
+/* a form is read in a column, not stretched across a desktop */
+.narrow { max-width: 560px; }
+
+/* segmented tabs */
+.tabs { display: inline-flex; gap: 3px; padding: 3px; background: var(--surface-2);
+  border: 1px solid var(--line); border-radius: 999px; max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs button { padding: 8px 15px; border-radius: 999px; font-size: 13.5px; font-weight: 680;
+  color: var(--ink-2); white-space: nowrap; }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--lift-1); }
+
+/* forms */
+.field { display: block; margin-bottom: 15px; }
+.field-label { display: block; font-size: 12.5px; font-weight: 750; color: var(--ink-2); margin-bottom: 6px; }
+.field-wrap { display: flex; align-items: center; gap: 2px; padding: 0 13px; height: 48px;
+  border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); }
+.field-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.field-prefix { color: var(--ink-3); font-weight: 750; }
+.field-wrap input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 16px; font-weight: 620; }
+.field-hint { display: block; font-size: 12px; color: var(--ink-3); margin-top: 6px; line-height: 1.4; }
+.field-hint.good { color: var(--good); font-weight: 650; }
+.field-hint.bad { color: var(--bad); font-weight: 650; }
+.check { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; font-size: 13px;
+  color: var(--ink-2); line-height: 1.45; cursor: pointer; }
+.check input { width: 20px; height: 20px; flex: none; margin: 1px 0 0; accent-color: var(--accent); }
+
+/* expert badges */
+.xbadge { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; border-radius: 999px;
+  font-size: 10.5px; font-weight: 800; letter-spacing: .01em; margin-left: 6px; white-space: nowrap; }
+.xbadge.consistent { background: var(--good-soft); color: var(--good); }
+.xbadge.value { background: var(--warn-soft); color: var(--warn); }
+
+/* time chip used across the browse screens */
+.timechip { flex: none; min-width: 56px; padding: 6px 8px; border-radius: var(--r-s);
+  border: 1px solid var(--line); background: var(--surface-2); text-align: center;
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px; }
+
 /* settings */
 .setting { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid var(--line-soft); }
 .setting:last-child { border-bottom: 0; }
@@ -1542,6 +1579,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
     load, save, addTip, settle, stats, leaderboard, merkleRoot, tipHash,
     tips: () => load().tips,
     handle: () => load().handle,
+    setHandle: h => { const l = load(); l.handle = h; save(); },
     reset: () => { try { localStorage.removeItem(KEY); } catch (e) {} ledger = null; }
   };
 })(window.BS = window.BS || {});
@@ -1609,6 +1647,9 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
       ranked: n >= 100,
       // Short-run form, kept separate from the record so nobody confuses a good
       // fortnight with an edge.
+      // What kind of winners they find — the value badge turns on this.
+      avgWinOdds: Math.round((2.2 + Math.pow(r(), 1.5) * 9) * 10) / 10,
+      bigWinners: C.rint(r, 0, 44),
       streak: C.rint(r, 0, 9),
       last7: Math.round(C.gauss(r, 1.2, 6.5) * 10) / 10,
       last30: Math.round(C.gauss(r, 3.4, 13) * 10) / 10
@@ -1792,6 +1833,206 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
     get: h => byHandle.get(h),
     isFollowing, toggleFollow, followingList,
     hotTips, openTipsFor, curveFor, upcomingEvents, asEvent
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* experts.js — the two expert badges and the job that keeps them honest.
+
+   Consistent expert  in profit across each of the last three 30-day periods
+   Value expert       makes its money at a price, not from short-priced winners
+
+   Both are recalculated once a week, and every award and every loss is written
+   to an append-only log. A badge you can quietly keep after the record stops
+   supporting it would be exactly the thing this product exists not to do. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+  const KEY = 'betstable.experts.v1';
+  const WEEK = 7 * 864e5;
+  /* Monday 2024-01-01 as the epoch, so week boundaries land on a Monday. */
+  const EPOCH = Date.UTC(2024, 0, 1);
+
+  const BADGES = {
+    consistent: {
+      id: 'consistent', label: 'Consistent', full: 'Consistent expert', icon: '📈',
+      rule: 'In profit across each of the last three 30-day periods, on a profitable record of 100+ settled tips.'
+    },
+    value: {
+      id: 'value', label: 'Value', full: 'Value expert', icon: '💎',
+      rule: 'Profitable with an average winning price of 4.5 or bigger, and at least 12 winners at those prices.'
+    }
+  };
+
+  const weekIndex = now => Math.floor(((now || Date.now()) - EPOCH) / WEEK);
+  const weekStart = wi => EPOCH + wi * WEEK;
+  const nextRunTs = now => weekStart(weekIndex(now) + 1);
+
+  /** Weekly profit series. Fixed per tipster per week, so history never moves. */
+  function weeklyPL(t, wi) {
+    const r = C.rng('wk|' + t.handle + '|' + wi);
+    // Centred on the tipster's own edge, with a week's worth of variance on top.
+    return C.gauss(r, (t.roi / 100) * 9, 4.6);
+  }
+
+  /** Three consecutive 30-day periods, as four-week blocks ending this week. */
+  function periods(t, wi) {
+    const out = [];
+    for (let k = 0; k < 3; k++) {
+      let sum = 0;
+      for (let w = 0; w < 4; w++) sum += weeklyPL(t, wi - k * 4 - w);
+      out.push(Math.round(sum * 10) / 10);
+    }
+    return out;                       // [most recent, previous, one before]
+  }
+
+  /** Evaluate both badges for one tipster in a given week. */
+  function evaluate(t, wi) {
+    const p = periods(t, wi);
+    const consistent = t.n >= 100 && t.roi > 0 && p.every(x => x > 0);
+    const value = t.n >= 100 && t.roi > 0 && t.avgWinOdds >= 4.5 && t.bigWinners >= 12;
+    return { periods: p, consistent: consistent, value: value };
+  }
+
+  /* ---------- stored state and the append-only log ---------- */
+  let state = null;
+  function load() {
+    if (state) return state;
+    try {
+      const raw = localStorage.getItem(KEY);
+      state = raw ? JSON.parse(raw) : null;
+    } catch (e) { state = null; }
+    if (!state) state = { week: null, lastRun: null, badges: {}, log: [], simOffset: 0 };
+    if (typeof state.simOffset !== 'number') state.simOffset = 0;
+    return state;
+  }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  /** The weekly job. Idempotent: running twice in a week changes nothing. */
+  function runIfDue(now) {
+    const s = load();
+    const wi = weekIndex(now) + s.simOffset;
+    if (s.week === wi) return { ran: false, changes: [] };
+    const changes = [];
+    for (const t of BS.tipsters.all()) {
+      const res = evaluate(t, wi);
+      const prev = s.badges[t.handle] || {};
+      for (const id of ['consistent', 'value']) {
+        const had = !!prev[id], has = !!res[id];
+        // The first run establishes a baseline rather than logging 40 awards.
+        if (had !== has && s.week !== null) {
+          changes.push({ ts: now, week: wi, handle: t.handle, badge: id, action: has ? 'awarded' : 'lost' });
+        }
+      }
+      s.badges[t.handle] = { consistent: res.consistent, value: res.value, periods: res.periods };
+    }
+    s.log = changes.concat(s.log).slice(0, 200);
+    s.week = wi;
+    s.lastRun = now;
+    save();
+    return { ran: true, changes: changes };
+  }
+
+  /** Badges as of the last run — never recomputed on the fly for display. */
+  function badgesFor(handle) {
+    const b = load().badges[handle];
+    if (!b) return { consistent: false, value: false, periods: [] };
+    return b;
+  }
+  const holders = id => BS.tipsters.all().filter(t => badgesFor(t.handle)[id]);
+
+  BS.experts = {
+    BADGES, weekIndex, weekStart, nextRunTs, evaluate, periods, runIfDue, badgesFor, holders,
+    lastRun: () => load().lastRun,
+    week: () => load().week,
+    log: () => load().log.slice(),
+    /* Demo affordance only. The real job runs on the server every Monday and
+       cannot be nudged; this walks the clock forward so the mechanism is
+       visible without waiting a week. */
+    simulateNextWeek: now => { const s = load(); s.simOffset += 1; save(); return runIfDue(now); },
+    simOffset: () => load().simOffset,
+    reset: () => { try { localStorage.removeItem(KEY); } catch (e) {} state = null; }
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* account.js — signing up for a handle.
+   A handle is the thing a record is attached to, so it is claimed once and
+   never reassigned. Everything here lives on the device; a real build would
+   put the same shapes behind an API. */
+(function (BS) {
+  'use strict';
+  const KEY = 'betstable.account.v1';
+  let account = null;
+
+  function load() {
+    if (account !== null) return account;
+    try {
+      const raw = localStorage.getItem(KEY);
+      account = raw ? JSON.parse(raw) : false;
+    } catch (e) { account = false; }
+    return account;
+  }
+  function save() {
+    try {
+      if (account) localStorage.setItem(KEY, JSON.stringify(account));
+      else localStorage.removeItem(KEY);
+    } catch (e) {}
+  }
+
+  const HANDLE_RE = /^[a-z0-9_]{3,20}$/;
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  /** Reserved: every handle already carrying a public record. */
+  function taken(handle) {
+    const h = '@' + handle.toLowerCase();
+    return BS.tipsters.all().some(t => t.handle.toLowerCase() === h);
+  }
+
+  /** Returns null when valid, otherwise the reason — in words a person can act on. */
+  function checkHandle(raw) {
+    const h = String(raw || '').trim().replace(/^@/, '').toLowerCase();
+    if (!h) return 'Pick a handle — it is the name your record is published under.';
+    if (h.length < 3) return 'Handles are at least 3 characters.';
+    if (h.length > 20) return 'Handles are at most 20 characters.';
+    if (!HANDLE_RE.test(h)) return 'Letters, numbers and underscores only.';
+    if (taken(h)) return '@' + h + ' is already taken.';
+    return null;
+  }
+  const checkEmail = raw => EMAIL_RE.test(String(raw || '').trim())
+    ? null : 'That does not look like an email address.';
+
+  function create(opts) {
+    const hErr = checkHandle(opts.handle), eErr = checkEmail(opts.email);
+    if (hErr) return { error: hErr, field: 'handle' };
+    if (eErr) return { error: eErr, field: 'email' };
+    if (!opts.age) return { error: 'You must confirm you are 18 or over.', field: 'age' };
+    account = {
+      handle: '@' + String(opts.handle).trim().replace(/^@/, '').toLowerCase(),
+      email: String(opts.email).trim(),
+      // Off unless asked for, and honoured everywhere once asked to stop.
+      marketing: !!opts.marketing,
+      createdAt: Date.now()
+    };
+    save();
+    BS.store.setHandle(account.handle);
+    return { account: account };
+  }
+
+  function signOut() {
+    account = false;
+    save();
+  }
+
+  BS.account = {
+    get: () => load() || null,
+    isSignedIn: () => !!load(),
+    handle: () => (load() || {}).handle || null,
+    create, signOut, checkHandle, checkEmail
   };
 })(window.BS = window.BS || {});
 
@@ -2015,10 +2256,18 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
         <div class="kv"><dt>After posting</dt><dd>Cannot be edited or deleted</dd></div>
       </dl>
 
-      <div style="display:flex;gap:10px">
-        <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
-        <button class="btn" data-act="sheet-confirm">Post tip at ${C.fmtOdds(f.odds)}</button>
-      </div>
+      ${BS.account.isSignedIn()
+        ? C.html`<div style="display:flex;gap:10px">
+            <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
+            <button class="btn" data-act="sheet-confirm">Post tip at ${C.fmtOdds(f.odds)}</button>
+          </div>`
+        : C.html`
+            <div class="notice" style="margin-bottom:12px"><span>🔒</span><span>
+              A tip is published under a handle, permanently. Claim one and this tip is your first record.</span></div>
+            <div style="display:flex;gap:10px">
+              <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
+              <button class="btn" data-act="signup-cta">Claim a handle</button>
+            </div>`}
       <p style="font-size:11.5px;color:var(--ink-3);margin:12px 0 0;text-align:center">
         18+ · one unit per tip · this record is permanent
       </p>
@@ -2038,6 +2287,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
     const c = sheetCtx;
     if (!c) return;
     if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', '⛔'); return; }
+    if (!BS.account.isSignedIn()) { closeSheet(); BS.app.go('signup'); return; }
     const rec = BS.store.addTip({
       product: c.product, event: c.event, market: c.market, selection: c.selection,
       odds: c.frozen.odds, refId: c.refId, refKind: c.refKind, startTs: c.startTs
@@ -2093,7 +2343,8 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
     follow: 'M12 5.5v13M5.5 12h13',
     cog: 'M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM19.4 14.4a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3.3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3.3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
     menu: 'M4 7h16M4 12h16M4 17h16',
-    close: 'M6 6l12 12M18 6L6 18'
+    close: 'M6 6l12 12M18 6L6 18',
+    clock: 'M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17zM12 7.4V12l3.1 2'
   };
   const icon = (k, cls) => C.raw('<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
     'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
@@ -2106,7 +2357,8 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
     {
       id: 'racing', label: 'BetStable', sub: 'Horse racing', icon: 'racing', route: 'racing/today',
       items: [
-        { label: 'Today\'s racing', sub: 'Every meeting, by country', route: 'racing/today', icon: 'calendar' },
+        { label: 'All courses', sub: 'Every meeting, by country', route: 'racing/today', icon: 'calendar' },
+        { label: 'Next races', sub: 'Every course, in time order', route: 'racing/next', icon: 'clock' },
         { label: 'Next 7 days', sub: 'Entries and declarations', route: 'racing/week', icon: 'week' },
         { label: 'Hot racing tips', sub: 'What tipsters agree on', route: 'hot/racing', icon: 'hot' },
         { label: 'Racing table', sub: 'ROI with intervals', route: 'racing/table', icon: 'trophy' }
@@ -2115,7 +2367,8 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
     {
       id: 'football', label: 'ScoreMore', sub: 'Football', icon: 'football', route: 'football/today',
       items: [
-        { label: 'Today\'s football', sub: 'Fixtures worldwide', route: 'football/today', icon: 'calendar' },
+        { label: 'All competitions', sub: 'Fixtures worldwide', route: 'football/today', icon: 'calendar' },
+        { label: 'Next kick-offs', sub: 'In time order', route: 'football/next', icon: 'clock' },
         { label: 'Next 7 days', sub: 'Line-ups as they firm up', route: 'football/week', icon: 'week' },
         { label: 'Hot football tips', sub: 'What tipsters agree on', route: 'hot/football', icon: 'hot' },
         { label: 'Football table', sub: 'ROI with intervals', route: 'football/table', icon: 'trophy' }
@@ -2134,6 +2387,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
       id: 'tipsters', label: 'Tipsters', icon: 'people', route: 'tipsters',
       items: [
         { label: 'Browse tipsters', sub: 'Every record, unedited', route: 'tipsters', icon: 'people' },
+        { label: 'Experts', sub: 'Consistent and value, checked weekly', route: 'experts', icon: 'trophy' },
         { label: 'Following', route: 'following', icon: 'follow' },
         { label: 'Racing table', route: 'racing/table', icon: 'trophy' },
         { label: 'Football table', route: 'football/table', icon: 'trophy' }
@@ -2145,7 +2399,8 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
         { label: 'My tips', sub: 'Record, ROI and drawdown', route: 'me', icon: 'me' },
         { label: 'My favourites', route: 'favourites', icon: 'star' },
         { label: 'Following', route: 'following', icon: 'follow' },
-        { label: 'Settings', route: 'settings', icon: 'cog' }
+        { label: 'Settings', route: 'settings', icon: 'cog' },
+        { label: 'My handle', route: 'signup', icon: 'people' }
       ]
     }
   ];
@@ -3124,7 +3379,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       <div class="row row-static">
         <button data-act="go" data-route="tipster/${t.handle}" aria-label="${t.handle}" style="flex:none">${U.avatar(t.silk, 'md')}</button>
         <button class="row-main" data-act="go" data-route="tipster/${t.handle}">
-          <span class="row-title"><span class="nm">${t.handle}</span></span>
+          <span class="row-title"><span class="nm">${t.handle}</span>${BS.viewsAccount.badgeChips(t.handle)}</span>
           <span class="row-sub">${t.followers.toLocaleString()} followers · ${t.n} settled
             ${t.ranked ? '' : C.raw('· <span class="mini-warn">unranked</span>')}</span>
         </button>
@@ -3385,7 +3640,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       <div class="profile-head">
         ${U.avatar(t.silk, 'lg')}
         <div style="min-width:0;flex:1">
-          <h1>${t.handle}</h1>
+          <h1>${t.handle}${BS.viewsAccount.badgeChips(t.handle)}</h1>
           <div class="b">${t.bio}</div>
           <div style="display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--on-dark-2);font-weight:650">
             <span>${t.sport === 'racing' ? '🐴 Racing' : '⚽ Football'}</span>
@@ -3606,6 +3861,626 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
 
 </script>
 <script>
+/* views-browse.js — drilling down to a race the way punters actually navigate:
+   all courses → a country → a meeting → the card. Football takes the same
+   shape: regions → competitions → fixtures. Plus a flat "next off" list for
+   when you just want whatever runs soonest. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui;
+
+  /* ---------- shared list row ---------- */
+  function navRow(opts) {
+    return C.html`
+      <button class="row" data-act="go" data-route="${opts.route}">
+        ${opts.lead || ''}
+        <span class="row-main">
+          <span class="row-title"><span class="nm">${opts.title}</span></span>
+          ${opts.sub ? C.html`<span class="row-sub">${opts.sub}</span>` : ''}
+        </span>
+        <span class="row-end">
+          ${opts.right ? C.html`<span class="cd ${opts.soon ? 'soon' : ''}">${opts.right}</span>` : ''}
+          ${opts.rightSub ? C.html`<span class="row-sub">${opts.rightSub}</span>` : ''}
+        </span>
+        <span class="chev">›</span>
+      </button>`;
+  }
+  const timeChip = (ts, tz) => C.raw('<span class="timechip">' + C.esc(U.time(ts, tz)) + '</span>');
+
+  const liveRaces = (m, now) => m.races.filter(r => BS.racing.raceState(r, now) !== 'result');
+
+  async function loadDays(kind, n) {
+    const out = [];
+    for (let d = 0; d < n; d++) out.push(kind === 'racing' ? BS.provider.meetings(d) : BS.provider.fixtures(d));
+    const lists = await Promise.all(out);
+    lists.forEach(list => list.forEach(x => {
+      if (kind === 'racing') {
+        U.index.meetings.set(x.id, x);
+        x.races.forEach(r => { r.tzRef = x.tz; r.venue = x.venue; r.flag = x.flag; U.index.races.set(r.id, r); });
+      } else U.index.fixtures.set(x.id, x);
+    }));
+    return lists;
+  }
+
+  /* ================= RACING ================= */
+
+  /** All courses: the index every other racing screen hangs off. */
+  async function racingIndex(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${U.skeleton(4)}`);
+    const [today, tomorrow] = await loadDays('racing', 2);
+
+    const open = today.filter(m => liveRaces(m, now).length);
+    const byRegion = new Map();
+    open.forEach(m => {
+      if (!byRegion.has(m.region)) byRegion.set(m.region, []);
+      byRegion.get(m.region).push(m);
+    });
+    const nextOff = open.reduce((a, m) => a.concat(liveRaces(m, now)), []).sort((a, b) => a.offTs - b.offTs)[0];
+
+    C.mount(root, C.html`
+      <div class="page-head">
+        <h1>All courses</h1>
+        <span class="sub">${open.length} meetings today</span>
+      </div>
+
+      <div class="mod">
+        <div class="rows">
+          ${navRow({
+            route: 'racing/next', title: 'Next races',
+            sub: 'Every course, in time order',
+            lead: C.raw('<span class="row-ic">⏱</span>'),
+            right: nextOff ? C.countdown(nextOff.offTs, now) : '',
+            soon: nextOff && nextOff.offTs - now < 9e5
+          })}
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.globe)}</span><h2>Racing today</h2>
+          <span class="mod-meta">by country</span></div>
+        <div class="rows">
+          ${BS.racing.REGIONS.filter(r => byRegion.has(r.id)).map(r => {
+            const ms = byRegion.get(r.id);
+            const races = ms.reduce((a, m) => a + liveRaces(m, now).length, 0);
+            const next = ms.reduce((a, m) => a.concat(liveRaces(m, now)), []).sort((a, b) => a.offTs - b.offTs)[0];
+            return navRow({
+              route: 'racing/region/' + r.id, title: r.name,
+              sub: ms.length + (ms.length === 1 ? ' course · ' : ' courses · ') + races + ' races to come',
+              lead: C.raw('<span class="row-ic">' + r.flag + '</span>'),
+              right: next ? U.time(next.offTs, next.tzRef) : '',
+              rightSub: next ? C.countdown(next.offTs, now) : ''
+            });
+          })}
+        </div>
+        ${!byRegion.size ? C.html`<p class="row-empty">Every meeting has finished for the day. Tomorrow's cards are below.</p>` : ''}
+      </div>
+
+      <div class="mod">
+        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.cal)}</span><h2>Tomorrow</h2></div>
+        <div class="rows">
+          ${tomorrow.slice(0, 6).map(m => navRow({
+            route: 'racing/meeting/' + m.id, title: m.venue,
+            sub: m.races.length + ' races · first off ' + U.time(m.firstOff, m.tz),
+            lead: C.raw('<span class="row-ic">' + m.flag + '</span>')
+          }))}
+        </div>
+        <button class="mod-cta" data-act="go" data-route="racing/week">All seven days</button>
+      </div>
+    `);
+  }
+
+  /** One country: its courses. */
+  async function racingRegion(root, regionId) {
+    const now = Date.now();
+    const region = BS.racing.REGIONS.find(r => r.id === regionId);
+    C.mount(root, C.html`${U.skeleton(3)}`);
+    await loadDays('racing', 2);
+    const meetings = Array.from(U.index.meetings.values())
+      .filter(m => m.region === regionId && m.dayOffset === 0)
+      .sort((a, b) => a.firstOff - b.firstOff);
+    const open = meetings.filter(m => liveRaces(m, now).length);
+
+    C.mount(root, C.html`
+      <button class="back" data-act="go" data-route="racing/today">← All courses</button>
+      <div class="page-head">
+        <h1>${region ? region.flag + ' ' + region.name : regionId}</h1>
+        <span class="sub">${open.length} meetings</span>
+      </div>
+      <div class="mod">
+        <div class="rows">
+          ${open.length ? open.map(m => {
+            const rest = liveRaces(m, now);
+            return navRow({
+              route: 'racing/meeting/' + m.id, title: m.venue,
+              sub: rest.length + ' races to come · ' + m.going + ' · ' + (m.surface === 'aw' ? 'all-weather' : m.surface),
+              lead: C.raw('<span class="row-ic">' + m.flag + '</span>'),
+              right: rest.length ? U.time(rest[0].offTs, m.tz) : '',
+              rightSub: rest.length ? C.countdown(rest[0].offTs, now) : '',
+              soon: rest.length && rest[0].offTs - now < 9e5
+            });
+          }) : C.html`<p class="row-empty">Every meeting in ${region ? region.name : 'this country'} has finished for the day.</p>`}
+        </div>
+      </div>
+    `);
+  }
+
+  /** One meeting: its race times, the way a racecard index reads. */
+  async function racingMeeting(root, meetingId) {
+    const now = Date.now();
+    if (!U.index.meetings.has(meetingId)) { C.mount(root, C.html`${U.skeleton(3)}`); await loadDays('racing', 7); }
+    const m = U.index.meetings.get(meetingId);
+    if (!m) { C.mount(root, U.empty('Meeting not found', 'Go back and pick the course again.')); return; }
+    const region = BS.racing.REGIONS.find(r => r.id === m.region);
+
+    C.mount(root, C.html`
+      <button class="back" data-act="go" data-route="racing/region/${m.region}">← ${region ? region.name : 'Back'}</button>
+      <div class="page-head">
+        <h1>${m.flag} ${m.venue}</h1>
+        <span class="sub">${m.races.length} races · ${m.going}</span>
+        <span class="right">
+          ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + C.esc(m.id) + '" aria-pressed="' +
+            String(BS.store.isFav(m.id)) + '" aria-label="Star this meeting"><svg viewBox="0 0 24 24" fill="' +
+            (BS.store.isFav(m.id) ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.8" ' +
+            'stroke-linejoin="round"><path d="M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z"/></svg></button>')}
+        </span>
+      </div>
+      <div class="mod">
+        <div class="rows">
+          ${m.races.map(r => {
+            const st = BS.racing.raceState(r, now);
+            return C.html`
+              <button class="row" data-act="go" data-route="racing/race/${r.id}">
+                ${timeChip(r.offTs, m.tz)}
+                <span class="row-main">
+                  <span class="row-title"><span class="nm">${r.name}</span></span>
+                  <span class="row-sub">${r.distance} · ${r.cls} · ${r.declared ? r.runners.length + ' runners' : 'entries only'}</span>
+                </span>
+                <span class="row-end">
+                  ${st === 'result' ? C.raw('<span class="cd" style="color:var(--ink-3)">Result</span>')
+                    : st === 'off' ? C.raw('<span class="livechip"><span class="pulse"></span>OFF</span>')
+                    : C.html`<span class="cd ${r.offTs - now < 9e5 ? 'soon' : ''}">${C.countdown(r.offTs, now)}</span>`}
+                </span>
+                <span class="chev">›</span>
+              </button>`;
+          })}
+        </div>
+      </div>
+    `);
+  }
+
+  /** Flat next-off list across every jurisdiction. */
+  async function racingNext(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${U.skeleton(4)}`);
+    await loadDays('racing', 2);
+    const all = Array.from(U.index.races.values())
+      .filter(r => r.offTs > now && r.declared)
+      .sort((a, b) => a.offTs - b.offTs).slice(0, 60);
+    const midnight = new Date(); midnight.setHours(24, 0, 0, 0);
+    const today = all.filter(r => r.offTs < midnight.getTime());
+    const later = all.filter(r => r.offTs >= midnight.getTime());
+
+    const group = (label, list) => list.length ? C.html`
+      <div class="mod">
+        <div class="mod-head"><h2>${label}</h2><span class="mod-meta">${list.length} races</span></div>
+        <div class="rows">
+          ${list.map(r => C.html`
+            <button class="row" data-act="go" data-route="racing/race/${r.id}">
+              ${timeChip(r.offTs, r.tzRef)}
+              <span class="row-main">
+                <span class="row-title"><span class="nm">${r.flag} ${r.venue}</span></span>
+                <span class="row-sub">${r.distance} · ${r.runners.length} runners</span>
+              </span>
+              <span class="row-end"><span class="cd ${r.offTs - now < 9e5 ? 'soon' : ''}">${C.countdown(r.offTs, now)}</span></span>
+              <span class="chev">›</span>
+            </button>`)}
+        </div>
+      </div>` : '';
+
+    C.mount(root, C.html`
+      <button class="back" data-act="go" data-route="racing/today">← All courses</button>
+      <div class="page-head"><h1>Next races</h1><span class="sub">every course, in time order</span></div>
+      ${group('Today', today)}
+      ${group('Tomorrow', later)}
+      ${!all.length ? U.empty('Nothing left to run', 'Every declared race has gone. Tomorrow\'s cards are in Next 7 days.') : ''}
+    `);
+  }
+
+  /* ================= FOOTBALL ================= */
+
+  async function footballIndex(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${U.skeleton(4)}`);
+    const [today, tomorrow] = await loadDays('football', 2);
+    const live = today.filter(f => BS.football.fixtureState(f, now).state !== 'ft');
+    const byRegion = new Map();
+    live.forEach(f => {
+      if (!byRegion.has(f.region)) byRegion.set(f.region, []);
+      byRegion.get(f.region).push(f);
+    });
+    const next = live.filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs)[0];
+
+    C.mount(root, C.html`
+      <div class="page-head"><h1>All competitions</h1><span class="sub">${live.length} matches today</span></div>
+
+      <div class="mod">
+        <div class="rows">
+          ${navRow({
+            route: 'football/next', title: 'Next kick-offs', sub: 'Every competition, in time order',
+            lead: C.raw('<span class="row-ic">⏱</span>'),
+            right: next ? C.countdown(next.koTs, now) : ''
+          })}
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.globe)}</span><h2>Football today</h2>
+          <span class="mod-meta">by region</span></div>
+        <div class="rows">
+          ${BS.football.REGIONS.filter(r => byRegion.has(r.id)).map(r => {
+            const fx = byRegion.get(r.id);
+            const comps = new Set(fx.map(f => f.compId));
+            const nx = fx.filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs)[0];
+            const nLive = fx.filter(f => BS.football.fixtureState(f, now).state === 'live').length;
+            return navRow({
+              route: 'football/region/' + r.id, title: r.name,
+              sub: comps.size + (comps.size === 1 ? ' competition · ' : ' competitions · ') + fx.length + ' matches',
+              lead: C.raw('<span class="row-ic">' + r.flag + '</span>'),
+              right: nLive ? C.raw('<span class="livechip"><span class="pulse"></span>' + nLive + ' live</span>')
+                : nx ? U.time(nx.koTs, nx.tz) : '',
+              rightSub: !nLive && nx ? C.countdown(nx.koTs, now) : ''
+            });
+          })}
+        </div>
+        ${!byRegion.size ? C.html`<p class="row-empty">Every match today has finished.</p>` : ''}
+      </div>
+
+      <div class="mod">
+        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.cal)}</span><h2>Tomorrow</h2>
+          <span class="mod-meta">${tomorrow.length} matches</span></div>
+        <button class="mod-cta" data-act="go" data-route="football/week">All seven days</button>
+      </div>
+    `);
+  }
+
+  async function footballRegion(root, regionId) {
+    const now = Date.now();
+    const region = BS.football.REGIONS.find(r => r.id === regionId);
+    C.mount(root, C.html`${U.skeleton(3)}`);
+    await loadDays('football', 2);
+    const fx = Array.from(U.index.fixtures.values()).filter(f => f.region === regionId && f.dayOffset === 0);
+    const byComp = new Map();
+    fx.forEach(f => { if (!byComp.has(f.compId)) byComp.set(f.compId, []); byComp.get(f.compId).push(f); });
+
+    C.mount(root, C.html`
+      <button class="back" data-act="go" data-route="football/today">← All competitions</button>
+      <div class="page-head">
+        <h1>${region ? region.flag + ' ' + region.name : regionId}</h1>
+        <span class="sub">${byComp.size} competitions</span>
+      </div>
+      <div class="mod">
+        <div class="rows">
+          ${Array.from(byComp.entries()).map(e => {
+            const comp = BS.football.COMPS.find(c => c.id === e[0]);
+            const list = e[1].sort((a, b) => a.koTs - b.koTs);
+            const nx = list.filter(f => f.koTs > now)[0];
+            return navRow({
+              route: 'football/comp/' + e[0], title: comp ? comp.name : e[0],
+              sub: list.length + (list.length === 1 ? ' match' : ' matches'),
+              lead: C.raw('<span class="row-ic">⚽</span>'),
+              right: nx ? U.time(nx.koTs, nx.tz) : 'all played',
+              rightSub: nx ? C.countdown(nx.koTs, now) : ''
+            });
+          })}
+          ${!byComp.size ? C.html`<p class="row-empty">Nothing scheduled in this region today.</p>` : ''}
+        </div>
+      </div>
+    `);
+  }
+
+  async function footballComp(root, compId) {
+    const now = Date.now();
+    if (!U.index.fixtures.size) { C.mount(root, C.html`${U.skeleton(3)}`); await loadDays('football', 7); }
+    const comp = BS.football.COMPS.find(c => c.id === compId);
+    const list = Array.from(U.index.fixtures.values())
+      .filter(f => f.compId === compId && f.dayOffset === 0).sort((a, b) => a.koTs - b.koTs);
+
+    C.mount(root, C.html`
+      <button class="back" data-act="go" data-route="football/region/${comp ? comp.region : ''}">← Back</button>
+      <div class="page-head"><h1>${comp ? comp.name : compId}</h1><span class="sub">${list.length} matches today</span></div>
+      <div class="mod">
+        <div class="rows">
+          ${list.map(f => {
+            const st = BS.football.fixtureState(f, now);
+            return C.html`
+              <button class="row" data-act="go" data-route="football/match/${f.id}">
+                ${st.state === 'upcoming' ? timeChip(f.koTs, f.tz)
+                  : C.raw('<span class="timechip">' + (st.state === 'live' ? st.minute + "'" : 'FT') + '</span>')}
+                <span class="row-main">
+                  <span class="row-title"><span class="nm">${f.home} v ${f.away}</span></span>
+                  <span class="row-sub">${st.state === 'upcoming'
+                    ? 'form ' + f.form.home + ' · ' + f.form.away
+                    : st.score[0] + '–' + st.score[1] + (st.state === 'live' ? ' · in play' : ' · full time')}</span>
+                </span>
+                <span class="row-end">${st.state === 'upcoming'
+                  ? C.html`<span class="cd">${C.countdown(f.koTs, now)}</span>`
+                  : st.state === 'live' ? C.raw('<span class="livechip"><span class="pulse"></span>LIVE</span>') : ''}</span>
+                <span class="chev">›</span>
+              </button>`;
+          })}
+          ${!list.length ? C.html`<p class="row-empty">No matches in this competition today.</p>` : ''}
+        </div>
+      </div>
+    `);
+  }
+
+  async function footballNext(root) {
+    const now = Date.now();
+    C.mount(root, C.html`${U.skeleton(4)}`);
+    await loadDays('football', 2);
+    const all = Array.from(U.index.fixtures.values()).filter(f => f.koTs > now)
+      .sort((a, b) => a.koTs - b.koTs).slice(0, 50);
+    const midnight = new Date(); midnight.setHours(24, 0, 0, 0);
+    const group = (label, list) => list.length ? C.html`
+      <div class="mod">
+        <div class="mod-head"><h2>${label}</h2><span class="mod-meta">${list.length} matches</span></div>
+        <div class="rows">
+          ${list.map(f => C.html`
+            <button class="row" data-act="go" data-route="football/match/${f.id}">
+              ${timeChip(f.koTs, f.tz)}
+              <span class="row-main">
+                <span class="row-title"><span class="nm">${f.home} v ${f.away}</span></span>
+                <span class="row-sub">${f.comp}</span>
+              </span>
+              <span class="row-end"><span class="cd">${C.countdown(f.koTs, now)}</span></span>
+              <span class="chev">›</span>
+            </button>`)}
+        </div>
+      </div>` : '';
+    C.mount(root, C.html`
+      <button class="back" data-act="go" data-route="football/today">← All competitions</button>
+      <div class="page-head"><h1>Next kick-offs</h1></div>
+      ${group('Today', all.filter(f => f.koTs < midnight.getTime()))}
+      ${group('Tomorrow', all.filter(f => f.koTs >= midnight.getTime()))}
+      ${!all.length ? U.empty('Nothing left today', 'Tomorrow\'s fixtures are in Next 7 days.') : ''}
+    `);
+  }
+
+  const ICON = {
+    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5S14.4 18.1 12 20.5c-2.4-2.4-3.6-5.3-3.6-8.5S9.6 5.9 12 3.5z"/></svg>',
+    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M9 4v4M15 4v4"/></svg>'
+  };
+
+  BS.viewsBrowse = {
+    racingIndex, racingRegion, racingMeeting, racingNext,
+    footballIndex, footballRegion, footballComp, footballNext
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* views-account.js — claiming a handle, and the expert badges that a weekly
+   job awards and takes away. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui, X = BS.experts;
+
+  /* ---------- sign up ---------- */
+  function signup(root) {
+    const acct = BS.account.get();
+    if (acct) {
+      C.mount(root, C.html`
+        <div class="page-head"><h1>Your handle</h1></div>
+        <div class="panel">
+          <div class="panel-body" style="display:flex;gap:14px;align-items:center">
+            ${U.mark('', { simple: true })}
+            <div style="flex:1;min-width:0">
+              <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:20px">${acct.handle}</div>
+              <div style="font-size:13px;color:var(--ink-3)">${acct.email} · joined ${C.fmtDay(acct.createdAt)}</div>
+            </div>
+            <button class="btn secondary" data-act="signout">Sign out</button>
+          </div>
+        </div>
+        <div class="notice"><span>🔒</span><span>Your handle is permanent. Records are published under it and
+          cannot be edited, deleted, or moved to a different name.</span></div>
+      `);
+      return;
+    }
+
+    C.mount(root, C.html`
+      <div class="page-head narrow"><h1>Claim your handle</h1></div>
+      <div class="notice narrow"><span>🔒</span><span>
+        A handle is claimed once and never reassigned, because a record is attached to it forever.
+        Pick one you are happy to be judged by.</span></div>
+
+      <div class="panel narrow">
+        <div class="panel-body">
+          <form id="signup-form" novalidate>
+            <label class="field">
+              <span class="field-label">Handle</span>
+              <span class="field-wrap">
+                <span class="field-prefix">@</span>
+                <input id="su-handle" type="text" autocomplete="username" autocapitalize="none"
+                  spellcheck="false" placeholder="quietfurlong" maxlength="20">
+              </span>
+              <span class="field-hint" id="su-handle-hint">3–20 characters. Letters, numbers and underscores.</span>
+            </label>
+
+            <label class="field">
+              <span class="field-label">Email</span>
+              <span class="field-wrap"><input id="su-email" type="email" autocomplete="email"
+                placeholder="you@example.com"></span>
+              <span class="field-hint" id="su-email-hint">Used to reach you about your record. Nothing else.</span>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" id="su-age">
+              <span>I am 18 or over, and I understand betting involves a risk of loss.</span>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="su-marketing">
+              <span>Send me an email when something changes. Off by default — ask to stop once and
+                you are off every list, permanently.</span>
+            </label>
+
+            <button class="btn block" type="submit" style="margin-top:14px">Create my handle</button>
+            <p class="field-hint" id="su-error" style="color:var(--bad);margin-top:10px"></p>
+          </form>
+        </div>
+      </div>
+
+      <p class="foot-note narrow">18+ only. Free, confidential help is available at
+        <a href="https://www.begambleaware.org" target="_blank" rel="noopener nofollow">BeGambleAware.org</a>.</p>
+    `);
+    wireSignup(root);
+  }
+
+  /** Bound directly rather than re-rendered, so typing never loses the caret. */
+  function wireSignup(root) {
+    const form = C.$('#signup-form', root);
+    if (!form) return;
+    const handle = C.$('#su-handle', root), email = C.$('#su-email', root);
+    const hHint = C.$('#su-handle-hint', root), eHint = C.$('#su-email-hint', root);
+    const err = C.$('#su-error', root);
+
+    handle.addEventListener('input', function () {
+      const v = handle.value.trim();
+      if (!v) { hHint.textContent = '3–20 characters. Letters, numbers and underscores.'; hHint.className = 'field-hint'; return; }
+      const problem = BS.account.checkHandle(v);
+      hHint.textContent = problem || '@' + v.toLowerCase() + ' is available.';
+      hHint.className = 'field-hint ' + (problem ? 'bad' : 'good');
+    });
+    email.addEventListener('blur', function () {
+      if (!email.value.trim()) return;
+      const problem = BS.account.checkEmail(email.value);
+      eHint.textContent = problem || 'Looks good.';
+      eHint.className = 'field-hint ' + (problem ? 'bad' : 'good');
+    });
+    form.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      const res = BS.account.create({
+        handle: handle.value, email: email.value,
+        age: C.$('#su-age', root).checked, marketing: C.$('#su-marketing', root).checked
+      });
+      if (res.error) {
+        err.textContent = res.error;
+        const target = C.$('#su-' + res.field, root);
+        if (target) target.focus();
+        return;
+      }
+      U.toast('Welcome, ' + res.account.handle + ' — your record starts now', '🔒');
+      BS.app.go('me');
+    });
+  }
+
+  /* ---------- experts ---------- */
+  let tab = 'consistent';
+
+  function badgeChips(handle) {
+    const b = X.badgesFor(handle);
+    const out = [];
+    if (b.consistent) out.push(X.BADGES.consistent);
+    if (b.value) out.push(X.BADGES.value);
+    if (!out.length) return C.raw('');
+    return C.raw(out.map(x => '<span class="xbadge ' + x.id + '" title="' + C.esc(x.rule) + '">' +
+      x.icon + ' ' + C.esc(x.label) + '</span>').join(''));
+  }
+
+  function experts(root) {
+    const now = Date.now();
+    const badge = X.BADGES[tab];
+    const holders = X.holders(tab).sort((a, b) => b.lo - a.lo);
+    const last = X.lastRun(), next = X.nextRunTs(now);
+    const log = X.log().slice(0, 12);
+    const fmt = ts => ts ? new Intl.DateTimeFormat(undefined,
+      { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(ts)) : '—';
+
+    C.mount(root, C.html`
+      <div class="page-head"><h1>Experts</h1><span class="sub">recalculated every Monday</span></div>
+
+      <div class="mod">
+        <div class="mod-head"><span class="mod-ic">${C.raw('⚙️')}</span><h2>Weekly check</h2></div>
+        <div class="rows">
+          <div class="row row-static">
+            <span class="row-main">
+              <span class="row-title"><span class="nm">Last run</span></span>
+              <span class="row-sub">${fmt(last)}${X.week() !== null ? ' · week ' + X.week() : ''}</span>
+            </span>
+          </div>
+          <div class="row row-static">
+            <span class="row-main">
+              <span class="row-title"><span class="nm">Next run</span></span>
+              <span class="row-sub">${fmt(next)}</span>
+            </span>
+            <span class="row-end"><span class="cd">in ${C.countdown(next, now)}</span></span>
+          </div>
+        </div>
+        <button class="mod-cta" data-act="run-experts">Simulate next week's check (demo)</button>
+      </div>
+
+      <div class="tabs" role="tablist" style="margin-bottom:14px">
+        ${Object.keys(X.BADGES).map(k => C.html`
+          <button role="tab" aria-selected="${String(tab === k)}" data-act="expert-tab" data-id="${k}">
+            ${X.BADGES[k].icon} ${X.BADGES[k].full}
+          </button>`)}
+      </div>
+
+      <div class="notice"><span>📏</span><span><b>${badge.full}.</b> ${badge.rule}
+        Badges are awarded and removed by the weekly job — nobody can keep one that the record stopped supporting.</span></div>
+      ${X.simOffset() ? C.html`<div class="notice"><span>🧪</span><span>
+        You have simulated <b>${X.simOffset()} ${X.simOffset() === 1 ? 'week' : 'weeks'}</b> ahead of the real clock.
+        In the live product this job runs on the server every Monday and cannot be triggered by hand.</span></div>` : ''}
+
+      <div class="mod">
+        <div class="mod-head"><h2>${holders.length} ${holders.length === 1 ? 'tipster' : 'tipsters'}</h2></div>
+        <div class="rows">
+          ${holders.length ? holders.map(t => {
+            const b = X.badgesFor(t.handle);
+            return C.html`
+              <div class="row row-static">
+                <button data-act="go" data-route="tipster/${t.handle}" style="flex:none">${U.avatar(t.silk, 'md')}</button>
+                <button class="row-main" data-act="go" data-route="tipster/${t.handle}">
+                  <span class="row-title"><span class="nm">${t.handle}</span></span>
+                  <span class="row-sub">${tab === 'consistent'
+                    ? 'Periods: ' + b.periods.map(x => C.fmtUnits(x)).join(' · ')
+                    : 'Average winning price ' + t.avgWinOdds.toFixed(1) + ' · ' + t.bigWinners + ' winners at 4.5+'}</span>
+                </button>
+                <span class="stat-big ${t.roi >= 0 ? 'good' : 'bad'}"><b>${C.fmtPct(t.roi)}</b><small>ROI</small></span>
+                <button class="follow-btn" data-act="follow" data-id="${t.handle}"
+                  aria-pressed="${String(BS.tipsters.isFollowing(t.handle))}"
+                  aria-label="${BS.tipsters.isFollowing(t.handle) ? 'Unfollow' : 'Follow'} ${t.handle}"
+                  >${BS.tipsters.isFollowing(t.handle) ? '✓' : '+'}</button>
+              </div>`;
+          }) : C.html`<p class="row-empty">Nobody holds this badge after the latest check. That is the point of
+            checking: the list is allowed to be empty.</p>`}
+        </div>
+      </div>
+
+      <div class="mod">
+        <div class="mod-head"><h2>Recent changes</h2><span class="mod-meta">append-only</span></div>
+        <div class="rows">
+          ${log.length ? log.map(e => C.html`
+            <div class="row row-static">
+              <span class="row-ic">${e.action === 'awarded' ? '↑' : '↓'}</span>
+              <span class="row-main">
+                <span class="row-title"><span class="nm">${e.handle}</span></span>
+                <span class="row-sub">${e.action === 'awarded' ? 'Awarded' : 'Lost'} ${X.BADGES[e.badge].full.toLowerCase()} · week ${e.week}</span>
+              </span>
+              <span class="row-end"><span class="cd" style="color:${e.action === 'awarded' ? 'var(--good)' : 'var(--bad)'}">${e.action}</span></span>
+            </div>`)
+            : C.html`<p class="row-empty">No changes recorded yet. The first run sets a baseline; from the
+              second run on, every award and every loss is written here.</p>`}
+        </div>
+      </div>
+    `);
+  }
+
+  BS.viewsAccount = { signup, experts, badgeChips, setTab: t => { tab = t; } };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
 /* app.js — shell, routing, the settlement job and the clock.
    Everything navigable is a route string, so the drawer, the bottom-bar
    popovers and the desktop dropdowns all drive the same function. */
@@ -3617,8 +4492,10 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     home: 'Home', hot: 'Hot tips', 'hot/racing': 'Hot racing tips', 'hot/football': 'Hot football tips',
     tipsters: 'Tipsters', following: 'Following', me: 'My tips',
     favourites: 'Favourites', settings: 'Settings',
-    'racing/today': "Today's racing", 'racing/week': 'Racing · next 7 days', 'racing/table': 'Racing table',
-    'football/today': "Today's football", 'football/week': 'Football · next 7 days', 'football/table': 'Football table'
+    'racing/today': 'All courses', 'racing/next': 'Next races', 'racing/week': 'Racing · next 7 days',
+    'racing/table': 'Racing table', 'football/today': 'All competitions', 'football/next': 'Next kick-offs',
+    'football/week': 'Football · next 7 days', 'football/table': 'Football table',
+    experts: 'Experts', signup: 'Claim your handle'
   };
 
   /** Which top-level menu entry should look active for a given route. */
@@ -3627,7 +4504,8 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     if (route.indexOf('football') === 0) return 'football';
     if (route.indexOf('hot') === 0) return 'tips';
     if (route === 'tipsters' || route === 'following' || route.indexOf('tipster/') === 0) return 'tipsters';
-    if (route === 'me' || route === 'settings' || route === 'favourites') return 'me';
+    if (route === 'me' || route === 'settings' || route === 'favourites' || route === 'signup') return 'me';
+    if (route === 'experts') return 'tipsters';
     return 'home';
   }
   const bottomId = route => {
@@ -3652,6 +4530,9 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
   function go(route) {
     if (!route) return;
     BS.menu.closeAll();
+    // Navigating away always dismisses an open sheet — otherwise it sits on top
+    // of the page you just asked for. The age gate is not ours to close.
+    if (!C.$('#agegate')) U.closeSheet();
     S.route = route;
     S.q = '';
     syncProduct();
@@ -3686,7 +4567,8 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       </div>`;
   }
 
-  const TICKER_ON = ['home', 'racing/today', 'racing/week', 'football/today', 'football/week', 'hot', 'hot/racing', 'hot/football'];
+  const TICKER_ON = ['home', 'racing/today', 'racing/week', 'football/today', 'football/week',
+    'hot', 'hot/racing', 'hot/football'];
   function ticker() {
     if (TICKER_ON.indexOf(S.route) < 0) return C.raw('');
     const now = Date.now();
@@ -3746,15 +4628,23 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       else if (r === 'me') BS.viewsRecord.record(view);
       else if (r === 'favourites') { await ensureLoaded(); BS.viewsExtra.favourites(view); }
       else if (r === 'settings') BS.viewsExtra.settings(view);
+      else if (r === 'experts') BS.viewsAccount.experts(view);
+      else if (r === 'signup') BS.viewsAccount.signup(view);
+      else if (r === 'racing/next') await BS.viewsBrowse.racingNext(view);
+      else if (r === 'football/next') await BS.viewsBrowse.footballNext(view);
+      else if (part[0] === 'racing' && part[1] === 'region') await BS.viewsBrowse.racingRegion(view, part[2]);
+      else if (part[0] === 'racing' && part[1] === 'meeting') await BS.viewsBrowse.racingMeeting(view, part.slice(2).join('/'));
+      else if (part[0] === 'football' && part[1] === 'region') await BS.viewsBrowse.footballRegion(view, part[2]);
+      else if (part[0] === 'football' && part[1] === 'comp') await BS.viewsBrowse.footballComp(view, part[2]);
       else if (part[1] === 'race') { await ensureLoaded(); BS.viewsRacing.racecard(view, part.slice(2).join('/')); }
       else if (part[1] === 'match') { await ensureLoaded(); BS.viewsFootball.match(view, part.slice(2).join('/')); }
       else if (part[0] === 'racing') {
         if (part[1] === 'table') BS.viewsRecord.rankings(view);
-        else await (part[1] === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
+        else await (part[1] === 'week' ? BS.viewsRacing.week(view) : BS.viewsBrowse.racingIndex(view));
       }
       else if (part[0] === 'football') {
         if (part[1] === 'table') BS.viewsRecord.rankings(view);
-        else await (part[1] === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
+        else await (part[1] === 'week' ? BS.viewsFootball.week(view) : BS.viewsBrowse.footballIndex(view));
       }
       else await BS.viewsHome.home(view);
       chrome();
@@ -3868,10 +4758,26 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     else if (act === 'set-finished') { S.showFinished = id === 'true'; render(); }
     else if (act === 'reset') {
       BS.store.reset();
+      BS.account.signOut();
+      BS.experts.reset();
       try { localStorage.removeItem('betstable.following.v1'); localStorage.removeItem('betstable.favourites.v1'); } catch (e) {}
       location.reload();
     }
     else if (act === 'health') showHealth();
+    else if (act === 'signout') {
+      BS.account.signOut();
+      U.toast('Signed out on this device. Your record stays exactly where it is.', '·');
+      go('home');
+    }
+    else if (act === 'expert-tab') { BS.viewsAccount.setTab(id); render(); }
+    else if (act === 'run-experts') {
+      const res = BS.experts.simulateNextWeek(Date.now());
+      U.toast(res.changes.length
+        ? res.changes.length + ' badge ' + (res.changes.length === 1 ? 'change' : 'changes') + ' recorded'
+        : 'Checked — no badges changed that week', '⚙️');
+      render();
+    }
+    else if (act === 'signup-cta') go('signup');
     else if (act === 'tip') {
       U.openTipSheet({
         product: el.dataset.kind === 'race' ? 'racing' : 'football',
@@ -3966,7 +4872,14 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       if (t) document.documentElement.setAttribute('data-theme', t);
     } catch (e) {}
     readHash();
-    render().then(runSettlement);
+    const res = BS.experts.runIfDue(Date.now());
+    render().then(function () {
+      runSettlement();
+      if (res.ran && res.changes.length) {
+        U.toast('Weekly expert check: ' + res.changes.length + ' badge ' +
+          (res.changes.length === 1 ? 'change' : 'changes'), '⚙️');
+      }
+    });
     setInterval(runSettlement, 15000);
     setInterval(function () {
       if (document.hidden || C.$('.sheet') || BS.menu.anyOpen()) return;

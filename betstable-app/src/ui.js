@@ -216,10 +216,18 @@
         <div class="kv"><dt>After posting</dt><dd>Cannot be edited or deleted</dd></div>
       </dl>
 
-      <div style="display:flex;gap:10px">
-        <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
-        <button class="btn" data-act="sheet-confirm">Post tip at ${C.fmtOdds(f.odds)}</button>
-      </div>
+      ${BS.account.isSignedIn()
+        ? C.html`<div style="display:flex;gap:10px">
+            <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
+            <button class="btn" data-act="sheet-confirm">Post tip at ${C.fmtOdds(f.odds)}</button>
+          </div>`
+        : C.html`
+            <div class="notice" style="margin-bottom:12px"><span>🔒</span><span>
+              A tip is published under a handle, permanently. Claim one and this tip is your first record.</span></div>
+            <div style="display:flex;gap:10px">
+              <button class="btn secondary" data-act="sheet-cancel" style="flex:0 0 40%">Cancel</button>
+              <button class="btn" data-act="signup-cta">Claim a handle</button>
+            </div>`}
       <p style="font-size:11.5px;color:var(--ink-3);margin:12px 0 0;text-align:center">
         18+ · one unit per tip · this record is permanent
       </p>
@@ -239,6 +247,7 @@
     const c = sheetCtx;
     if (!c) return;
     if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', '⛔'); return; }
+    if (!BS.account.isSignedIn()) { closeSheet(); BS.app.go('signup'); return; }
     const rec = BS.store.addTip({
       product: c.product, event: c.event, market: c.market, selection: c.selection,
       odds: c.frozen.odds, refId: c.refId, refKind: c.refKind, startTs: c.startTs

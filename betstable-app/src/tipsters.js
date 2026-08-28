@@ -59,6 +59,9 @@
       ranked: n >= 100,
       // Short-run form, kept separate from the record so nobody confuses a good
       // fortnight with an edge.
+      // What kind of winners they find — the value badge turns on this.
+      avgWinOdds: Math.round((2.2 + Math.pow(r(), 1.5) * 9) * 10) / 10,
+      bigWinners: C.rint(r, 0, 44),
       streak: C.rint(r, 0, 9),
       last7: Math.round(C.gauss(r, 1.2, 6.5) * 10) / 10,
       last30: Math.round(C.gauss(r, 3.4, 13) * 10) / 10

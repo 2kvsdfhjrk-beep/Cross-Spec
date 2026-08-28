@@ -110,7 +110,7 @@
       <div class="profile-head">
         ${U.avatar(t.silk, 'lg')}
         <div style="min-width:0;flex:1">
-          <h1>${t.handle}</h1>
+          <h1>${t.handle}${BS.viewsAccount.badgeChips(t.handle)}</h1>
           <div class="b">${t.bio}</div>
           <div style="display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--on-dark-2);font-weight:650">
             <span>${t.sport === 'racing' ? '🐴 Racing' : '⚽ Football'}</span>

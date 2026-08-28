@@ -20,7 +20,8 @@
     follow: 'M12 5.5v13M5.5 12h13',
     cog: 'M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM19.4 14.4a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3.3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3.3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
     menu: 'M4 7h16M4 12h16M4 17h16',
-    close: 'M6 6l12 12M18 6L6 18'
+    close: 'M6 6l12 12M18 6L6 18',
+    clock: 'M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17zM12 7.4V12l3.1 2'
   };
   const icon = (k, cls) => C.raw('<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
     'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
@@ -33,7 +34,8 @@
     {
       id: 'racing', label: 'BetStable', sub: 'Horse racing', icon: 'racing', route: 'racing/today',
       items: [
-        { label: 'Today\'s racing', sub: 'Every meeting, by country', route: 'racing/today', icon: 'calendar' },
+        { label: 'All courses', sub: 'Every meeting, by country', route: 'racing/today', icon: 'calendar' },
+        { label: 'Next races', sub: 'Every course, in time order', route: 'racing/next', icon: 'clock' },
         { label: 'Next 7 days', sub: 'Entries and declarations', route: 'racing/week', icon: 'week' },
         { label: 'Hot racing tips', sub: 'What tipsters agree on', route: 'hot/racing', icon: 'hot' },
         { label: 'Racing table', sub: 'ROI with intervals', route: 'racing/table', icon: 'trophy' }
@@ -42,7 +44,8 @@
     {
       id: 'football', label: 'ScoreMore', sub: 'Football', icon: 'football', route: 'football/today',
       items: [
-        { label: 'Today\'s football', sub: 'Fixtures worldwide', route: 'football/today', icon: 'calendar' },
+        { label: 'All competitions', sub: 'Fixtures worldwide', route: 'football/today', icon: 'calendar' },
+        { label: 'Next kick-offs', sub: 'In time order', route: 'football/next', icon: 'clock' },
         { label: 'Next 7 days', sub: 'Line-ups as they firm up', route: 'football/week', icon: 'week' },
         { label: 'Hot football tips', sub: 'What tipsters agree on', route: 'hot/football', icon: 'hot' },
         { label: 'Football table', sub: 'ROI with intervals', route: 'football/table', icon: 'trophy' }
@@ -61,6 +64,7 @@
       id: 'tipsters', label: 'Tipsters', icon: 'people', route: 'tipsters',
       items: [
         { label: 'Browse tipsters', sub: 'Every record, unedited', route: 'tipsters', icon: 'people' },
+        { label: 'Experts', sub: 'Consistent and value, checked weekly', route: 'experts', icon: 'trophy' },
         { label: 'Following', route: 'following', icon: 'follow' },
         { label: 'Racing table', route: 'racing/table', icon: 'trophy' },
         { label: 'Football table', route: 'football/table', icon: 'trophy' }
@@ -72,7 +76,8 @@
         { label: 'My tips', sub: 'Record, ROI and drawdown', route: 'me', icon: 'me' },
         { label: 'My favourites', route: 'favourites', icon: 'star' },
         { label: 'Following', route: 'following', icon: 'follow' },
-        { label: 'Settings', route: 'settings', icon: 'cog' }
+        { label: 'Settings', route: 'settings', icon: 'cog' },
+        { label: 'My handle', route: 'signup', icon: 'people' }
       ]
     }
   ];

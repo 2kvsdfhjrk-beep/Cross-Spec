@@ -200,6 +200,7 @@
     load, save, addTip, settle, stats, leaderboard, merkleRoot, tipHash,
     tips: () => load().tips,
     handle: () => load().handle,
+    setHandle: h => { const l = load(); l.handle = h; save(); },
     reset: () => { try { localStorage.removeItem(KEY); } catch (e) {} ledger = null; }
   };
 })(window.BS = window.BS || {});

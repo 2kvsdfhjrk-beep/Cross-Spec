@@ -9,8 +9,10 @@
     home: 'Home', hot: 'Hot tips', 'hot/racing': 'Hot racing tips', 'hot/football': 'Hot football tips',
     tipsters: 'Tipsters', following: 'Following', me: 'My tips',
     favourites: 'Favourites', settings: 'Settings',
-    'racing/today': "Today's racing", 'racing/week': 'Racing · next 7 days', 'racing/table': 'Racing table',
-    'football/today': "Today's football", 'football/week': 'Football · next 7 days', 'football/table': 'Football table'
+    'racing/today': 'All courses', 'racing/next': 'Next races', 'racing/week': 'Racing · next 7 days',
+    'racing/table': 'Racing table', 'football/today': 'All competitions', 'football/next': 'Next kick-offs',
+    'football/week': 'Football · next 7 days', 'football/table': 'Football table',
+    experts: 'Experts', signup: 'Claim your handle'
   };
 
   /** Which top-level menu entry should look active for a given route. */
@@ -19,7 +21,8 @@
     if (route.indexOf('football') === 0) return 'football';
     if (route.indexOf('hot') === 0) return 'tips';
     if (route === 'tipsters' || route === 'following' || route.indexOf('tipster/') === 0) return 'tipsters';
-    if (route === 'me' || route === 'settings' || route === 'favourites') return 'me';
+    if (route === 'me' || route === 'settings' || route === 'favourites' || route === 'signup') return 'me';
+    if (route === 'experts') return 'tipsters';
     return 'home';
   }
   const bottomId = route => {
@@ -44,6 +47,9 @@
   function go(route) {
     if (!route) return;
     BS.menu.closeAll();
+    // Navigating away always dismisses an open sheet — otherwise it sits on top
+    // of the page you just asked for. The age gate is not ours to close.
+    if (!C.$('#agegate')) U.closeSheet();
     S.route = route;
     S.q = '';
     syncProduct();
@@ -78,7 +84,8 @@
       </div>`;
   }
 
-  const TICKER_ON = ['home', 'racing/today', 'racing/week', 'football/today', 'football/week', 'hot', 'hot/racing', 'hot/football'];
+  const TICKER_ON = ['home', 'racing/today', 'racing/week', 'football/today', 'football/week',
+    'hot', 'hot/racing', 'hot/football'];
   function ticker() {
     if (TICKER_ON.indexOf(S.route) < 0) return C.raw('');
     const now = Date.now();
@@ -138,15 +145,23 @@
       else if (r === 'me') BS.viewsRecord.record(view);
       else if (r === 'favourites') { await ensureLoaded(); BS.viewsExtra.favourites(view); }
       else if (r === 'settings') BS.viewsExtra.settings(view);
+      else if (r === 'experts') BS.viewsAccount.experts(view);
+      else if (r === 'signup') BS.viewsAccount.signup(view);
+      else if (r === 'racing/next') await BS.viewsBrowse.racingNext(view);
+      else if (r === 'football/next') await BS.viewsBrowse.footballNext(view);
+      else if (part[0] === 'racing' && part[1] === 'region') await BS.viewsBrowse.racingRegion(view, part[2]);
+      else if (part[0] === 'racing' && part[1] === 'meeting') await BS.viewsBrowse.racingMeeting(view, part.slice(2).join('/'));
+      else if (part[0] === 'football' && part[1] === 'region') await BS.viewsBrowse.footballRegion(view, part[2]);
+      else if (part[0] === 'football' && part[1] === 'comp') await BS.viewsBrowse.footballComp(view, part[2]);
       else if (part[1] === 'race') { await ensureLoaded(); BS.viewsRacing.racecard(view, part.slice(2).join('/')); }
       else if (part[1] === 'match') { await ensureLoaded(); BS.viewsFootball.match(view, part.slice(2).join('/')); }
       else if (part[0] === 'racing') {
         if (part[1] === 'table') BS.viewsRecord.rankings(view);
-        else await (part[1] === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
+        else await (part[1] === 'week' ? BS.viewsRacing.week(view) : BS.viewsBrowse.racingIndex(view));
       }
       else if (part[0] === 'football') {
         if (part[1] === 'table') BS.viewsRecord.rankings(view);
-        else await (part[1] === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
+        else await (part[1] === 'week' ? BS.viewsFootball.week(view) : BS.viewsBrowse.footballIndex(view));
       }
       else await BS.viewsHome.home(view);
       chrome();
@@ -260,10 +275,26 @@
     else if (act === 'set-finished') { S.showFinished = id === 'true'; render(); }
     else if (act === 'reset') {
       BS.store.reset();
+      BS.account.signOut();
+      BS.experts.reset();
       try { localStorage.removeItem('betstable.following.v1'); localStorage.removeItem('betstable.favourites.v1'); } catch (e) {}
       location.reload();
     }
     else if (act === 'health') showHealth();
+    else if (act === 'signout') {
+      BS.account.signOut();
+      U.toast('Signed out on this device. Your record stays exactly where it is.', '·');
+      go('home');
+    }
+    else if (act === 'expert-tab') { BS.viewsAccount.setTab(id); render(); }
+    else if (act === 'run-experts') {
+      const res = BS.experts.simulateNextWeek(Date.now());
+      U.toast(res.changes.length
+        ? res.changes.length + ' badge ' + (res.changes.length === 1 ? 'change' : 'changes') + ' recorded'
+        : 'Checked — no badges changed that week', '⚙️');
+      render();
+    }
+    else if (act === 'signup-cta') go('signup');
     else if (act === 'tip') {
       U.openTipSheet({
         product: el.dataset.kind === 'race' ? 'racing' : 'football',
@@ -358,7 +389,14 @@
       if (t) document.documentElement.setAttribute('data-theme', t);
     } catch (e) {}
     readHash();
-    render().then(runSettlement);
+    const res = BS.experts.runIfDue(Date.now());
+    render().then(function () {
+      runSettlement();
+      if (res.ran && res.changes.length) {
+        U.toast('Weekly expert check: ' + res.changes.length + ' badge ' +
+          (res.changes.length === 1 ? 'change' : 'changes'), '⚙️');
+      }
+    });
     setInterval(runSettlement, 15000);
     setInterval(function () {
       if (document.hidden || C.$('.sheet') || BS.menu.anyOpen()) return;

@@ -77,7 +77,7 @@
       <div class="row row-static">
         <button data-act="go" data-route="tipster/${t.handle}" aria-label="${t.handle}" style="flex:none">${U.avatar(t.silk, 'md')}</button>
         <button class="row-main" data-act="go" data-route="tipster/${t.handle}">
-          <span class="row-title"><span class="nm">${t.handle}</span></span>
+          <span class="row-title"><span class="nm">${t.handle}</span>${BS.viewsAccount.badgeChips(t.handle)}</span>
           <span class="row-sub">${t.followers.toLocaleString()} followers · ${t.n} settled
             ${t.ranked ? '' : C.raw('· <span class="mini-warn">unranked</span>')}</span>
         </button>

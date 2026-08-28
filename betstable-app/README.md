@@ -3,12 +3,40 @@
 A working prototype of the app: a cross-sport front page, two products, and a
 feed interface a real odds/results provider can be dropped into.
 
+- **Sign up** — claim a handle; a tip cannot be posted without one, because a
+  record has to be attached to a name that is never reassigned
 - **Home** — a stack of scannable modules: hot tips, your tipsters, who is in
   form, and the events you starred
 - **BetStable** — horse racing across nine jurisdictions
 - **ScoreMore** — football across eighteen competitions
 - **Hot** — every live tip, ranked by agreement, filterable by sport
+- **Experts** — two badges, awarded and removed by a weekly job
 - **Me** — your own record: ROI with its interval, drawdown, the ledger
+
+## Browsing to a race
+
+Racing drills down the way punters navigate: **all courses → a country → a
+meeting → the card**, with a flat **Next races** list across every jurisdiction
+for when you just want whatever runs soonest. Football takes the same shape —
+regions → competitions → fixtures, plus **Next kick-offs**.
+
+## Experts, checked weekly
+
+Two badges, both computed in `src/experts.js`:
+
+| Badge | Rule |
+|---|---|
+| **Consistent** | In profit across each of the last three 30-day periods, on a profitable record of 100+ settled tips |
+| **Value** | Profitable with an average winning price of 4.5 or bigger, and at least 12 winners at those prices |
+
+A job re-evaluates every tipster once a week, on a Monday boundary. It is
+idempotent — running twice in a week changes nothing — and every award and every
+loss is appended to a log that is never rewritten. A badge nobody can lose is
+not evidence of anything, so losing one is a first-class event.
+
+The Experts page shows the last run, the next run, the current holders and the
+recent changes. The "simulate next week" button is a demo affordance and says so;
+the real job runs server-side and cannot be triggered by hand.
 
 ## Navigation
 
@@ -108,6 +136,10 @@ src/views-home.js       the front page
 src/views-hot.js        hot tips, tipster directory, tipster profile
 src/views-extra.js      favourites and settings
 src/menu.js             the navigation model and its three presentations
+src/account.js          claiming a handle, and the validation behind it
+src/experts.js          the two badges and the weekly job that maintains them
+src/views-browse.js     all courses → country → meeting → card, and next off
+src/views-account.js    sign-up and the experts page
 src/app.js              routing, settlement job, clock, age gate
 ```
 
