@@ -5,7 +5,7 @@
   const C = BS.core;
 
   const state = BS.state = {
-    product: 'racing', section: 'today', detail: null,
+    view: 'home', sub: 'today', detailId: null, product: 'racing',
     day: 0, q: '', tzMode: 'local', showFinished: false,
     collapsed: {}, loading: false
   };
@@ -27,14 +27,64 @@
     sash: (a, b) => '<path d="M0 26 26 0v7L7 26z" fill="' + b + '"/>',
     solid: () => ''
   };
-  function silk(s) {
+  function silkSvg(s) {
     const fn = SILK[s.pattern] || SILK.solid;
     return C.raw('<svg class="silk" viewBox="0 0 26 26" aria-hidden="true">' +
       '<rect width="26" height="26" fill="' + s.a + '"/>' + fn(s.a, s.b) + '</svg>');
   }
 
-  const empty = (glyph, title, body) => C.html`
-    <div class="empty"><div class="glyph">${glyph}</div><h3>${title}</h3><p>${body}</p></div>`;
+
+  /* ---------- brand mark ----------
+     The logo, rebuilt as vector so it can be a favicon, a watermark, an empty
+     state and a loading mark without ever going fuzzy. */
+  function roundel(cls, opts) {
+    const o = opts || {};
+    const ring = o.ring || '#00231F';
+    const ground = o.ground || '#F6F0E1';
+    const wall = '#AF6E4B', roof = '#7F4228', door = '#065B07', dark = '#00231F';
+    // Below ~40px the fence, windows and horseshoe turn to mud, so the small
+    // mark keeps only the shapes that still read: ring, roof, walls, door.
+    const detail = o.simple ? '' :
+      '<g fill="' + ring + '">' +
+        '<rect x="4" y="57" width="92" height="4.6" rx="2.3"/>' +
+        '<rect x="10" y="49" width="5" height="20" rx="2"/>' +
+        '<rect x="85" y="49" width="5" height="20" rx="2"/>' +
+      '</g>';
+    const trim = o.simple ? '' :
+      '<path d="M46.6 39.6a3.6 3.6 0 0 1 6.8 0" fill="none" stroke="' + ground +
+        '" stroke-width="2.1" stroke-linecap="round"/>' +
+      '<path d="M46.5 39.4v2.6M53.5 39.4v2.6" stroke="' + ground + '" stroke-width="2.1" stroke-linecap="round"/>' +
+      '<rect x="34" y="47" width="4.4" height="7" rx="2.2" fill="' + dark + '"/>' +
+      '<rect x="61.6" y="47" width="4.4" height="7" rx="2.2" fill="' + dark + '"/>';
+    const id = 'rc' + (roundel._n = (roundel._n || 0) + 1);
+    return C.raw('<svg class="roundel ' + (cls || '') + '" viewBox="0 0 100 100" aria-hidden="true">' +
+      '<defs><clipPath id="' + id + '"><circle cx="50" cy="50" r="41"/></clipPath></defs>' +
+      '<circle cx="50" cy="50" r="41" fill="' + ground + '"/>' +
+      '<g clip-path="url(#' + id + ')">' + detail +
+        '<rect x="' + (o.simple ? 28 : 30) + '" y="40" width="' + (o.simple ? 44 : 40) + '" height="26" fill="' + wall + '"/>' +
+        '<path d="M50 20 80 42.4H72L50 25.6 28 42.4h-8z" fill="' + roof + '"/>' +
+        '<path d="M50 25.6 72 42.4H28z" fill="' + wall + '"/>' +
+        '<rect x="' + (o.simple ? 41 : 43) + '" y="' + (o.simple ? 45 : 47) + '" width="' + (o.simple ? 18 : 14) +
+          '" height="' + (o.simple ? 21 : 19) + '" fill="' + door + '"/>' +
+        (o.simple ? '' : '<path d="M43 47l14 19M57 47L43 66" stroke="' + ground + '" stroke-width="1.9"/>') +
+        trim +
+      '</g>' +
+      '<circle cx="50" cy="50" r="41" fill="none" stroke="' + ring + '" stroke-width="' + (o.simple ? 9 : 7) + '"/>' +
+      '</svg>');
+  }
+
+  /** A tipster's silks, doubling as their avatar. */
+  const avatar = (silk, cls) => C.raw(
+    C.unwrap(silkSvg(silk)).replace('class="silk"', 'class="silk avatar ' + (cls || '') + '"'));
+
+  /** Wordmark lockup, coloured like the logo. */
+  const wordmark = (a, b) => C.html`<span class="wordmark"><span class="a">${a}</span><span class="b">${b}</span></span>`;
+
+  const empty = (title, body, action) => C.html`
+    <div class="empty">${roundel()}<h3>${title}</h3><p>${body}</p>${action || ''}</div>`;
+  /** Compact variant for a prompt sitting inside a busy page. */
+  const emptyRow = (title, body, action) => C.html`
+    <div class="empty row">${roundel()}<div><h3>${title}</h3><p>${body}</p></div>${action || ''}</div>`;
 
   const skeleton = n => C.raw(Array.from({ length: n || 4 },
     () => '<div class="skel skel-row"></div>').join(''));
@@ -158,7 +208,7 @@
   }
 
   BS.ui = {
-    state, index, silk, empty, skeleton, toast, time, day, tzFor,
+    state, index, silk: silkSvg, silkSvg, roundel, avatar, wordmark, empty, emptyRow, skeleton, toast, time, day, tzFor,
     openTipSheet, closeSheet, confirmTip, oddsButton, hasTipOn
   };
 })(window.BS = window.BS || {});

@@ -1,156 +1,196 @@
 <title>BetStable · ScoreMore</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Fredoka:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Montserrat:wght@800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ==========================================================================
-   BetStable / ScoreMore — application shell
-   The earthy identity carries over from the brand, but the surfaces here are
-   built for scanning and tapping, not for reading top to bottom.
+   BetStable / ScoreMore
+   Palette lifted straight from the logo: pine #00231F, grass #065B07,
+   barn tan #AF6E4B, cream #F6F0E1. Dark grounds carry grain and a warm glow;
+   cream grounds carry paper highlights. Nothing here is allowed to be flat.
    ========================================================================== */
 
 :root {
-  --bg: #F4EADA;
-  --surface: #FFFAF1;
-  --surface-2: #EFE3CE;
-  --surface-3: #E5D6BC;
-  --line: #DDCBAE;
-  --line-soft: #E9DCC3;
-  --ink: #2C2016;
-  --ink-2: #6B5540;
-  --ink-3: #93805F;
-  --forest: #2F5233;
-  --moss: #4C7A3F;
-  --leaf: #6FA24F;
-  --hay: #E4B363;
-  --hay-soft: #F7E3BE;
-  --clay: #C4693D;
-  --clay-soft: #F3DACB;
-  --good: #2E7D4F;
-  --good-soft: #DCEFE0;
-  --bad: #B3452F;
-  --bad-soft: #F7DED6;
-  --warn: #B0791C;
+  /* --- logo colours --- */
+  --pine-900: #00231F;
+  --pine-800: #05302A;
+  --pine-700: #0B4038;
+  --pine-600: #135247;
+  --grass-800: #054B06;
+  --grass-700: #065B07;
+  --grass-600: #0B7A0D;
+  --grass-500: #1E9B22;
+  --grass-400: #46B849;
+  --tan-400: #C98A63;
+  --tan-500: #AF6E4B;
+  --tan-600: #8A5439;
+  --wood-700: #7F4228;
+  --wood-900: #3D1F12;
+  --cream-50: #FDFAF2;
+  --cream-100: #F6F0E1;
+  --cream-200: #EFE6D2;
+  --cream-300: #E1D4B8;
+  --cream-400: #C9B893;
+
+  /* --- roles --- */
+  --bg: var(--cream-100);
+  --surface: var(--cream-50);
+  --surface-2: var(--cream-200);
+  --surface-3: var(--cream-300);
+  --line: #DFD1B2;
+  --line-soft: #EBE1CB;
+  --ink: var(--pine-900);
+  --ink-2: #4A5A50;
+  --ink-3: #7E8A7F;
+  --on-dark: var(--cream-100);
+  --on-dark-2: #A8BFB2;
+
+  --good: var(--grass-600);
+  --good-soft: #DDEED9;
+  --bad: #A33B2B;
+  --bad-soft: #F6DED7;
+  --warn: #9A6B15;
+  --warn-soft: #F7E9C8;
   --live: #C4362B;
-  --accent: var(--clay);
-  --accent-soft: var(--clay-soft);
-  --shadow-1: 0 1px 0 rgba(44, 32, 22, .06), 0 2px 6px rgba(44, 32, 22, .06);
-  --shadow-2: 0 6px 22px rgba(44, 32, 22, .16);
-  --r-s: 8px; --r-m: 12px; --r-l: 18px;
-  --tap: 44px;
-  --top: 0px;
+
+  --accent: var(--tan-600);          /* BetStable — barn timber */
+  --accent-bright: var(--tan-500);
+  --accent-soft: #F1E1D3;
+
+  --r-s: 8px; --r-m: 13px; --r-l: 20px; --r-xl: 26px;
+  --tap: 46px;
+
+  /* Layered rather than a single flat drop: a paper highlight on top, a warm
+     shadow below. This is most of what stops cards reading as stickers. */
+  --lift-1: inset 0 1px 0 rgba(255,255,255,.75), 0 1px 2px rgba(0,35,31,.06), 0 3px 8px rgba(0,35,31,.05);
+  --lift-2: inset 0 1px 0 rgba(255,255,255,.8), 0 2px 4px rgba(0,35,31,.07), 0 10px 24px rgba(0,35,31,.10);
+  --lift-3: 0 18px 48px rgba(0,35,31,.28);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
   color-scheme: light;
 }
-:root[data-product="football"] { --accent: var(--moss); --accent-soft: #DDEBD3; }
+:root[data-product="football"] {
+  --accent: var(--grass-700);
+  --accent-bright: var(--grass-600);
+  --accent-soft: #DFEEDB;
+}
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #17120E; --surface: #221B15; --surface-2: #2C231B; --surface-3: #372C22;
-    --line: #3D3126; --line-soft: #332920;
-    --ink: #F3E8D7; --ink-2: #BFAC92; --ink-3: #8E7C66;
-    --forest: #3E6B43; --moss: #6A9A55; --leaf: #8CC06B;
-    --hay: #E8BC72; --hay-soft: #4A3A22; --clay: #DB7F50; --clay-soft: #4A2E1E;
-    --good: #62B87F; --good-soft: #1F3A28; --bad: #E0745A; --bad-soft: #40231B;
-    --warn: #D9A441; --live: #E4614F;
-    --shadow-1: 0 1px 0 rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.35);
-    --shadow-2: 0 8px 26px rgba(0,0,0,.55);
+    --bg: #0A1512; --surface: #10201B; --surface-2: #162923; --surface-3: #1F362E;
+    --line: #244036; --line-soft: #1B322B;
+    --ink: #EFE7D5; --ink-2: #A9BEB1; --ink-3: #7C9184;
+    --good: var(--grass-400); --good-soft: #123018;
+    --bad: #DE7C66; --bad-soft: #3B1E17;
+    --warn: #D9A441; --warn-soft: #3A2D12;
+    --accent: var(--tan-400); --accent-bright: var(--tan-400); --accent-soft: #37241A;
+    --lift-1: inset 0 1px 0 rgba(255,255,255,.05), 0 2px 6px rgba(0,0,0,.4);
+    --lift-2: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 28px rgba(0,0,0,.5);
+    --lift-3: 0 18px 48px rgba(0,0,0,.7);
     color-scheme: dark;
+  }
+  :root:not([data-theme="light"])[data-product="football"] {
+    --accent: var(--grass-400); --accent-bright: var(--grass-400); --accent-soft: #14301A;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #17120E; --surface: #221B15; --surface-2: #2C231B; --surface-3: #372C22;
-  --line: #3D3126; --line-soft: #332920;
-  --ink: #F3E8D7; --ink-2: #BFAC92; --ink-3: #8E7C66;
-  --forest: #3E6B43; --moss: #6A9A55; --leaf: #8CC06B;
-  --hay: #E8BC72; --hay-soft: #4A3A22; --clay: #DB7F50; --clay-soft: #4A2E1E;
-  --good: #62B87F; --good-soft: #1F3A28; --bad: #E0745A; --bad-soft: #40231B;
-  --warn: #D9A441; --live: #E4614F;
-  --shadow-1: 0 1px 0 rgba(0,0,0,.3), 0 2px 6px rgba(0,0,0,.35);
-  --shadow-2: 0 8px 26px rgba(0,0,0,.55);
+  --bg: #0A1512; --surface: #10201B; --surface-2: #162923; --surface-3: #1F362E;
+  --line: #244036; --line-soft: #1B322B;
+  --ink: #EFE7D5; --ink-2: #A9BEB1; --ink-3: #7C9184;
+  --good: var(--grass-400); --good-soft: #123018;
+  --bad: #DE7C66; --bad-soft: #3B1E17;
+  --warn: #D9A441; --warn-soft: #3A2D12;
+  --accent: var(--tan-400); --accent-bright: var(--tan-400); --accent-soft: #37241A;
+  --lift-1: inset 0 1px 0 rgba(255,255,255,.05), 0 2px 6px rgba(0,0,0,.4);
+  --lift-2: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 28px rgba(0,0,0,.5);
+  --lift-3: 0 18px 48px rgba(0,0,0,.7);
   color-scheme: dark;
+}
+:root[data-theme="dark"][data-product="football"] {
+  --accent: var(--grass-400); --accent-bright: var(--grass-400); --accent-soft: #14301A;
 }
 
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 html, body { height: 100%; }
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
+  margin: 0; background: var(--bg); color: var(--ink);
   font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 15px;
-  line-height: 1.45;
-  font-variant-numeric: tabular-nums;
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
+  font-size: 15px; line-height: 1.45; font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
 }
-h1, h2, h3, h4 { margin: 0; font-weight: 650; line-height: 1.2; }
+h1, h2, h3, h4 { margin: 0; line-height: 1.1; letter-spacing: -.015em; }
+/* The wordmark face. Heavy, tight, a little geometric — same feel as the logo. */
+.display, h1, h2 { font-family: 'Montserrat', 'Figtree', system-ui, sans-serif; font-weight: 800; }
+h3, h4 { font-weight: 700; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: 0; padding: 0; }
 a { color: inherit; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; border-radius: 6px; }
 .mono { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------------- wordmark ---------------- */
+.wordmark {
+  font-family: 'Montserrat', system-ui, sans-serif; font-weight: 900;
+  letter-spacing: -.03em; text-transform: uppercase; line-height: 1; white-space: nowrap;
+}
+.wordmark .a { color: var(--ink); }
+.wordmark .b { color: var(--grass-600); }
+.on-dark .wordmark .a, .hero .wordmark .a { color: var(--cream-100); }
+.on-dark .wordmark .b, .hero .wordmark .b { color: var(--grass-400); }
 
 /* ---------------- app frame ---------------- */
 .app { min-height: 100dvh; display: flex; flex-direction: column; }
 .appbar {
   position: sticky; top: 0; z-index: 40;
-  background: var(--surface); border-bottom: 1px solid var(--line);
-  padding: 8px max(12px, env(safe-area-inset-left)) 0;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid var(--line); padding: 9px 12px 0;
 }
 .appbar-row { display: flex; align-items: center; gap: 10px; max-width: 1180px; margin: 0 auto; width: 100%; }
+.brandlink { display: flex; align-items: center; gap: 9px; }
+.brandlink .roundel { width: 30px; height: 30px; flex: none; }
+.brandlink .wordmark { font-size: 17px; }
 
-/* product switch — the two products of the app */
-.switch {
-  display: flex; gap: 3px; padding: 3px;
-  background: var(--surface-2); border-radius: 999px; border: 1px solid var(--line);
-}
-.switch button {
-  display: flex; align-items: center; gap: 7px;
-  padding: 7px 14px; border-radius: 999px; font-weight: 650; font-size: 14px;
-  color: var(--ink-2); white-space: nowrap; transition: background .14s, color .14s;
-}
-.switch button .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: .55; }
-.switch button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow-1); }
-.switch button[aria-selected="true"] .dot { opacity: 1; }
-.switch button:nth-child(1)[aria-selected="true"] .dot { background: var(--clay); }
-.switch button:nth-child(2)[aria-selected="true"] .dot { background: var(--moss); }
-
-.appbar .spacer { margin-left: auto; }
+.spacer { margin-left: auto; }
 .icon-btn {
   width: 38px; height: 38px; display: grid; place-items: center;
-  border-radius: 10px; color: var(--ink-2); border: 1px solid transparent;
+  border-radius: 11px; color: var(--ink-2); border: 1px solid transparent;
 }
 .icon-btn:hover { background: var(--surface-2); color: var(--ink); }
 
-/* feed health */
 .health {
-  display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px;
+  display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 11px;
   border-radius: 999px; border: 1px solid var(--line); background: var(--surface-2);
   font-size: 12.5px; font-weight: 650; color: var(--ink-2);
 }
-@media (max-width: 560px) { .hide-sm { display: none; } }
-.health .led { width: 7px; height: 7px; border-radius: 50%; background: var(--good); }
-.health.warn .led { background: var(--warn); }
-.health.down .led { background: var(--bad); }
+.health .led { width: 7px; height: 7px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 3px color-mix(in srgb, var(--good) 22%, transparent); }
+.health.warn .led { background: var(--warn); box-shadow: 0 0 0 3px color-mix(in srgb, var(--warn) 22%, transparent); }
+@media (max-width: 620px) { .hide-sm { display: none; } }
 
-/* section tabs */
-.tabs { display: flex; gap: 2px; max-width: 1180px; margin: 0 auto; width: 100%; overflow-x: auto; scrollbar-width: none; }
-.tabs::-webkit-scrollbar { display: none; }
-.tabs button {
-  position: relative; padding: 11px 13px 12px; font-size: 14px; font-weight: 620;
-  color: var(--ink-3); white-space: nowrap;
+/* primary nav */
+.mainnav { display: flex; gap: 2px; max-width: 1180px; margin: 0 auto; width: 100%; overflow-x: auto; scrollbar-width: none; }
+.mainnav::-webkit-scrollbar { display: none; }
+.mainnav button {
+  position: relative; display: flex; align-items: center; gap: 7px;
+  padding: 11px 13px 12px; font-size: 14px; font-weight: 680; color: var(--ink-3); white-space: nowrap;
 }
-.tabs button[aria-selected="true"] { color: var(--ink); }
-.tabs button[aria-selected="true"]::after {
-  content: ""; position: absolute; left: 10px; right: 10px; bottom: 0;
-  height: 3px; border-radius: 3px 3px 0 0; background: var(--accent);
+@media (max-width: 560px) { .mainnav button { padding: 10px 9px 11px; font-size: 13px; } .brandlink .wordmark { font-size: 15px; } }
+.mainnav button:hover { color: var(--ink); }
+.mainnav button[aria-selected="true"] { color: var(--ink); }
+.mainnav button[aria-selected="true"]::after {
+  content: ""; position: absolute; left: 11px; right: 11px; bottom: 0;
+  height: 3px; border-radius: 3px 3px 0 0; background: var(--accent-bright);
 }
-.tabs .count {
-  margin-left: 6px; padding: 1px 6px; border-radius: 999px; font-size: 11.5px;
-  background: var(--surface-2); color: var(--ink-3);
+.mainnav .count {
+  padding: 1px 6px; border-radius: 999px; font-size: 11px; font-weight: 750;
+  background: var(--accent-bright); color: var(--cream-50);
 }
+.tabs { display: flex; gap: 4px; padding: 2px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 999px; }
+.tabs button { padding: 7px 14px; border-radius: 999px; font-size: 13.5px; font-weight: 650; color: var(--ink-2); white-space: nowrap; }
+@media (min-width: 620px) { .subnav { display: none; } }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--lift-1); }
 
-/* ---------------- next-off ticker ---------------- */
+/* ---------------- ticker ---------------- */
 .ticker {
   display: flex; gap: 8px; padding: 8px 12px; overflow-x: auto; scrollbar-width: none;
   background: var(--surface-2); border-bottom: 1px solid var(--line);
@@ -158,268 +198,426 @@ a { color: inherit; }
 .ticker::-webkit-scrollbar { display: none; }
 .ticker-label {
   display: flex; align-items: center; gap: 6px; flex: none;
-  font-size: 11px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3);
+  font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3);
 }
 .ticker-item {
-  flex: none; display: flex; align-items: center; gap: 8px;
-  padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line);
-  background: var(--surface); font-size: 13px; font-weight: 600; box-shadow: var(--shadow-1);
+  flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 12px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 13px; font-weight: 620; box-shadow: var(--lift-1);
 }
-.ticker-item b { font-weight: 700; }
-.ticker-item .cd { color: var(--clay); font-weight: 750; font-variant-numeric: tabular-nums; }
-.ticker-item.imminent { border-color: var(--clay); background: var(--clay-soft); }
+.ticker-item .cd { color: var(--accent); font-weight: 800; }
+.ticker-item.imminent { border-color: var(--accent-bright); background: var(--accent-soft); }
 
 /* ---------------- layout ---------------- */
-main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12px 96px; }
-@media (min-width: 900px) { main { padding-bottom: 40px; } }
+main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 16px 12px 100px; }
+@media (min-width: 900px) { main { padding-bottom: 48px; } }
+main.bleed { max-width: none; padding-left: 0; padding-right: 0; padding-top: 0; }
+.wrap { width: 100%; max-width: 1180px; margin: 0 auto; padding: 0 12px; }
 
+.sec-head { display: flex; align-items: baseline; gap: 10px; margin: 30px 0 13px; flex-wrap: wrap; }
+@media (max-width: 560px) { .sec-head .sub { flex-basis: 100%; order: 3; } .sec-head .more { margin-left: auto; } }
+.sec-head h2 { font-size: 20px; }
+.sec-head .more { margin-left: auto; font-size: 13px; font-weight: 700; color: var(--accent); }
+.sec-head .sub { font-size: 13px; color: var(--ink-3); font-weight: 550; }
+
+/* ---------------- hero ----------------
+   Dark pine ground, warm grass glow, grain, and a fence line at the horizon. */
+.hero {
+  position: relative; overflow: hidden; color: var(--on-dark);
+  background:
+    radial-gradient(120% 90% at 78% 8%, rgba(30,155,34,.30), transparent 58%),
+    radial-gradient(90% 70% at 8% 100%, rgba(175,110,75,.28), transparent 62%),
+    linear-gradient(168deg, var(--pine-800), var(--pine-900) 72%);
+}
+.hero::before {
+  content: ""; position: absolute; inset: 0; background-image: var(--grain);
+  opacity: .16; mix-blend-mode: overlay; pointer-events: none;
+}
+.hero-inner { position: relative; max-width: 1180px; margin: 0 auto; padding: 30px 12px 78px; }
+.hero .eyebrow {
+  display: inline-flex; align-items: center; gap: 7px; padding: 5px 12px 5px 6px;
+  border-radius: 999px; background: rgba(246,240,225,.1); border: 1px solid rgba(246,240,225,.18);
+  font-size: 12px; font-weight: 700; letter-spacing: .02em; color: var(--cream-100);
+}
+.hero .eyebrow .pip { width: 7px; height: 7px; border-radius: 50%; background: var(--grass-400); box-shadow: 0 0 0 4px rgba(70,184,73,.22); margin-left: 5px; }
+.hero h1 { font-size: clamp(2.5rem, 7vw, 4.2rem); font-weight: 900; letter-spacing: -.04em; margin: 16px 0 8px; }
+.hero h1 .g { color: var(--grass-400); }
+.hero p.lede { max-width: 46ch; font-size: clamp(1rem, 1.6vw, 1.12rem); color: var(--on-dark-2); font-weight: 550; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.hero-watermark {
+  position: absolute; right: -70px; top: -40px; width: 420px; height: 420px;
+  opacity: .07; pointer-events: none;
+}
+@media (max-width: 760px) { .hero-watermark { right: -140px; top: 40px; width: 340px; height: 340px; } }
+.fenceline { position: absolute; left: 0; right: 0; bottom: -1px; width: 100%; height: 54px; display: block; }
+
+/* live counters */
+.counters {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: rgba(246,240,225,.14); border: 1px solid rgba(246,240,225,.16);
+  border-radius: var(--r-l); overflow: hidden; margin-top: 26px;
+}
+@media (max-width: 640px) { .counters { grid-template-columns: repeat(2, 1fr); } }
+.counter { background: rgba(0,35,31,.55); padding: 14px 16px; }
+.counter .n { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 26px; letter-spacing: -.03em; color: var(--cream-50); }
+.counter .k { font-size: 11px; font-weight: 750; letter-spacing: .09em; text-transform: uppercase; color: var(--on-dark-2); margin-top: 2px; }
+
+/* ---------------- buttons ---------------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: var(--tap); padding: 0 20px; border-radius: 13px; font-weight: 750; font-size: 15px;
+  background: var(--grass-600); color: #F6F0E1; border: 1px solid transparent;
+  box-shadow: 0 2px 0 rgba(0,35,31,.25), 0 8px 18px rgba(6,91,7,.22);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn:active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0,35,31,.25); }
+.btn.block { width: 100%; }
+.btn.secondary { background: transparent; color: var(--ink); border-color: var(--line); box-shadow: var(--lift-1); }
+.hero .btn.secondary { color: var(--cream-100); border-color: rgba(246,240,225,.3); background: rgba(246,240,225,.06); box-shadow: none; }
+.btn.tan { background: var(--tan-600); box-shadow: 0 2px 0 rgba(0,35,31,.25), 0 8px 18px rgba(138,84,57,.24); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 13px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 13px; font-weight: 650; color: var(--ink-2); white-space: nowrap; box-shadow: var(--lift-1);
+}
+.chip[aria-pressed="true"], .chip.on { background: var(--accent-soft); border-color: var(--accent-bright); color: var(--ink); }
+.chip:hover { border-color: var(--ink-3); }
+
+.follow-btn {
+  display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 13px;
+  border-radius: 999px; font-size: 12.5px; font-weight: 750;
+  border: 1.5px solid var(--grass-600); color: var(--grass-600); background: transparent;
+  transition: background .14s, color .14s;
+}
+.follow-btn:hover { background: var(--accent-soft); }
+.follow-btn[aria-pressed="true"] { background: var(--grass-600); border-color: var(--grass-600); color: #F6F0E1; }
+
+/* ---------------- cards ---------------- */
+.card {
+  position: relative; background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-l); box-shadow: var(--lift-1);
+  transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+}
+.card:hover { transform: translateY(-2px); box-shadow: var(--lift-2); }
+
+/* the two product doors on the front page */
+.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 700px) { .doors { grid-template-columns: 1fr; } }
+.door {
+  position: relative; overflow: hidden; min-height: 158px; padding: 20px;
+  border-radius: var(--r-xl); color: var(--cream-100); text-align: left;
+  display: flex; flex-direction: column; justify-content: flex-end; gap: 4px;
+  box-shadow: var(--lift-2); transition: transform .18s ease, box-shadow .18s ease;
+}
+.door:hover { transform: translateY(-3px); box-shadow: var(--lift-3); }
+.door::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .18; mix-blend-mode: overlay; }
+.door.racing { background: linear-gradient(150deg, var(--tan-500), var(--wood-700) 62%, var(--wood-900)); }
+.door.football { background: linear-gradient(150deg, var(--grass-600), var(--grass-800) 58%, var(--pine-900)); }
+.door .door-art { position: absolute; right: -18px; top: -12px; width: 168px; height: 168px; opacity: .22; }
+.door .kicker { position: relative; font-size: 11.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
+.door .name { position: relative; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 27px; letter-spacing: -.03em; }
+.door .meta { position: relative; font-size: 13px; font-weight: 600; opacity: .9; }
+.door .go { position: relative; margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 750; }
+
+/* ---------------- hot tips ---------------- */
+.rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 12px 10px; margin: 0 -12px; scrollbar-width: none; }
+.rail::-webkit-scrollbar { display: none; }
+.rail > * { scroll-snap-align: start; flex: 0 0 clamp(258px, 76vw, 300px); }
+.hotgrid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); }
+
+.hot {
+  position: relative; overflow: hidden; padding: 15px 16px 14px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: var(--r-l); box-shadow: var(--lift-1); text-align: left;
+  display: flex; flex-direction: column; gap: 9px;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+.hot:hover { transform: translateY(-2px); box-shadow: var(--lift-2); }
+.hot::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px;
+  background: linear-gradient(90deg, var(--accent-bright), var(--grass-500));
+}
+.hot.sport-racing::before { background: linear-gradient(90deg, var(--tan-500), var(--wood-700)); }
+.hot.sport-football::before { background: linear-gradient(90deg, var(--grass-500), var(--grass-800)); }
+.hot-top { display: flex; align-items: center; gap: 8px; }
+.sportdot { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-size: 12px; flex: none; }
+.sportdot.racing { background: var(--accent-soft); }
+.sportdot.football { background: var(--good-soft); }
+.hot-top .ev { font-size: 12px; font-weight: 700; color: var(--ink-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hot-top .cd { margin-left: auto; font-size: 12px; font-weight: 800; color: var(--accent); flex: none; }
+.hot .sel { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 19px; letter-spacing: -.02em; }
+.hot .mkt { font-size: 12px; color: var(--ink-3); font-weight: 600; display: block;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hot .sel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail { align-items: stretch; }
+.hotgrid { align-items: stretch; }
+.hot .heat { margin-top: auto; }
+.hot-bottom { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
+.avatars { display: flex; }
+.avatars .silk { width: 24px; height: 24px; border-radius: 7px; margin-right: -7px; box-shadow: 0 0 0 2px var(--surface); }
+.hot .who { font-size: 12px; color: var(--ink-2); font-weight: 620; }
+.hot .price {
+  margin-left: auto; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 18px;
+  padding: 5px 11px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line);
+}
+/* heat: a measure, so it gets a meter, not an adjective */
+.heat { display: flex; align-items: center; gap: 8px; }
+.heat-bar { flex: 1; height: 6px; border-radius: 999px; background: var(--surface-3); overflow: hidden; }
+.heat-bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--tan-500), var(--grass-500)); }
+.heat .n { font-size: 11px; font-weight: 800; color: var(--ink-3); letter-spacing: .05em; }
+
+/* ---------------- tipsters ---------------- */
+.tipster-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.tipster {
+  display: flex; gap: 13px; align-items: flex-start; padding: 15px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); box-shadow: var(--lift-1);
+}
+.tipster:hover { box-shadow: var(--lift-2); }
+.tipster-body { min-width: 0; flex: 1; }
+.tipster-top { display: flex; align-items: center; gap: 8px; }
+.tipster-top .h { font-weight: 800; font-size: 15px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tipster-top .follow-btn { margin-left: auto; flex: none; }
+.tipster-top .badge { flex: none; }
+.avatar { width: 44px; height: 44px; border-radius: 13px; flex: none; box-shadow: var(--lift-1); }
+.avatar.lg { width: 68px; height: 68px; border-radius: 18px; }
+.avatar.sm { width: 26px; height: 26px; border-radius: 8px; }
+.tipster .b { font-size: 12.5px; color: var(--ink-3); line-height: 1.4; margin: 5px 0 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tipster .stats { display: flex; flex-wrap: wrap; gap: 5px 14px; margin-top: 9px; font-size: 12px; color: var(--ink-2); font-weight: 620; }
+.tipster .stats span { white-space: nowrap; }
+.tipster .stats b { font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--ink); }
+
+.profile-head {
+  position: relative; overflow: hidden; color: var(--on-dark); border-radius: var(--r-xl);
+  padding: 20px; margin-bottom: 14px; display: flex; gap: 15px; align-items: center;
+  background: linear-gradient(150deg, var(--pine-700), var(--pine-900));
+  box-shadow: var(--lift-2);
+}
+.profile-head::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .18; mix-blend-mode: overlay; }
+.profile-head > * { position: relative; }
+.profile-head h1 { font-size: 25px; }
+.profile-head .b { font-size: 13px; color: var(--on-dark-2); max-width: 46ch; margin-top: 3px; }
+
+/* ---------------- existing surfaces, restyled ---------------- */
 .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
 .search {
   flex: 1 1 220px; min-width: 0; display: flex; align-items: center; gap: 8px;
-  padding: 0 12px; height: 40px; border-radius: 10px;
-  border: 1px solid var(--line); background: var(--surface);
+  padding: 0 13px; height: 42px; border-radius: 13px;
+  border: 1px solid var(--line); background: var(--surface); box-shadow: var(--lift-1);
 }
 .search input { flex: 1; min-width: 0; border: 0; background: none; outline: none; font-size: 14.5px; }
 .search input::placeholder { color: var(--ink-3); }
-.chip {
-  display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px;
-  border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
-  font-size: 13px; font-weight: 620; color: var(--ink-2); white-space: nowrap;
-}
-.chip[aria-pressed="true"], .chip.on { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
-.chip:hover { border-color: var(--ink-3); }
 
-/* day strip for the week view */
-.daystrip { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; margin-bottom: 14px; }
+.daystrip { display: flex; gap: 7px; overflow-x: auto; scrollbar-width: none; padding-bottom: 3px; margin-bottom: 14px; }
 .daystrip::-webkit-scrollbar { display: none; }
-.day {
-  flex: none; min-width: 74px; padding: 8px 12px; border-radius: var(--r-m);
-  border: 1px solid var(--line); background: var(--surface); text-align: left;
-}
+.day { flex: none; min-width: 82px; padding: 9px 13px; border-radius: var(--r-m); border: 1px solid var(--line); background: var(--surface); text-align: left; box-shadow: var(--lift-1); }
 .day .dow, .day .dnum, .day .dmeta { display: block; }
-.day .dow { font-size: 11px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
-.day .dnum { font-size: 15px; font-weight: 700; }
-.day .dmeta { font-size: 11.5px; color: var(--ink-3); }
-.day[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); }
-.day[aria-selected="true"] .dow { color: var(--ink-2); }
+.day .dow { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.day .dnum { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; }
+.day .dmeta { font-size: 11px; color: var(--ink-3); }
+.day[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent-bright); }
 
-/* ---------------- region groups ---------------- */
-.region { margin-bottom: 12px; border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); overflow: hidden; }
-.region-head {
-  display: flex; align-items: center; gap: 10px; width: 100%;
-  padding: 12px 14px; text-align: left; background: var(--surface);
-}
+.region { margin-bottom: 12px; border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); overflow: hidden; box-shadow: var(--lift-1); }
+.region-head { display: flex; align-items: center; gap: 11px; width: 100%; padding: 13px 15px; text-align: left; }
 .region-head:hover { background: var(--surface-2); }
 .region-head .flag { font-size: 20px; line-height: 1; }
-.region-head h2 { font-size: 15.5px; font-weight: 700; }
+.region-head h2 { font-size: 15.5px; font-weight: 800; }
 .region-head .meta { font-size: 12.5px; color: var(--ink-3); font-weight: 550; }
-.region-head .next {
-  margin-left: auto; display: flex; align-items: center; gap: 8px;
-  font-size: 12.5px; font-weight: 650; color: var(--ink-2); white-space: nowrap;
-}
+.region-head .next { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--ink-2); white-space: nowrap; }
 .region-head > span:nth-child(2) { min-width: 0; }
 @media (max-width: 560px) { .region-head .next { font-size: 11.5px; } .region-head .next b { display: block; } }
 .region-head .caret { color: var(--ink-3); transition: transform .18s ease; }
 .region[data-open="false"] .caret { transform: rotate(-90deg); }
 .region[data-open="false"] .region-body { display: none; }
-.region-body { border-top: 1px solid var(--line-soft); padding: 10px; display: grid; gap: 10px; }
+.region-body { border-top: 1px solid var(--line-soft); padding: 11px; display: grid; gap: 11px; background: var(--surface-2); }
 @media (min-width: 760px) { .region-body { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1080px) { .region-body { grid-template-columns: 1fr 1fr 1fr; } }
 
-/* ---------------- meeting card ---------------- */
-.meeting { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; }
-.meeting-head { display: flex; align-items: baseline; gap: 8px; padding: 10px 12px 8px; }
-.meeting-head .venue { font-weight: 700; font-size: 14.5px; }
-.meeting-head .flag { font-size: 14px; }
-.meeting-head .going { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
-.tag {
-  display: inline-flex; align-items: center; padding: 1px 7px; border-radius: 5px;
-  font-size: 10.5px; font-weight: 750; letter-spacing: .05em; text-transform: uppercase;
-  background: var(--surface-3); color: var(--ink-2);
-}
+.meeting { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; box-shadow: var(--lift-1); }
+.meeting-head { display: flex; align-items: baseline; gap: 8px; padding: 11px 13px 8px; }
+.meeting-head .venue { font-weight: 800; font-size: 14.5px; }
+.meeting-head .going { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-weight: 620; }
+.tag { display: inline-flex; padding: 1px 7px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: var(--surface-3); color: var(--ink-2); }
 .tag.turf { background: var(--good-soft); color: var(--good); }
-.tag.dirt { background: var(--clay-soft); color: var(--clay); }
-.tag.aw { background: var(--hay-soft); color: var(--warn); }
-.race-times { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 12px 12px; }
-.rt {
-  min-width: 56px; padding: 7px 8px; border-radius: 9px; border: 1px solid var(--line);
-  background: var(--surface-2); font-size: 13px; font-weight: 700; text-align: center; line-height: 1.15;
-}
+.tag.dirt { background: var(--accent-soft); color: var(--tan-600); }
+.tag.aw { background: var(--warn-soft); color: var(--warn); }
+.race-times { display: flex; flex-wrap: wrap; gap: 5px; padding: 0 13px 13px; }
+.rt { min-width: 58px; padding: 7px 8px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); font-size: 13px; font-weight: 750; text-align: center; line-height: 1.15; }
 .rt small { display: block; font-size: 10px; font-weight: 650; color: var(--ink-3); }
-.rt:hover { border-color: var(--accent); }
-.rt.next { background: var(--accent-soft); border-color: var(--accent); }
-.rt.done { opacity: .45; }
+.rt:hover { border-color: var(--accent-bright); background: var(--accent-soft); }
+.rt.next { background: var(--accent-soft); border-color: var(--accent-bright); }
+.rt.done { opacity: .42; }
 .rt.off { background: var(--bad-soft); border-color: var(--live); color: var(--live); }
 
-/* ---------------- race card ---------------- */
-.detail-head {
-  display: flex; align-items: flex-start; gap: 12px; padding: 14px;
-  border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); margin-bottom: 12px;
-}
-.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 650; color: var(--ink-2); margin-bottom: 10px; }
-.back:hover { color: var(--ink); }
-.detail-head h1 { font-size: 19px; }
-.detail-head .sub { font-size: 13px; color: var(--ink-2); margin-top: 3px; }
+.detail-head { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); margin-bottom: 12px; box-shadow: var(--lift-1); }
+.back { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); margin-bottom: 11px; }
+.detail-head h1 { font-size: 20px; }
+.detail-head .sub { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
 .detail-head .when { margin-left: auto; text-align: right; flex: none; }
-.detail-head .when .t { font-size: 22px; font-weight: 700; }
-.detail-head .when .cd { font-size: 12.5px; font-weight: 700; color: var(--clay); }
+.detail-head .when .t { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: -.03em; }
+.detail-head .when .cd { font-size: 12.5px; font-weight: 750; color: var(--accent); }
 
-.runners { border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); overflow: hidden; }
-.runner {
-  display: grid; grid-template-columns: 30px 26px 1fr auto; gap: 10px; align-items: center;
-  padding: 10px 12px; border-bottom: 1px solid var(--line-soft);
-}
+.runners { border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); overflow: hidden; box-shadow: var(--lift-1); }
+.runner { display: grid; grid-template-columns: 30px 28px 1fr auto; gap: 11px; align-items: center; padding: 11px 13px; border-bottom: 1px solid var(--line-soft); }
 .runner:last-child { border-bottom: 0; }
-.runner.nonrunner { opacity: .5; }
-.runner .num { font-weight: 750; font-size: 14px; color: var(--ink-2); text-align: center; }
-.runner .name { font-weight: 680; font-size: 14.5px; }
+.runner:hover { background: var(--surface-2); }
+.runner .num { font-weight: 800; font-size: 14px; color: var(--ink-3); text-align: center; }
+.runner .name { font-weight: 750; font-size: 14.5px; }
 .runner .who { font-size: 12.5px; color: var(--ink-2); }
 .runner .who .sep { color: var(--ink-3); margin: 0 5px; }
-.runner .form { font-size: 11.5px; color: var(--ink-3); letter-spacing: .08em; }
-.silk { width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--line); flex: none; }
+.runner .form { font-size: 11.5px; color: var(--ink-3); letter-spacing: .07em; }
+.silk { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--line); flex: none; }
 .odds-btn {
-  min-width: 66px; height: 40px; padding: 0 12px; border-radius: 10px;
+  min-width: 68px; height: 42px; padding: 0 13px; border-radius: 12px;
   border: 1px solid var(--line); background: var(--surface-2);
-  font-weight: 720; font-size: 15px; transition: transform .1s, background .14s, border-color .14s;
+  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 15px;
+  box-shadow: var(--lift-1); transition: transform .1s, background .14s, border-color .14s;
 }
-.odds-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.odds-btn:hover { background: var(--accent-soft); border-color: var(--accent-bright); }
 .odds-btn:active { transform: scale(.96); }
-.odds-btn[disabled] { opacity: .4; cursor: not-allowed; }
+.odds-btn[disabled] { opacity: .42; cursor: not-allowed; }
 .odds-btn.taken { background: var(--good-soft); border-color: var(--good); color: var(--good); }
-.pos { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11.5px; font-weight: 750; background: var(--surface-3); color: var(--ink-2); }
-.pos.p1 { background: var(--hay); color: #2C2016; }
+.pos { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11.5px; font-weight: 800; background: var(--surface-3); color: var(--ink-2); }
+.pos.p1 { background: var(--grass-600); color: var(--cream-50); }
 
-/* ---------------- fixtures ---------------- */
-.comp-block { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; }
-.comp-head { display: flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--surface-2); border-bottom: 1px solid var(--line-soft); }
-.comp-head h3 { font-size: 13px; font-weight: 700; }
-.comp-head .meta { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-weight: 600; }
-.fixture { display: grid; grid-template-columns: 52px 1fr auto; gap: 10px; align-items: center; padding: 9px 12px; border-bottom: 1px solid var(--line-soft); width: 100%; text-align: left; }
+.comp-block { border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); overflow: hidden; box-shadow: var(--lift-1); }
+.comp-head { display: flex; align-items: center; gap: 8px; padding: 10px 13px; background: var(--surface-2); border-bottom: 1px solid var(--line-soft); }
+.comp-head h3 { font-size: 13px; font-weight: 800; }
+.comp-head .meta { margin-left: auto; font-size: 11.5px; color: var(--ink-3); font-weight: 620; }
+.fixture { display: grid; grid-template-columns: 54px 1fr auto; gap: 11px; align-items: center; padding: 10px 13px; border-bottom: 1px solid var(--line-soft); width: 100%; text-align: left; }
 .fixture:last-child { border-bottom: 0; }
 .fixture:hover { background: var(--surface-2); }
-.fixture .ko { font-size: 13px; font-weight: 700; color: var(--ink-2); }
+.fixture .ko { font-size: 13px; font-weight: 750; color: var(--ink-2); }
 .fixture .ko small { display: block; font-size: 10.5px; font-weight: 650; color: var(--ink-3); }
-.fixture .teams { min-width: 0; }
-.fixture .team { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 620; }
-.fixture .team .sc { margin-left: auto; font-weight: 750; font-variant-numeric: tabular-nums; }
+.fixture .team { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 650; }
+.fixture .team .sc { margin-left: auto; font-weight: 800; }
 .fixture .form { font-size: 10.5px; letter-spacing: .1em; color: var(--ink-3); }
-.mkt { display: flex; gap: 5px; }
-.mkt .odds-btn { min-width: 58px; height: 38px; font-size: 14px; }
-.mkt .lbl { display: block; font-size: 9.5px; font-weight: 700; color: var(--ink-3); letter-spacing: .06em; }
-.livechip { display: inline-flex; align-items: center; gap: 5px; padding: 1px 7px; border-radius: 5px; background: var(--bad-soft); color: var(--live); font-size: 10.5px; font-weight: 750; }
+.mkt-row { display: flex; gap: 5px; }
+.mkt-row .odds-btn { min-width: 60px; height: 40px; font-size: 14px; }
+.odds-btn .lbl { display: block; font-size: 9.5px; font-weight: 800; color: var(--ink-3); letter-spacing: .06em; }
+.livechip { display: inline-flex; align-items: center; gap: 5px; padding: 1px 7px; border-radius: 6px; background: var(--bad-soft); color: var(--live); font-size: 10.5px; font-weight: 800; }
 .livechip .pulse { width: 6px; height: 6px; border-radius: 50%; background: var(--live); animation: pulse 1.6s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: .25 } }
 
-/* ---------------- stats & record ---------------- */
-.statgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+.statgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; margin-bottom: 14px; }
 @media (min-width: 720px) { .statgrid { grid-template-columns: repeat(4, 1fr); } }
-.stat { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); }
-.stat .k { font-size: 11px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
-.stat .v { font-size: 24px; font-weight: 700; margin-top: 2px; letter-spacing: -.01em; }
+.stat { padding: 14px 15px; border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); box-shadow: var(--lift-1); }
+.stat .k { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.stat .v { font-family: 'Montserrat', sans-serif; font-size: 25px; font-weight: 900; margin-top: 3px; letter-spacing: -.03em; }
 .stat .sub { font-size: 11.5px; color: var(--ink-2); }
 .stat .v.good { color: var(--good); } .stat .v.bad { color: var(--bad); }
 
-.panel { border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); margin-bottom: 14px; overflow: hidden; }
-.panel-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid var(--line-soft); }
-.panel-head h3 { font-size: 14.5px; }
+.panel { border: 1px solid var(--line); border-radius: var(--r-l); background: var(--surface); margin-bottom: 14px; overflow: hidden; box-shadow: var(--lift-1); }
+.panel-head { display: flex; align-items: center; gap: 10px; padding: 13px 15px; border-bottom: 1px solid var(--line-soft); }
+.panel-head h3 { font-size: 14.5px; font-weight: 800; }
 .panel-head .meta { margin-left: auto; font-size: 12px; color: var(--ink-3); }
-.panel-body { padding: 14px; }
+.panel-body { padding: 15px; }
 
 .tiplist { display: flex; flex-direction: column; }
-.tip-row { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 11px 14px; border-bottom: 1px solid var(--line-soft); }
+.tip-row { display: grid; grid-template-columns: auto 1fr auto; gap: 11px; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--line-soft); }
 .tip-row:last-child { border-bottom: 0; }
-.tip-row .sel { font-weight: 660; font-size: 14px; }
+.tip-row .sel { font-weight: 720; font-size: 14px; }
 .tip-row .ev { font-size: 12.5px; color: var(--ink-2); }
-.tip-row .ret { font-weight: 750; font-variant-numeric: tabular-nums; }
+.tip-row .ret { font-family: 'Montserrat', sans-serif; font-weight: 800; }
 .tip-row .ret.good { color: var(--good); } .tip-row .ret.bad { color: var(--bad); }
-.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-.badge.pending { background: var(--hay-soft); color: var(--warn); }
+.badge { display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 2px 9px;
+  border-radius: 999px; font-size: 11px; font-weight: 750; }
+.tip-row .badge { min-width: 62px; }
+.badge.pending { background: var(--warn-soft); color: var(--warn); }
 .badge.won { background: var(--good-soft); color: var(--good); }
 .badge.lost { background: var(--bad-soft); color: var(--bad); }
 
-/* leaderboard */
 .board { width: 100%; border-collapse: collapse; }
-.board th, .board td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
-.board th { font-size: 10.5px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.board th, .board td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
+.board th { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
 .board tr:last-child td { border-bottom: 0; }
 .board tr.me { background: var(--accent-soft); }
+.board tr:hover { background: var(--surface-2); }
 .range { position: relative; display: block; height: 14px; width: 100%; min-width: 120px; max-width: 210px; background: var(--surface-3); border-radius: 999px; }
-.range i { position: absolute; top: 0; bottom: 0; background: var(--leaf); border-radius: 999px; }
-.range i.neg { background: var(--hay); }      /* straddles zero — unproven */
-.range i.up { background: var(--leaf); }       /* whole interval above zero */
-.range i.down { background: var(--bad); }      /* whole interval below zero */
+.range i { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: var(--warn); }
+.range i.up { background: var(--grass-600); }
+.range i.down { background: var(--bad); }
 .range .zero { position: absolute; top: -3px; bottom: -3px; width: 1px; background: var(--ink-2); opacity: .8; }
 .range b { position: absolute; top: 50%; width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px; border-radius: 50%; background: var(--ink); }
 .rangeval { font-size: 11.5px; color: var(--ink-3); }
 
-/* ---------------- bottom sheet (tip flow) ---------------- */
-.scrim { position: fixed; inset: 0; background: rgba(28, 20, 14, .45); z-index: 60; opacity: 0; animation: fade .16s ease forwards; }
+/* ---------------- sheet ---------------- */
+.scrim { position: fixed; inset: 0; background: rgba(0,20,17,.55); backdrop-filter: blur(2px); z-index: 60; opacity: 0; animation: fade .16s ease forwards; }
 @keyframes fade { to { opacity: 1 } }
 .sheet {
   position: fixed; z-index: 61; left: 0; right: 0; bottom: 0;
-  background: var(--surface); border-radius: 20px 20px 0 0; border-top: 1px solid var(--line);
-  box-shadow: var(--shadow-2); padding: 8px 16px calc(20px + env(safe-area-inset-bottom));
-  max-height: 88dvh; overflow-y: auto; transform: translateY(100%); animation: rise .22s cubic-bezier(.2,.8,.3,1) forwards;
+  background: var(--surface); border-radius: 24px 24px 0 0; border-top: 1px solid var(--line);
+  box-shadow: var(--lift-3); padding: 8px 18px calc(22px + env(safe-area-inset-bottom));
+  max-height: 88dvh; overflow-y: auto; transform: translateY(100%); animation: rise .24s cubic-bezier(.2,.9,.3,1) forwards;
 }
 @media (min-width: 620px) {
-  .sheet { left: 50%; right: auto; bottom: auto; top: 50%; width: 460px; transform: translate(-50%, -46%); border-radius: var(--r-l); border: 1px solid var(--line); animation: pop .18s ease forwards; }
+  .sheet { left: 50%; right: auto; bottom: auto; top: 50%; width: 470px; transform: translate(-50%, -46%); border-radius: var(--r-xl); border: 1px solid var(--line); animation: pop .2s ease forwards; }
   @keyframes pop { to { transform: translate(-50%, -50%); opacity: 1 } }
 }
 @keyframes rise { to { transform: translateY(0) } }
-.grabber { width: 38px; height: 4px; border-radius: 4px; background: var(--line); margin: 4px auto 12px; }
+.grabber { width: 38px; height: 4px; border-radius: 4px; background: var(--line); margin: 4px auto 14px; }
 @media (min-width: 620px) { .grabber { display: none; } }
-.sheet h3 { font-size: 17px; margin-bottom: 2px; }
-.sheet .sheet-sub { font-size: 13px; color: var(--ink-2); margin-bottom: 14px; }
-.freeze { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--line); margin-bottom: 12px; }
-.freeze .big { font-size: 26px; font-weight: 750; }
-.freeze .lbl { font-size: 11px; font-weight: 750; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-3); }
-.freeze .note { margin-left: auto; text-align: right; font-size: 11.5px; color: var(--ink-2); }
-.kv { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; }
-.kv:last-of-type { border-bottom: 0; }
-.kv dt { color: var(--ink-2); } .kv dd { margin: 0; font-weight: 650; text-align: right; }
-.btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
-  height: var(--tap); border-radius: 12px; font-weight: 700; font-size: 15px;
-  background: var(--accent); color: #FFF8EC; border: 1px solid transparent; transition: filter .14s;
+.sheet h3 { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 900; letter-spacing: -.03em; }
+.sheet .sheet-sub { font-size: 13px; color: var(--ink-2); margin: 3px 0 15px; }
+.freeze {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--r-m);
+  background: linear-gradient(140deg, var(--pine-700), var(--pine-900)); color: var(--on-dark);
+  margin-bottom: 13px; position: relative; overflow: hidden;
 }
-:root[data-theme="dark"] .btn, :root:not([data-theme="light"]) .btn { color: #17120E; }
-@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .btn { color: #FFF8EC; } }
-.btn:hover { filter: brightness(1.06); }
-.btn.secondary { background: var(--surface-2); color: var(--ink); border-color: var(--line); }
-.warnbox { display: flex; gap: 10px; padding: 10px 12px; border-radius: var(--r-m); background: var(--hay-soft); color: var(--warn); font-size: 12.5px; font-weight: 600; margin-bottom: 12px; }
+.freeze::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .16; mix-blend-mode: overlay; }
+.freeze > * { position: relative; }
+.freeze .big { font-family: 'Montserrat', sans-serif; font-size: 30px; font-weight: 900; letter-spacing: -.03em; }
+.freeze .lbl { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: var(--on-dark-2); }
+.freeze .note { margin-left: auto; text-align: right; font-size: 11.5px; color: var(--on-dark-2); }
+.kv { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; }
+.kv:last-of-type { border-bottom: 0; }
+.kv dt { color: var(--ink-2); } .kv dd { margin: 0; font-weight: 700; text-align: right; }
+.warnbox { display: flex; gap: 10px; padding: 11px 13px; border-radius: var(--r-m); background: var(--warn-soft); color: var(--warn); font-size: 12.5px; font-weight: 620; margin-bottom: 13px; }
 
-/* toast */
 .toast {
-  position: fixed; left: 50%; bottom: calc(84px + env(safe-area-inset-bottom)); transform: translateX(-50%);
-  z-index: 70; display: flex; align-items: center; gap: 10px;
-  padding: 11px 16px; border-radius: 999px; background: var(--ink); color: var(--bg);
-  font-size: 13.5px; font-weight: 650; box-shadow: var(--shadow-2); animation: toastIn .2s ease;
+  position: fixed; left: 50%; bottom: calc(88px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  z-index: 70; display: flex; align-items: center; gap: 10px; max-width: min(92vw, 460px);
+  padding: 12px 17px; border-radius: 999px; background: var(--pine-900); color: var(--cream-100);
+  font-size: 13.5px; font-weight: 650; box-shadow: var(--lift-3); animation: toastIn .2s ease;
 }
 @keyframes toastIn { from { opacity: 0; transform: translate(-50%, 10px) } }
-@media (min-width: 900px) { .toast { bottom: 28px; } }
+@media (min-width: 900px) { .toast { bottom: 30px; } }
 
-/* ---------------- bottom nav (mobile) ---------------- */
 .bottomnav {
-  position: fixed; left: 0; right: 0; bottom: 0; z-index: 45;
-  display: flex; background: var(--surface); border-top: 1px solid var(--line);
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; display: flex;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  backdrop-filter: blur(12px); border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
 }
-.bottomnav button { flex: 1; display: grid; place-items: center; gap: 2px; padding: 8px 4px 9px; color: var(--ink-3); font-size: 10.5px; font-weight: 650; }
+.bottomnav button { flex: 1; display: grid; place-items: center; gap: 3px; padding: 9px 4px 10px; color: var(--ink-3); font-size: 10px; font-weight: 700; }
+.bottomnav button .ic { width: 21px; height: 21px; }
 .bottomnav button[aria-selected="true"] { color: var(--accent); }
 @media (min-width: 900px) { .bottomnav { display: none; } }
 
-/* ---------------- states ---------------- */
-.empty { text-align: center; padding: 46px 20px; color: var(--ink-2); }
-.empty .glyph { font-size: 34px; margin-bottom: 8px; }
-.empty h3 { font-size: 16px; margin-bottom: 4px; }
-.empty p { font-size: 13.5px; max-width: 40ch; margin: 0 auto; color: var(--ink-3); }
+.empty { text-align: center; padding: 30px 20px; color: var(--ink-2);
+  background: var(--surface); border: 1px dashed var(--line); border-radius: var(--r-l); }
+.empty .roundel { width: 46px; height: 46px; }
+.empty.row {
+  display: flex; align-items: center; gap: 16px; text-align: left; padding: 16px 18px;
+}
+.empty.row .roundel { margin: 0; flex: none; width: 42px; height: 42px; }
+.empty.row > div { flex: 1; min-width: 0; }
+.empty.row h3 { margin-bottom: 3px; font-size: 15.5px; }
+.empty.row p { margin: 0; max-width: 62ch; font-size: 13px; }
+.empty.row .btn { flex: none; }
+@media (max-width: 620px) { .empty.row { flex-wrap: wrap; } .empty.row .btn { width: 100%; } }
+.empty .roundel { width: 62px; height: 62px; margin: 0 auto 12px; opacity: .5; }
+.empty h3 { font-size: 16.5px; margin-bottom: 5px; }
+.empty p { font-size: 13.5px; max-width: 42ch; margin: 0 auto 14px; color: var(--ink-3); }
 .skel { background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%); background-size: 400% 100%; animation: shimmer 1.3s ease infinite; border-radius: var(--r-m); }
 @keyframes shimmer { from { background-position: 100% 0 } to { background-position: 0 0 } }
-.skel-row { height: 76px; margin-bottom: 10px; }
+.skel-row { height: 78px; margin-bottom: 11px; }
 
-.notice { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--line); font-size: 12.5px; color: var(--ink-2); margin-bottom: 12px; }
+.notice { display: flex; gap: 10px; align-items: flex-start; padding: 11px 13px; border-radius: var(--r-m); background: var(--surface-2); border: 1px solid var(--line); font-size: 12.5px; color: var(--ink-2); margin-bottom: 12px; }
 .notice b { color: var(--ink); }
-.rg { padding: 18px 12px 10px; text-align: center; font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
+.rg { padding: 20px 12px 12px; text-align: center; font-size: 11.5px; color: var(--ink-3); line-height: 1.6; }
 .rg a { color: var(--ink-2); }
 
 @media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
@@ -1307,6 +1505,240 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
 
 </script>
 <script>
+/* tipsters.js — the people you can follow, the tips they have live, and the
+   heat score that decides what reaches the front page.
+   Records are generated but obey the same rules as yours: settled tips only,
+   intervals not point estimates, and a 100-tip floor before anyone is ranked. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+  const FOLLOW_KEY = 'betstable.following.v1';
+
+  const HANDLES = [
+    ['@quietfurlong', 'Flat handicaps, mostly northern tracks. Bets less than you would think.'],
+    ['@marketmoss', 'Follows the money. Posts late, posts rarely.'],
+    ['@barnowl', 'Evening all-weather. Awake when nobody else is.'],
+    ['@softground', 'Ground-dependent. Disappears in a dry summer.'],
+    ['@paddockmath', 'Prices up every race by hand before looking at the board.'],
+    ['@thirdfavourite', 'Never backs a favourite. It is a whole personality.'],
+    ['@drawbias', 'Sprint draws and nothing else.'],
+    ['@lateshow', 'Last two races on the card. Long record, thin edge.'],
+    ['@stallsix', 'Two-year-olds and first-time headgear.'],
+    ['@cheltenhamcold', 'Jumps only. Silent for five months a year.'],
+    ['@furlongfinish', 'Staying handicaps. Patient to a fault.'],
+    ['@theringcraft', 'Watches the parade ring, ignores the form book.'],
+    ['@xgdiet', 'Underlying numbers, not results. Will tell you about it.'],
+    ['@lowblockliker', 'Away sides at big prices. Suffers loudly.'],
+    ['@setpiecesam', 'Corners, cards and the odd correct score.'],
+    ['@ninetyplus', 'Late goals. Over 2.5 as a lifestyle.'],
+    ['@bttsbrenda', 'Both teams to score, six days a week.'],
+    ['@overroundolly', 'Shops for price. Will not take under fair odds.'],
+    ['@promotionpush', 'Second tier only. Championship and below.'],
+    ['@derbyday', 'Big matches, small volume, honest about it.'],
+    ['@cleansheetclive', 'Unders and defensive sides. Deeply unfashionable.'],
+    ['@thefarpost', 'Continental leagues nobody else covers.']
+  ];
+  const SILK_COLORS = ['#AF6E4B', '#065B07', '#00231F', '#7F4228', '#E0B057', '#F6F0E1',
+    '#0B7A0D', '#3D1F12', '#1E9B22', '#8A5439', '#B23A2E', '#2F6E8A'];
+  const PATTERNS = ['solid', 'halved', 'hoops', 'stripes', 'chevron', 'star', 'sash'];
+
+  /* ---------- the roster ---------- */
+  const ROSTER = HANDLES.map(function (h, i) {
+    const r = C.rng('tipster|v2|' + h[0]);
+    const racing = i < 12 || r() < 0.25;
+    const n = C.rint(r, 62, 640);
+    const edge = C.gauss(r, 0.021, 0.052);
+    const sd = 1.7 + r() * 1.4;
+    const se = sd / Math.sqrt(n);
+    return {
+      handle: h[0],
+      bio: h[1],
+      sport: racing ? 'racing' : 'football',
+      silk: { a: C.pick(r, SILK_COLORS), b: C.pick(r, SILK_COLORS), pattern: C.pick(r, PATTERNS) },
+      n: n,
+      roi: edge * 100,
+      lo: (edge - 1.96 * se) * 100,
+      hi: (edge + 1.96 * se) * 100,
+      maxDD: -(7 + r() * 36),
+      strike: 18 + r() * 26,
+      followers: C.rint(r, 40, 9400),
+      since: 2023 + C.rint(r, 0, 2),
+      ranked: n >= 100
+    };
+  });
+
+  const byHandle = new Map(ROSTER.map(t => [t.handle, t]));
+
+  /* ---------- following ---------- */
+  let following = null;
+  function loadFollowing() {
+    if (following) return following;
+    try {
+      const raw = localStorage.getItem(FOLLOW_KEY);
+      following = new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { following = new Set(); }
+    return following;
+  }
+  function saveFollowing() {
+    try { localStorage.setItem(FOLLOW_KEY, JSON.stringify(Array.from(loadFollowing()))); } catch (e) {}
+  }
+  const isFollowing = h => loadFollowing().has(h);
+  function toggleFollow(h) {
+    const f = loadFollowing();
+    const now = !f.has(h);
+    if (now) f.add(h); else f.delete(h);
+    saveFollowing();
+    return now;
+  }
+  const followingList = () => ROSTER.filter(t => isFollowing(t.handle));
+
+  /* ---------- what they have live ----------
+     Tips are attached to real events from the feed, so a hot tip opens the
+     actual racecard and settles on the same results the rest of the app uses. */
+  function tipsForEvent(ev) {
+    const out = [];
+    for (const t of ROSTER) {
+      if (t.sport !== ev.sport) continue;
+      const r = C.rng('t|' + t.handle + '|' + ev.id);
+      // A tipster posts on a small slice of the card, not everything.
+      if (r() > 0.085) continue;
+      const picks = ev.selections;
+      if (!picks.length) continue;
+      // Weighted toward the front of the market, but far from always the favourite.
+      const idx = Math.min(picks.length - 1, Math.floor(Math.pow(r(), 1.7) * picks.length));
+      const pick = picks[idx];
+      out.push({
+        tipster: t, selection: pick.selection, odds: pick.odds, market: pick.market,
+        postedAt: ev.startTs - (30 + Math.floor(r() * 260)) * 60000
+      });
+    }
+    return out;
+  }
+
+  /** Normalise a race or fixture into the shape tipsForEvent expects. */
+  function asEvent(kind, obj) {
+    if (kind === 'race') {
+      return {
+        id: obj.id, sport: 'racing', kind: 'race', startTs: obj.offTs,
+        title: obj.venue + ' ' + C.fmtTime(obj.offTs, undefined),
+        subtitle: obj.name, flag: obj.flag, tz: obj.tzRef,
+        selections: obj.runners.filter(x => x.odds).map(x => ({
+          selection: x.horse, odds: x.odds, market: 'Win'
+        }))
+      };
+    }
+    return {
+      id: obj.id, sport: 'football', kind: 'match', startTs: obj.koTs,
+      title: obj.home + ' v ' + obj.away, subtitle: obj.comp, flag: '', tz: obj.tz,
+      selections: [
+        { selection: obj.home, odds: obj.odds.home, market: 'Match result' },
+        { selection: 'Draw', odds: obj.odds.draw, market: 'Match result' },
+        { selection: obj.away, odds: obj.odds.away, market: 'Match result' },
+        { selection: 'Over 2.5 goals', odds: obj.ou25[0], market: 'Over/Under' },
+        { selection: 'Both teams to score', odds: obj.btts[0], market: 'BTTS' }
+      ]
+    };
+  }
+
+  /** Every upcoming event in the window, as normalised events. */
+  function upcomingEvents(now, opts) {
+    const o = opts || {};
+    const out = [];
+    if (o.sport !== 'football') {
+      for (const race of BS.ui.index.races.values()) {
+        if (!race.declared || race.offTs <= now) continue;
+        if (race.offTs - now > 8 * 3600e3) continue;
+        out.push(asEvent('race', race));
+      }
+    }
+    if (o.sport !== 'racing') {
+      for (const fx of BS.ui.index.fixtures.values()) {
+        if (fx.koTs <= now) continue;
+        if (fx.koTs - now > 30 * 3600e3) continue;
+        out.push(asEvent('match', fx));
+      }
+    }
+    return out;
+  }
+
+  /* ---------- heat ----------
+     What makes a tip hot is agreement between people with a record, on
+     something that is about to happen — not the size of the price. */
+  function heatFor(group, now) {
+    const consensus = group.tips.length;
+    const quality = group.tips.reduce((a, t) => a + Math.max(0, t.tipster.lo + 12), 0) / consensus;
+    const reach = Math.log10(1 + group.tips.reduce((a, t) => a + t.tipster.followers, 0)) * 6;
+    const mins = Math.max(1, (group.startTs - now) / 60000);
+    const imminence = Math.max(0, 34 - Math.log2(mins) * 4.4);
+    const followed = group.tips.some(t => isFollowing(t.tipster.handle)) ? 9 : 0;
+    return Math.max(1, Math.min(99, Math.round(consensus * 11 + quality * 0.9 + reach + imminence + followed)));
+  }
+
+  /** Grouped by event + selection: the app's cross-sport front page ranking. */
+  function hotTips(now, opts) {
+    const o = opts || {};
+    const groups = new Map();
+    for (const ev of upcomingEvents(now, o)) {
+      for (const tip of tipsForEvent(ev)) {
+        const key = ev.id + '|' + tip.selection;
+        if (!groups.has(key)) {
+          groups.set(key, {
+            key: key, event: ev, eventId: ev.id, kind: ev.kind, sport: ev.sport,
+            title: ev.title, subtitle: ev.subtitle, flag: ev.flag, tz: ev.tz,
+            startTs: ev.startTs, selection: tip.selection, market: tip.market,
+            odds: tip.odds, tips: []
+          });
+        }
+        groups.get(key).tips.push(tip);
+      }
+    }
+    const list = Array.from(groups.values());
+    for (const g of list) {
+      g.heat = heatFor(g, now);
+      g.followed = g.tips.filter(t => isFollowing(t.tipster.handle));
+      g.tips.sort((a, b) => b.tipster.lo - a.tipster.lo);
+    }
+    if (o.followingOnly) return list.filter(g => g.followed.length).sort((a, b) => b.heat - a.heat);
+    return list.sort((a, b) => b.heat - a.heat);
+  }
+
+  /** Everything a single tipster has live right now. */
+  function openTipsFor(handle, now) {
+    const t = byHandle.get(handle);
+    if (!t) return [];
+    const out = [];
+    for (const ev of upcomingEvents(now, { sport: t.sport })) {
+      for (const tip of tipsForEvent(ev)) {
+        if (tip.tipster.handle !== handle) continue;
+        out.push(Object.assign({ event: ev }, tip));
+      }
+    }
+    return out.sort((a, b) => a.event.startTs - b.event.startTs);
+  }
+
+  /** A short equity curve for the profile sparkline. */
+  function curveFor(t) {
+    const r = C.rng('curve|' + t.handle);
+    const pts = [];
+    let cum = 0;
+    const per = t.roi / 100;
+    for (let i = 0; i < 60; i++) {
+      cum += per + C.gauss(r, 0, 1.5);
+      pts.push(cum);
+    }
+    return pts;
+  }
+
+  BS.tipsters = {
+    all: () => ROSTER.slice(),
+    get: h => byHandle.get(h),
+    isFollowing, toggleFollow, followingList,
+    hotTips, openTipsFor, curveFor, upcomingEvents, asEvent
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
 /* ui.js — shared pieces every view uses: silks, odds buttons, the tip sheet,
    toasts, and the time formatting that respects the user's clock preference. */
 (function (BS) {
@@ -1314,7 +1746,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
   const C = BS.core;
 
   const state = BS.state = {
-    product: 'racing', section: 'today', detail: null,
+    view: 'home', sub: 'today', detailId: null, product: 'racing',
     day: 0, q: '', tzMode: 'local', showFinished: false,
     collapsed: {}, loading: false
   };
@@ -1336,14 +1768,64 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     sash: (a, b) => '<path d="M0 26 26 0v7L7 26z" fill="' + b + '"/>',
     solid: () => ''
   };
-  function silk(s) {
+  function silkSvg(s) {
     const fn = SILK[s.pattern] || SILK.solid;
     return C.raw('<svg class="silk" viewBox="0 0 26 26" aria-hidden="true">' +
       '<rect width="26" height="26" fill="' + s.a + '"/>' + fn(s.a, s.b) + '</svg>');
   }
 
-  const empty = (glyph, title, body) => C.html`
-    <div class="empty"><div class="glyph">${glyph}</div><h3>${title}</h3><p>${body}</p></div>`;
+
+  /* ---------- brand mark ----------
+     The logo, rebuilt as vector so it can be a favicon, a watermark, an empty
+     state and a loading mark without ever going fuzzy. */
+  function roundel(cls, opts) {
+    const o = opts || {};
+    const ring = o.ring || '#00231F';
+    const ground = o.ground || '#F6F0E1';
+    const wall = '#AF6E4B', roof = '#7F4228', door = '#065B07', dark = '#00231F';
+    // Below ~40px the fence, windows and horseshoe turn to mud, so the small
+    // mark keeps only the shapes that still read: ring, roof, walls, door.
+    const detail = o.simple ? '' :
+      '<g fill="' + ring + '">' +
+        '<rect x="4" y="57" width="92" height="4.6" rx="2.3"/>' +
+        '<rect x="10" y="49" width="5" height="20" rx="2"/>' +
+        '<rect x="85" y="49" width="5" height="20" rx="2"/>' +
+      '</g>';
+    const trim = o.simple ? '' :
+      '<path d="M46.6 39.6a3.6 3.6 0 0 1 6.8 0" fill="none" stroke="' + ground +
+        '" stroke-width="2.1" stroke-linecap="round"/>' +
+      '<path d="M46.5 39.4v2.6M53.5 39.4v2.6" stroke="' + ground + '" stroke-width="2.1" stroke-linecap="round"/>' +
+      '<rect x="34" y="47" width="4.4" height="7" rx="2.2" fill="' + dark + '"/>' +
+      '<rect x="61.6" y="47" width="4.4" height="7" rx="2.2" fill="' + dark + '"/>';
+    const id = 'rc' + (roundel._n = (roundel._n || 0) + 1);
+    return C.raw('<svg class="roundel ' + (cls || '') + '" viewBox="0 0 100 100" aria-hidden="true">' +
+      '<defs><clipPath id="' + id + '"><circle cx="50" cy="50" r="41"/></clipPath></defs>' +
+      '<circle cx="50" cy="50" r="41" fill="' + ground + '"/>' +
+      '<g clip-path="url(#' + id + ')">' + detail +
+        '<rect x="' + (o.simple ? 28 : 30) + '" y="40" width="' + (o.simple ? 44 : 40) + '" height="26" fill="' + wall + '"/>' +
+        '<path d="M50 20 80 42.4H72L50 25.6 28 42.4h-8z" fill="' + roof + '"/>' +
+        '<path d="M50 25.6 72 42.4H28z" fill="' + wall + '"/>' +
+        '<rect x="' + (o.simple ? 41 : 43) + '" y="' + (o.simple ? 45 : 47) + '" width="' + (o.simple ? 18 : 14) +
+          '" height="' + (o.simple ? 21 : 19) + '" fill="' + door + '"/>' +
+        (o.simple ? '' : '<path d="M43 47l14 19M57 47L43 66" stroke="' + ground + '" stroke-width="1.9"/>') +
+        trim +
+      '</g>' +
+      '<circle cx="50" cy="50" r="41" fill="none" stroke="' + ring + '" stroke-width="' + (o.simple ? 9 : 7) + '"/>' +
+      '</svg>');
+  }
+
+  /** A tipster's silks, doubling as their avatar. */
+  const avatar = (silk, cls) => C.raw(
+    C.unwrap(silkSvg(silk)).replace('class="silk"', 'class="silk avatar ' + (cls || '') + '"'));
+
+  /** Wordmark lockup, coloured like the logo. */
+  const wordmark = (a, b) => C.html`<span class="wordmark"><span class="a">${a}</span><span class="b">${b}</span></span>`;
+
+  const empty = (title, body, action) => C.html`
+    <div class="empty">${roundel()}<h3>${title}</h3><p>${body}</p>${action || ''}</div>`;
+  /** Compact variant for a prompt sitting inside a busy page. */
+  const emptyRow = (title, body, action) => C.html`
+    <div class="empty row">${roundel()}<div><h3>${title}</h3><p>${body}</p></div>${action || ''}</div>`;
 
   const skeleton = n => C.raw(Array.from({ length: n || 4 },
     () => '<div class="skel skel-row"></div>').join(''));
@@ -1467,7 +1949,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
   }
 
   BS.ui = {
-    state, index, silk, empty, skeleton, toast, time, day, tzFor,
+    state, index, silk: silkSvg, silkSvg, roundel, avatar, wordmark, empty, emptyRow, skeleton, toast, time, day, tzFor,
     openTipSheet, closeSheet, confirmTip, oddsButton, hasTipOn
   };
 })(window.BS = window.BS || {});
@@ -1573,7 +2055,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     C.mount(root, C.html`
       ${toolbar(false)}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now)) :
-        U.empty('🐴', 'No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
+        U.empty('No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
           'Every meeting on the feed has finished for the day. Tomorrow\'s cards are in Next 7 days.')}
       ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
     `);
@@ -1622,7 +2104,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
         until then a race shows its entries and expected field size, with no jockeys and no prices.
       </span></div>` : ''}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now, { showCountdown: sel === 0 })) :
-        U.empty('📅', 'Nothing scheduled', 'No meetings on the feed for this day yet.')}
+        U.empty('Nothing scheduled', 'No meetings on the feed for this day yet.')}
     `);
   }
 
@@ -1646,7 +2128,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
   /* ---------- racecard ---------- */
   function racecard(root, raceId) {
     const race = U.index.races.get(raceId);
-    if (!race) { C.mount(root, U.empty('🤷', 'Race not loaded', 'Go back and pick the meeting again.')); return; }
+    if (!race) { C.mount(root, U.empty('Race not loaded', 'Go back and pick the meeting again.')); return; }
     const meeting = U.index.meetings.get(race.meetingId);
     const now = Date.now();
     const st = S.raceState(race, now);
@@ -1824,7 +2306,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     C.mount(root, C.html`
       ${toolbar(false)}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
-        U.empty('⚽', 'No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
+        U.empty('No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
           'Every match on today\'s feed has finished. Tomorrow\'s fixtures are in Next 7 days.')}
       ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
     `);
@@ -1855,13 +2337,13 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
         <b>Line-ups firm up closer to kick-off.</b> Expected XIs appear inside 48 hours and are confirmed about an hour before.
       </span></div>` : ''}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
-        U.empty('📅', 'No fixtures', 'Nothing scheduled on the feed for this day.')}
+        U.empty('No fixtures', 'Nothing scheduled on the feed for this day.')}
     `);
   }
 
   function match(root, id) {
     const fx = U.index.fixtures.get(id);
-    if (!fx) { C.mount(root, U.empty('🤷', 'Match not loaded', 'Go back and pick the fixture again.')); return; }
+    if (!fx) { C.mount(root, U.empty('Match not loaded', 'Go back and pick the fixture again.')); return; }
     const now = Date.now();
     const st = F.fixtureState(fx, now);
     const ls = F.lineupState(fx, now);
@@ -2101,7 +2583,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
               </span>
               <span class="ret ${t.ret >= 0 ? 'good' : 'bad'}">${C.fmtUnits(t.ret)}</span>
             </div>`)}
-        </div>` : U.empty('📒', 'Nothing settled yet', 'Post a tip from today\'s card and it will settle here automatically once the result comes in.')}
+        </div>` : U.empty('Nothing settled yet', 'Post a tip from today\'s card and it will settle here automatically once the result comes in.')}
       </div>
 
       <div class="panel">
@@ -2121,24 +2603,28 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     if (s.n >= 2) initChart(root, s.equity);
   }
 
-  /* ---------- rankings ---------- */
+  /* ---------- rankings ----------
+     The same roster as the tipster directory, so a follow made here shows up
+     on the front page, and vice versa. */
   const BANDS = [['all', 'All prices'], ['short', '1.0 – 2.0'], ['mid', '2.0 – 5.0'], ['long', '5.0 +']];
   let band = 'all';
 
   function rankings(root) {
     const product = U.state.product;
-    const rows = BS.store.leaderboard(band, product).slice();
+    const rows = BS.tipsters.all().filter(t => t.sport === product && t.ranked)
+      .map(t => Object.assign({}, t));
     const mine = BS.store.stats(BS.store.tips().filter(t => t.product === product));
     if (mine.enough) {
-      rows.push({ handle: BS.store.handle(), n: mine.n, roi: mine.roi, lo: mine.lo, hi: mine.hi, maxDD: mine.maxDD, me: true });
-      rows.sort((a, b) => b.lo - a.lo);
+      rows.push({ handle: BS.store.handle(), n: mine.n, roi: mine.roi, lo: mine.lo, hi: mine.hi,
+        maxDD: mine.maxDD, me: true });
     }
-    const SCALE = 34;                       // ±34% covers every plausible interval
+    rows.sort((a, b) => b.lo - a.lo);
+    const SCALE = 34;
     const pos = v => Math.max(0, Math.min(100, (v + SCALE) / (2 * SCALE) * 100));
 
     C.mount(root, C.html`
       <div class="toolbar">
-        ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-band="${b[0]}">${b[1]}</button>`)}
+        ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-id="${b[0]}">${b[1]}</button>`)}
       </div>
 
       <div class="notice"><span>📏</span><span>
@@ -2149,26 +2635,32 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
       <div class="panel">
         <div class="panel-head">
           <h3>${product === 'racing' ? 'BetStable' : 'ScoreMore'} · ROI table</h3>
-          <span class="meta">${BANDS.find(b => b[0] === band)[1]}</span>
+          <span class="meta">${BANDS.find(b => b[0] === band)[1]} · ${rows.length} ranked</span>
         </div>
         <div style="overflow-x:auto">
           <table class="board">
-            <thead><tr><th>#</th><th>Tipster</th><th>Settled</th><th>ROI · 95% range</th><th>Max DD</th></tr></thead>
+            <thead><tr><th>#</th><th>Tipster</th><th>Settled</th><th>ROI · 95% range</th><th>Max DD</th><th></th></tr></thead>
             <tbody>
-              ${rows.filter(r => r.n >= 100).map((r, i) => C.html`
+              ${rows.map((r, i) => C.html`
                 <tr class="${r.me ? 'me' : ''}">
-                  <td style="color:var(--ink-3);font-weight:700">${i + 1}</td>
-                  <td style="font-weight:700">${r.handle}${r.me ? C.raw(' <span class="badge won" style="margin-left:6px">you</span>') : ''}</td>
+                  <td style="color:var(--ink-3);font-weight:800">${i + 1}</td>
+                  <td>
+                    ${r.me ? C.html`<span style="font-weight:800">${r.handle}</span><span class="badge won" style="margin-left:6px">you</span>`
+                      : C.html`<button data-act="tipster" data-id="${r.handle}" style="display:flex;align-items:center;gap:9px;font-weight:800">
+                          ${U.avatar(r.silk, 'sm')}${r.handle}</button>`}
+                  </td>
                   <td>${r.n}</td>
                   <td>
                     <span class="range">
-                      <i class="${r.lo > 0 ? 'up' : r.hi < 0 ? 'down' : 'neg'}" style="left:${pos(r.lo).toFixed(1)}%;right:${(100 - pos(r.hi)).toFixed(1)}%"></i>
+                      <i class="${r.lo > 0 ? 'up' : r.hi < 0 ? 'down' : ''}" style="left:${pos(r.lo).toFixed(1)}%;right:${(100 - pos(r.hi)).toFixed(1)}%"></i>
                       <span class="zero" style="left:50%"></span>
                       <b style="left:${pos(r.roi).toFixed(1)}%"></b>
                     </span>
                     <span class="rangeval">${C.fmtPct(r.lo)} to ${C.fmtPct(r.hi)}</span>
                   </td>
                   <td style="color:var(--ink-2)">${C.fmtSigned(r.maxDD)}</td>
+                  <td>${r.me ? '' : C.html`<button class="follow-btn" data-act="follow" data-id="${r.handle}"
+                    aria-pressed="${String(BS.tipsters.isFollowing(r.handle))}">${BS.tipsters.isFollowing(r.handle) ? '✓' : '+ Follow'}</button>`}</td>
                 </tr>`)}
             </tbody>
           </table>
@@ -2185,92 +2677,538 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
 
 </script>
 <script>
+/* views-home.js — the front page. Cross-sport, opinionated about what matters
+   right now: what is hot, who you follow, and what is about to go off. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui, T = BS.tipsters;
+
+  /* ---------- shared hot-tip card ----------
+     Used on the front page rail and on the Hot page grid, so a tip looks the
+     same wherever you meet it. */
+  function hotCard(g, now) {
+    const names = g.tips.slice(0, 3).map(t => t.tipster.handle);
+    const extra = g.tips.length - names.length;
+    return C.html`
+      <button class="hot sport-${g.sport}" data-act="${g.kind}" data-id="${g.eventId}">
+        <span class="hot-top">
+          <span class="sportdot ${g.sport}">${g.sport === 'racing' ? '🐴' : '⚽'}</span>
+          <span class="ev">${g.flag ? g.flag + ' ' : ''}${g.title}</span>
+          <span class="cd">${C.countdown(g.startTs, now)}</span>
+        </span>
+        <span>
+          <span class="sel" style="display:block">${g.selection}</span>
+          <span class="mkt">${g.market} · ${g.subtitle}</span>
+        </span>
+        <span class="heat">
+          <span class="heat-bar"><i style="width:${g.heat}%"></i></span>
+          <span class="n">HEAT ${g.heat}</span>
+        </span>
+        <span class="hot-bottom">
+          <span class="avatars">${g.tips.slice(0, 3).map(t => U.avatar(t.tipster.silk))}</span>
+          <span class="who">${names[0]}${extra > 0 ? ' +' + (g.tips.length - 1) + ' more' : (g.tips.length > 1 ? ' +' + (g.tips.length - 1) : '')}</span>
+          <span class="price">${C.fmtOdds(g.odds)}</span>
+        </span>
+      </button>`;
+  }
+
+  /** Keep both sports on the front page even when racing has ten times the volume. */
+  function balanced(hot, n) {
+    const racing = hot.filter(g => g.sport === 'racing');
+    const football = hot.filter(g => g.sport === 'football');
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const wantFootball = i % 2 === 1;
+      const from = wantFootball ? football : racing;
+      const other = wantFootball ? racing : football;
+      const pick = from.shift() || other.shift();
+      if (!pick) break;
+      out.push(pick);
+    }
+    return out.sort((a, b) => b.heat - a.heat);
+  }
+
+  /* A paddock fence at the horizon: two rails, widely spaced posts, and the
+     page colour beneath, so the dark hero resolves into the cream body. */
+  const fence = C.raw(
+    '<svg class="fenceline" viewBox="0 0 1200 54" preserveAspectRatio="none" aria-hidden="true">' +
+    '<g fill="var(--bg)">' +
+    Array.from({ length: 12 }, (_, i) =>
+      '<rect x="' + (i * 108 + 26) + '" y="12" width="9" height="30" rx="3"/>').join('') +
+    '<rect x="0" y="19" width="1200" height="6" rx="3"/>' +
+    '<rect x="0" y="31" width="1200" height="6" rx="3"/>' +
+    '<rect x="0" y="41" width="1200" height="13"/>' +
+    '</g></svg>');
+
+  async function home(root) {
+    const now = Date.now();
+    C.mount(root, C.html`<div class="wrap" style="padding-top:16px">${U.skeleton(3)}</div>`);
+
+    const [meetings, fixturesToday, fixturesTomorrow] = await Promise.all([
+      BS.provider.meetings(0), BS.provider.fixtures(0), BS.provider.fixtures(1)
+    ]);
+    meetings.forEach(m => {
+      U.index.meetings.set(m.id, m);
+      m.races.forEach(r => { r.tzRef = m.tz; r.venue = m.venue; r.flag = m.flag; U.index.races.set(r.id, r); });
+    });
+    fixturesToday.concat(fixturesTomorrow).forEach(f => U.index.fixtures.set(f.id, f));
+
+    const upcomingRaces = meetings.reduce((a, m) =>
+      a.concat(m.races.filter(r => BS.racing.raceState(r, now) === 'upcoming')), []);
+    const openMeetings = meetings.filter(m => m.races.some(r => BS.racing.raceState(r, now) !== 'result'));
+    const liveFixtures = fixturesToday.filter(f => BS.football.fixtureState(f, now).state !== 'ft');
+
+    const hot = T.hotTips(now);
+    const featured = balanced(hot.slice(0, 40), 8);
+    const followed = T.followingList();
+    const followFeed = T.hotTips(now, { followingOnly: true }).slice(0, 6);
+    const ranked = T.all().filter(t => t.ranked).sort((a, b) => b.lo - a.lo).slice(0, 4);
+    const myPending = BS.store.tips().filter(t => t.status === 'pending').length;
+
+    C.mount(root, C.html`
+      <section class="hero">
+        ${U.roundel('hero-watermark', { ground: '#0B4038', ring: '#F6F0E1' })}
+        <div class="hero-inner">
+          <span class="eyebrow">Sample data, live mechanism<span class="pip"></span></span>
+          <h1>Be <span class="g">stable.</span></h1>
+          <p class="lede">Every tip here is stamped by the server, its odds frozen on the spot and settled
+            by machine. Nothing can be edited, deleted or quietly forgotten — not by tipsters, not by us.</p>
+          <div class="hero-cta">
+            <button class="btn" data-act="nav" data-id="hot">See what's hot →</button>
+            <button class="btn secondary" data-act="nav" data-id="racing">Today's racing</button>
+          </div>
+          <div class="counters">
+            <div class="counter"><div class="n" data-count="${upcomingRaces.length}">0</div><div class="k">Races to come</div></div>
+            <div class="counter"><div class="n" data-count="${liveFixtures.length}">0</div><div class="k">Matches today</div></div>
+            <div class="counter"><div class="n" data-count="${hot.length}">0</div><div class="k">Live tips</div></div>
+            <div class="counter"><div class="n" data-count="${T.all().filter(t => t.ranked).length}">0</div><div class="k">Ranked tipsters</div></div>
+          </div>
+        </div>
+        ${fence}
+      </section>
+
+      <div class="wrap">
+        <div class="sec-head">
+          <h2>Hot right now</h2>
+          <span class="sub">most agreed-on tips, both sports</span>
+          <button class="more" data-act="nav" data-id="hot">See all ${hot.length} →</button>
+        </div>
+        ${featured.length
+          ? C.html`<div class="rail">${featured.map(g => hotCard(g, now))}</div>`
+          : U.empty('Nothing live yet', 'Tips appear here as tipsters post on today\'s card. Check back closer to the first race.')}
+
+        <div class="sec-head"><h2>Where to</h2></div>
+        <div class="doors">
+          <button class="door racing" data-act="nav" data-id="racing">
+            ${U.roundel('door-art', { ground: '#8A5439', ring: '#F6F0E1' })}
+            <span class="kicker">Horse racing</span>
+            <span class="name">BetStable</span>
+            <span class="meta">${openMeetings.length} meetings · ${upcomingRaces.length} races to come · 9 jurisdictions</span>
+            <span class="go">Open the card →</span>
+          </button>
+          <button class="door football" data-act="nav" data-id="football">
+            ${U.roundel('door-art', { ground: '#054B06', ring: '#F6F0E1' })}
+            <span class="kicker">Football</span>
+            <span class="name">ScoreMore</span>
+            <span class="meta">${liveFixtures.length} matches today · ${fixturesTomorrow.length} tomorrow · 18 competitions</span>
+            <span class="go">Open the fixtures →</span>
+          </button>
+        </div>
+
+        <div class="sec-head">
+          <h2>Following</h2>
+          <span class="sub">${followed.length ? followed.length + ' tipsters' : 'nobody yet'}</span>
+          ${followed.length ? C.html`<button class="more" data-act="nav" data-id="following">Manage →</button>` : ''}
+        </div>
+        ${followed.length
+          ? (followFeed.length
+            ? C.html`<div class="hotgrid">${followFeed.map(g => hotCard(g, now))}</div>`
+            : U.emptyRow('Nobody you follow has posted yet',
+                'You follow ' + followed.length + ' ' + (followed.length === 1 ? 'tipster' : 'tipsters') +
+                '. Their tips land here the moment they post.',
+                C.html`<button class="btn secondary" data-act="nav" data-id="tipsters">Find more tipsters</button>`))
+          : U.emptyRow('Follow a few tipsters',
+              'Their tips land on your front page and they are marked in every table. Records are public and permanent, so you can check before you follow.',
+              C.html`<button class="btn" data-act="nav" data-id="tipsters">Browse tipsters</button>`)}
+
+        <div class="sec-head">
+          <h2>Top of the table</h2>
+          <span class="sub">ranked on the bottom of their 95% range</span>
+          <button class="more" data-act="nav" data-id="tipsters">All tipsters →</button>
+        </div>
+        <div class="tipster-grid">${ranked.map(t => tipsterCard(t))}</div>
+
+        <div class="sec-head"><h2>Why the record holds</h2></div>
+        <div class="doors" style="grid-template-columns:repeat(3,1fr)">
+          ${[['Frozen on arrival', 'The price is re-read from the feed and stamped by the server clock the instant you post — not your device, not later.'],
+             ['Settled by machine', 'Results come from a feed on a schedule. No tipster marks their own bet, and neither do we.'],
+             ['Published daily', 'Every tip is hashed into one root each day, so anyone can check a tip existed exactly as stated.']]
+            .map((x, i) => C.html`
+              <div class="card" style="padding:17px">
+                <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;color:var(--accent);letter-spacing:.06em">0${i + 1}</div>
+                <h3 style="margin:6px 0 5px;font-size:16px">${x[0]}</h3>
+                <p style="margin:0;font-size:13px;color:var(--ink-2)">${x[1]}</p>
+              </div>`)}
+        </div>
+        ${myPending ? C.html`<div class="notice" style="margin-top:16px"><span>⏳</span><span>
+          You have <b>${myPending} tip${myPending === 1 ? '' : 's'}</b> waiting on the results feed.
+          <button data-act="nav" data-id="me" style="color:var(--accent);font-weight:750">Open my record →</button></span></div>` : ''}
+      </div>
+    `);
+    countUp(root);
+  }
+
+  function tipsterCard(t) {
+    const following = T.isFollowing(t.handle);
+    return C.html`
+      <div class="tipster">
+        <button data-act="tipster" data-id="${t.handle}" aria-label="${t.handle}">${U.avatar(t.silk)}</button>
+        <div class="tipster-body">
+          <div class="tipster-top">
+            <button data-act="tipster" data-id="${t.handle}" class="h">${t.handle}</button>
+            ${t.ranked ? '' : C.raw('<span class="badge pending">unranked</span>')}
+            <button class="follow-btn" data-act="follow" data-id="${t.handle}" aria-pressed="${String(following)}">
+              ${following ? '✓ Following' : '+ Follow'}
+            </button>
+          </div>
+          <p class="b">${t.bio}</p>
+          <div class="stats">
+            <span><b>${C.fmtPct(t.roi)}</b> ROI</span>
+            <span><b>${t.n}</b> settled</span>
+            <span><b>${t.followers.toLocaleString()}</b> followers</span>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  /** Counters tick up once, on arrival — the only motion on the page. */
+  function countUp(root) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      C.$$('[data-count]', root).forEach(el => { el.textContent = el.dataset.count; });
+      return;
+    }
+    C.$$('[data-count]', root).forEach(function (el) {
+      const target = +el.dataset.count, dur = 620, start = performance.now();
+      (function frame(t) {
+        const k = Math.min(1, (t - start) / dur);
+        el.textContent = Math.round(target * (1 - Math.pow(1 - k, 3)));
+        if (k < 1) requestAnimationFrame(frame);
+      })(start);
+    });
+  }
+
+  BS.viewsHome = { home, hotCard, tipsterCard, balanced };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* views-hot.js — the cross-sport hot list, the tipster directory and a single
+   tipster's page. Following is the thread running through all three. */
+(function (BS) {
+  'use strict';
+  const C = BS.core, U = BS.ui, T = BS.tipsters;
+
+  let sportFilter = 'all';
+  let sortBy = 'heat';
+
+  /* ---------- hot tips ---------- */
+  async function hot(root) {
+    const now = Date.now();
+    C.mount(root, C.html`<div>${U.skeleton(4)}</div>`);
+    await ensureEvents();
+
+    let list = T.hotTips(now, { sport: sportFilter === 'all' ? undefined : sportFilter });
+    if (sportFilter !== 'all') list = list.filter(g => g.sport === sportFilter);
+    if (sortBy === 'time') list = list.slice().sort((a, b) => a.startTs - b.startTs);
+    if (sortBy === 'price') list = list.slice().sort((a, b) => b.odds - a.odds);
+    const shown = list.slice(0, 48);
+    const followedCount = list.filter(g => g.followed.length).length;
+
+    C.mount(root, C.html`
+      <div class="toolbar">
+        <button class="chip ${sportFilter === 'all' ? 'on' : ''}" data-act="sport" data-id="all">Both sports</button>
+        <button class="chip ${sportFilter === 'racing' ? 'on' : ''}" data-act="sport" data-id="racing">🐴 Racing</button>
+        <button class="chip ${sportFilter === 'football' ? 'on' : ''}" data-act="sport" data-id="football">⚽ Football</button>
+        <span style="flex:1"></span>
+        <button class="chip ${sortBy === 'heat' ? 'on' : ''}" data-act="sort" data-id="heat">Hottest</button>
+        <button class="chip ${sortBy === 'time' ? 'on' : ''}" data-act="sort" data-id="time">Off soonest</button>
+        <button class="chip ${sortBy === 'price' ? 'on' : ''}" data-act="sort" data-id="price">Biggest price</button>
+      </div>
+
+      <div class="notice"><span>🔥</span><span>
+        <b>Heat is agreement, not confidence.</b> It rises when several tipsters with a real record land on the
+        same selection close to the off. It is not a prediction, and a hot tip loses as often as its price says it will.
+        ${followedCount ? C.raw('<b>' + followedCount + '</b> of these include someone you follow.') : ''}
+      </span></div>
+
+      ${shown.length
+        ? C.html`<div class="hotgrid">${shown.map(g => BS.viewsHome.hotCard(g, now))}</div>`
+        : U.empty('Nothing live in this filter',
+            'No tipster has posted on an upcoming ' + (sportFilter === 'all' ? 'event' : sportFilter + ' event') +
+            ' yet. Tips cluster in the hour before the off.')}
+    `);
+  }
+
+  /** Hot tips need both feeds in the index, whichever page you arrived from. */
+  async function ensureEvents() {
+    const jobs = [];
+    if (!U.index.races.size) jobs.push(BS.provider.meetings(0).then(list => list.forEach(m => {
+      U.index.meetings.set(m.id, m);
+      m.races.forEach(r => { r.tzRef = m.tz; r.venue = m.venue; r.flag = m.flag; U.index.races.set(r.id, r); });
+    })));
+    if (!U.index.fixtures.size) {
+      jobs.push(BS.provider.fixtures(0).then(l => l.forEach(f => U.index.fixtures.set(f.id, f))));
+      jobs.push(BS.provider.fixtures(1).then(l => l.forEach(f => U.index.fixtures.set(f.id, f))));
+    }
+    await Promise.all(jobs);
+  }
+
+  /* ---------- tipster directory ---------- */
+  let dirFilter = 'all';
+  function tipsters(root) {
+    let list = T.all();
+    if (dirFilter === 'racing' || dirFilter === 'football') list = list.filter(t => t.sport === dirFilter);
+    if (dirFilter === 'following') list = list.filter(t => T.isFollowing(t.handle));
+    list = list.slice().sort((a, b) => (b.ranked - a.ranked) || (b.lo - a.lo));
+    const followed = T.followingList();
+
+    C.mount(root, C.html`
+      <div class="toolbar">
+        <button class="chip ${dirFilter === 'all' ? 'on' : ''}" data-act="dir" data-id="all">All ${T.all().length}</button>
+        <button class="chip ${dirFilter === 'racing' ? 'on' : ''}" data-act="dir" data-id="racing">🐴 Racing</button>
+        <button class="chip ${dirFilter === 'football' ? 'on' : ''}" data-act="dir" data-id="football">⚽ Football</button>
+        <button class="chip ${dirFilter === 'following' ? 'on' : ''}" data-act="dir" data-id="following">Following ${followed.length}</button>
+      </div>
+      <div class="notice"><span>📏</span><span>
+        Sorted by the <b>bottom of each 95% range</b>, with unranked tipsters last. Anyone under 100 settled tips
+        is shown but never ranked — a short hot run is not a record.
+      </span></div>
+      ${list.length
+        ? C.html`<div class="tipster-grid">${list.map(t => BS.viewsHome.tipsterCard(t))}</div>`
+        : U.empty('You are not following anyone yet',
+            'Follow a tipster and they appear here, on your front page, and highlighted in every table.',
+            C.html`<button class="btn" data-act="dir" data-id="all">Browse everyone</button>`)}
+    `);
+  }
+
+  /* ---------- one tipster ---------- */
+  async function profile(root, handle) {
+    const t = T.get(handle);
+    if (!t) { C.mount(root, U.empty('No such tipster', 'That handle is not on the roster.')); return; }
+    const now = Date.now();
+    C.mount(root, C.html`<button class="back" data-act="back">← Tipsters</button><div>${U.skeleton(2)}</div>`);
+    await ensureEvents();
+
+    const open = T.openTipsFor(handle, now);
+    const following = T.isFollowing(handle);
+    const curve = T.curveFor(t);
+
+    C.mount(root, C.html`
+      <button class="back" data-act="back">← Tipsters</button>
+      <div class="profile-head">
+        ${U.avatar(t.silk, 'lg')}
+        <div style="min-width:0;flex:1">
+          <h1>${t.handle}</h1>
+          <div class="b">${t.bio}</div>
+          <div style="display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--on-dark-2);font-weight:650">
+            <span>${t.sport === 'racing' ? '🐴 Racing' : '⚽ Football'}</span>
+            <span>${t.followers.toLocaleString()} followers</span>
+            <span>since ${t.since}</span>
+          </div>
+        </div>
+        <button class="follow-btn" data-act="follow" data-id="${t.handle}" aria-pressed="${String(following)}"
+          style="${following ? '' : 'background:var(--grass-500);border-color:var(--grass-500);color:#08201B'}">
+          ${following ? '✓ Following' : '+ Follow'}
+        </button>
+      </div>
+
+      <div class="statgrid">
+        <div class="stat">
+          <div class="k">ROI · 95% range</div>
+          <div class="v ${t.roi >= 0 ? 'good' : 'bad'}">${C.fmtPct(t.roi)}</div>
+          <div class="sub">${C.fmtPct(t.lo)} to ${C.fmtPct(t.hi)}</div>
+        </div>
+        <div class="stat">
+          <div class="k">Settled tips</div><div class="v">${t.n}</div>
+          <div class="sub">${t.ranked ? 'ranked' : (100 - t.n) + ' more to be ranked'}</div>
+        </div>
+        <div class="stat">
+          <div class="k">Strike rate</div><div class="v">${t.strike.toFixed(1)}%</div>
+          <div class="sub">winners per 100 tips</div>
+        </div>
+        <div class="stat">
+          <div class="k">Max drawdown</div><div class="v">${C.fmtSigned(t.maxDD)}</div>
+          <div class="sub">deepest peak-to-trough</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Cumulative units</h3><span class="meta">last 60 settled</span></div>
+        <div class="panel-body">${sparkline(curve)}</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Live tips</h3>
+          <span class="meta">${open.length} open · settle automatically</span>
+        </div>
+        ${open.length ? C.html`<div class="tiplist">
+          ${open.map(o => C.html`
+            <div class="tip-row">
+              <span class="badge pending">${C.countdown(o.event.startTs, now)}</span>
+              <button data-act="${o.event.kind}" data-id="${o.event.id}" style="text-align:left">
+                <span class="sel" style="display:block">${o.selection}</span>
+                <span class="ev">${o.market} · ${o.event.title} · ${o.event.subtitle}</span>
+              </button>
+              <span class="ret">${C.fmtOdds(o.odds)}</span>
+            </div>`)}
+        </div>` : U.empty('Nothing live', t.handle + ' has no open tips right now. They post on a slice of the card, not all of it.')}
+      </div>
+
+      <div class="notice"><span>🔒</span><span>
+        This record is append-only. ${t.handle} cannot edit a tip, delete a loser, or change a price after posting —
+        and the bad months stay visible for exactly that reason.</span></div>
+    `);
+  }
+
+  /** Small single-series sparkline: same rules as the big chart, less furniture. */
+  function sparkline(pts) {
+    const W = 720, H = 120, P = 10;
+    const lo = Math.min(0, Math.min.apply(null, pts)), hi = Math.max(0, Math.max.apply(null, pts));
+    const xs = i => P + (i / (pts.length - 1)) * (W - P * 2);
+    const ys = v => P + (1 - (v - lo) / (hi - lo || 1)) * (H - P * 2);
+    const d = pts.map((v, i) => (i ? 'L' : 'M') + xs(i).toFixed(1) + ' ' + ys(v).toFixed(1)).join(' ');
+    return C.raw('<svg viewBox="0 0 ' + W + ' ' + H + '" width="100%" style="display:block;height:auto" ' +
+      'role="img" aria-label="Cumulative units over the last 60 settled tips">' +
+      '<line x1="' + P + '" x2="' + (W - P) + '" y1="' + ys(0).toFixed(1) + '" y2="' + ys(0).toFixed(1) +
+        '" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="3 3"/>' +
+      '<path d="' + d + ' L' + xs(pts.length - 1).toFixed(1) + ' ' + ys(0).toFixed(1) + ' L' + xs(0).toFixed(1) +
+        ' ' + ys(0).toFixed(1) + 'Z" fill="var(--accent)" opacity=".12"/>' +
+      '<path d="' + d + '" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" ' +
+        'vector-effect="non-scaling-stroke"/>' +
+      '<circle cx="' + xs(pts.length - 1).toFixed(1) + '" cy="' + ys(pts[pts.length - 1]).toFixed(1) +
+        '" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/></svg>');
+  }
+
+  BS.viewsHot = {
+    hot, tipsters, profile,
+    setSport: s => { sportFilter = s; },
+    setSort: s => { sortBy = s; },
+    setDir: d => { dirFilter = d; }
+  };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
 /* app.js — shell, routing, the settlement job and the clock.
    The UI never settles a tip itself; it only reads what the results feed says. */
 (function (BS) {
   'use strict';
   const C = BS.core, U = BS.ui, S = BS.ui.state;
 
-  const SECTIONS = [
-    { id: 'today', label: 'Today', icon: '📅' },
-    { id: 'week', label: 'Next 7 days', icon: '🗓' },
-    { id: 'record', label: 'My tips', icon: '📒' },
-    { id: 'rankings', label: 'Table', icon: '🏅' }
+  const ICON = {
+    home: 'M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5',
+    racing: 'M8 20c-2-2.6-3.2-5-3.2-8a7.2 7.2 0 0 1 14.4 0c0 3-1.2 5.4-3.2 8M6.4 19.4h3.2M14.4 19.4h3.2',
+    football: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.6l3.7 2.7-1.4 4.4H9.7L8.3 10.3zM12 3v4.6M19.6 9.6l-3.9.7M16.9 19l-2.6-4.3M7.1 19l2.6-4.3M4.4 9.6l3.9.7',
+    hot: 'M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z',
+    me: 'M5 4h11l3 3v13H5zM8.5 9.5h7M8.5 13h7M8.5 16.5h4'
+  };
+  const icon = k => C.raw('<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+    'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' +
+    ICON[k] + '"/></svg>');
+
+  const NAV = [
+    { id: 'home', label: 'Home', icon: 'home' },
+    { id: 'racing', label: 'BetStable', icon: 'racing' },
+    { id: 'football', label: 'ScoreMore', icon: 'football' },
+    { id: 'hot', label: 'Hot', icon: 'hot' },
+    { id: 'me', label: 'Me', icon: 'me' }
   ];
-  const PRODUCTS = [
-    { id: 'racing', name: 'BetStable', sub: 'Horse racing', icon: '🐴' },
-    { id: 'football', name: 'ScoreMore', sub: 'Football', icon: '⚽' }
+  const SUBS = [
+    { id: 'today', label: 'Today' },
+    { id: 'week', label: 'Next 7 days' },
+    { id: 'table', label: 'Table' }
   ];
 
   /* ---------------- routing ---------------- */
   function readHash() {
-    const parts = (location.hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
-    if (!parts.length) return;
-    if (parts[0] === 'racing' || parts[0] === 'football') S.product = parts[0];
-    if (parts[1] === 'race' || parts[1] === 'match') {
-      S.detail = { type: parts[1], id: parts.slice(2).join('/') };
-      S.section = 'today';
-    } else {
-      S.detail = null;
-      if (parts[1] && SECTIONS.some(s => s.id === parts[1])) S.section = parts[1];
+    const p = (location.hash || '').replace(/^#\/?/, '').split('/').filter(Boolean);
+    if (!p.length) { S.view = 'home'; return; }
+    const head = decodeURIComponent(p[0]);
+    if (head === 'racing' || head === 'football') {
+      S.product = head;
+      if (p[1] === 'race' || p[1] === 'match') { S.view = p[1]; S.detailId = decodeURIComponent(p.slice(2).join('/')); }
+      else { S.view = head; S.sub = SUBS.some(s => s.id === p[1]) ? p[1] : 'today'; }
+      return;
     }
+    if (head === 'tipster' && p[1]) { S.view = 'tipster'; S.detailId = decodeURIComponent(p[1]); return; }
+    if (['home', 'hot', 'me', 'tipsters', 'following'].indexOf(head) >= 0) { S.view = head; return; }
+    S.view = 'home';
   }
   function writeHash() {
-    const h = S.detail
-      ? '#' + S.product + '/' + S.detail.type + '/' + S.detail.id
-      : '#' + S.product + '/' + S.section;
+    let h = '#' + S.view;
+    if (S.view === 'racing' || S.view === 'football') h = '#' + S.view + '/' + S.sub;
+    else if (S.view === 'race' || S.view === 'match') h = '#' + S.product + '/' + S.view + '/' + S.detailId;
+    else if (S.view === 'tipster') h = '#tipster/' + encodeURIComponent(S.detailId);
     if (location.hash !== h) history.replaceState(null, '', h);
   }
+  const navFor = v => v === 'race' ? S.product : v === 'match' ? S.product
+    : (v === 'tipsters' || v === 'tipster' || v === 'following') ? 'hot' : v;
 
   /* ---------------- chrome ---------------- */
   function appbar() {
     const health = BS.provider.health();
     const bad = Object.keys(health).filter(k => health[k].status !== 'ok').length;
+    const inProduct = S.view === 'racing' || S.view === 'football';
+    const active = navFor(S.view);
     return C.html`
       <div class="appbar">
         <div class="appbar-row">
-          <div class="switch" role="tablist" aria-label="Choose a product">
-            ${PRODUCTS.map(p => C.html`
-              <button role="tab" aria-selected="${String(S.product === p.id)}" data-act="product" data-id="${p.id}">
-                <span class="dot"></span>${p.name}
-              </button>`)}
-          </div>
+          <button class="brandlink" data-act="nav" data-id="home" aria-label="Home">
+            ${U.roundel("", { simple: true })}
+            ${S.product === 'football' && S.view !== 'home' ? U.wordmark('Score', 'More') : U.wordmark('Bet', 'Stable')}
+          </button>
           <span class="spacer"></span>
+          ${inProduct ? C.html`<div class="tabs hide-sm" role="tablist" aria-label="Section">
+            ${SUBS.map(s => C.html`<button role="tab" aria-selected="${String(S.sub === s.id)}" data-act="sub" data-id="${s.id}">${s.label}</button>`)}
+          </div>` : ''}
           <button class="health ${bad ? 'warn' : ''}" data-act="health" title="Feed status">
             <span class="led"></span><span class="hide-sm">${bad ? bad + ' degraded' : 'Feeds live'}</span>
           </button>
           <button class="icon-btn" data-act="theme" aria-label="Switch theme">◐</button>
         </div>
-        <div class="tabs" role="tablist" aria-label="Sections">
-          ${SECTIONS.map(s => C.html`
-            <button role="tab" aria-selected="${String(S.section === s.id && !S.detail)}" data-act="section" data-id="${s.id}">
-              ${s.label}${s.id === 'record' && pendingCount() ? C.html`<span class="count">${pendingCount()}</span>` : ''}
+        <div class="mainnav" role="tablist" aria-label="Main">
+          ${NAV.map(n => C.html`
+            <button role="tab" aria-selected="${String(active === n.id)}" data-act="nav" data-id="${n.id}">
+              ${n.label}${n.id === 'me' && pendingCount() ? C.html`<span class="count">${pendingCount()}</span>` : ''}
             </button>`)}
         </div>
+        ${inProduct ? C.html`<div class="mainnav subnav" style="border-top:1px solid var(--line-soft)">
+          ${SUBS.map(s => C.html`<button class="sub-sm" role="tab" aria-selected="${String(S.sub === s.id)}" data-act="sub" data-id="${s.id}">${s.label}</button>`)}
+        </div>` : ''}
       </div>`;
   }
 
-  const pendingCount = () => BS.store.tips().filter(t => t.status === 'pending' && t.product === S.product).length;
+  const pendingCount = () => BS.store.tips().filter(t => t.status === 'pending').length;
 
-  /** Next three events across every jurisdiction — the app's most-used strip. */
   function ticker() {
     const now = Date.now();
-    let items;
-    if (S.product === 'racing') {
+    const showRacing = S.view !== 'football' && S.view !== 'match';
+    let items = [];
+    if (showRacing) {
       items = Array.from(U.index.races.values())
         .filter(r => r.offTs > now && r.declared)
         .sort((a, b) => a.offTs - b.offTs).slice(0, 6)
         .map(r => ({ id: r.id, kind: 'race', label: r.venue, flag: r.flag, ts: r.offTs, tz: r.tzRef }));
     } else {
       items = Array.from(U.index.fixtures.values())
-        .filter(f => f.koTs > now)
-        .sort((a, b) => a.koTs - b.koTs).slice(0, 6)
+        .filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs).slice(0, 6)
         .map(f => ({ id: f.id, kind: 'match', label: f.home + ' v ' + f.away, flag: '', ts: f.koTs, tz: f.tz }));
     }
     if (!items.length) return C.raw('');
     return C.html`
       <div class="ticker">
-        <span class="ticker-label">${S.product === 'racing' ? 'Next off' : 'Next up'}</span>
+        <span class="ticker-label">${showRacing ? 'Next off' : 'Next up'}</span>
         ${items.map(it => C.html`
           <button class="ticker-item ${it.ts - now < 6e5 ? 'imminent' : ''}" data-act="${it.kind}" data-id="${it.id}">
             <b>${U.time(it.ts, it.tz)}</b> ${it.flag} ${it.label}
@@ -2279,15 +3217,13 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
       </div>`;
   }
 
-  function bottomnav() {
-    return C.html`
-      <nav class="bottomnav" aria-label="Sections">
-        ${SECTIONS.map(s => C.html`
-          <button aria-selected="${String(S.section === s.id && !S.detail)}" data-act="section" data-id="${s.id}">
-            <span style="font-size:17px" aria-hidden="true">${s.icon}</span><span>${s.label}</span>
-          </button>`)}
-      </nav>`;
-  }
+  const bottomnav = () => C.html`
+    <nav class="bottomnav" aria-label="Main">
+      ${NAV.map(n => C.html`
+        <button aria-selected="${String(navFor(S.view) === n.id)}" data-act="nav" data-id="${n.id}">
+          ${icon(n.icon)}<span>${n.label}</span>
+        </button>`)}
+    </nav>`;
 
   /* ---------------- render ---------------- */
   let rendering = false;
@@ -2298,37 +3234,44 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     writeHash();
 
     const app = C.$('#app');
-    let shell = C.$('#shell');
-    if (!shell) {
-      app.innerHTML = '<div id="shell"></div><main id="view"></main>' + C.unwrap(bottomnav()) +
+    if (!C.$('#shell')) {
+      app.innerHTML = '<div id="shell"></div><main id="view"></main>' +
         '<div class="rg">18+ · Sample data, not a live feed · Betting involves a risk of loss · ' +
-        '<a href="https://www.begambleaware.org" target="_blank" rel="noopener nofollow">BeGambleAware.org</a></div>';
-      shell = C.$('#shell');
+        '<a href="https://www.begambleaware.org" target="_blank" rel="noopener nofollow">BeGambleAware.org</a></div>' +
+        '<div id="bnav"></div>';
     }
-    C.mount(shell, C.html`${appbar()}${S.detail ? '' : ticker()}`);
-    C.$$('.bottomnav button').forEach(b =>
-      b.setAttribute('aria-selected', String(b.dataset.id === S.section && !S.detail)));
+    const shell = C.$('#shell');
+    const chrome = () => {
+      C.mount(shell, C.html`${appbar()}${['home', 'me', 'tipsters', 'tipster', 'following'].indexOf(S.view) >= 0 ? '' : ticker()}`);
+      C.mount(C.$('#bnav'), bottomnav());
+    };
+    chrome();
 
     const view = C.$('#view');
+    view.className = S.view === 'home' ? 'bleed' : '';
     try {
-      if (S.detail) {
-        await ensureLoaded();
-        if (S.detail.type === 'race') BS.viewsRacing.racecard(view, S.detail.id);
-        else BS.viewsFootball.match(view, S.detail.id);
-      } else if (S.section === 'record') {
-        BS.viewsRecord.record(view);
-      } else if (S.section === 'rankings') {
-        BS.viewsRecord.rankings(view);
-      } else if (S.product === 'racing') {
-        await (S.section === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
-      } else {
-        await (S.section === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
+      switch (S.view) {
+        case 'home': await BS.viewsHome.home(view); break;
+        case 'hot': await BS.viewsHot.hot(view); break;
+        case 'tipsters':
+        case 'following': BS.viewsHot.tipsters(view); break;
+        case 'tipster': await BS.viewsHot.profile(view, S.detailId); break;
+        case 'me': BS.viewsRecord.record(view); break;
+        case 'race': await ensureLoaded(); BS.viewsRacing.racecard(view, S.detailId); break;
+        case 'match': await ensureLoaded(); BS.viewsFootball.match(view, S.detailId); break;
+        case 'racing':
+          if (S.sub === 'table') BS.viewsRecord.rankings(view);
+          else await (S.sub === 'week' ? BS.viewsRacing.week(view) : BS.viewsRacing.today(view));
+          break;
+        case 'football':
+          if (S.sub === 'table') BS.viewsRecord.rankings(view);
+          else await (S.sub === 'week' ? BS.viewsFootball.week(view) : BS.viewsFootball.today(view));
+          break;
       }
-      C.mount(shell, C.html`${appbar()}${S.detail ? '' : ticker()}`);
+      chrome();
     } finally { rendering = false; }
   }
 
-  /** Deep links land before any list has loaded, so fill the index first. */
   let loadedOnce = false;
   async function ensureLoaded() {
     if (loadedOnce) return;
@@ -2359,7 +3302,8 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
         const res = BS.provider.raceResult(race);
         const runner = race.runners.find(r => r.horse === t.selection);
         const won = !!runner && res.positions[0] === runner.no;
-        BS.store.settle(t.id, won, won ? t.odds - 1 : -1, 'Won by ' + (race.runners.find(r => r.no === res.positions[0]) || {}).horse);
+        const winner = race.runners.find(r => r.no === res.positions[0]);
+        BS.store.settle(t.id, won, won ? t.odds - 1 : -1, 'Won by ' + (winner ? winner.horse : '—'));
         settled++;
       } else if (t.refKind === 'fixture') {
         const fx = U.index.fixtures.get(t.refId);
@@ -2381,8 +3325,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
       }
     }
     const h = BS.provider.health();
-    h.settlement.lastSuccess = now;
-    h.results.lastSuccess = now;
+    h.settlement.lastSuccess = now; h.results.lastSuccess = now;
     if (settled) {
       U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', '⚙️');
       render();
@@ -2390,31 +3333,52 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
   }
 
   /* ---------------- events ---------------- */
+  function go(view, id) {
+    S.view = view;
+    if (id) S.detailId = id;
+    if (view === 'racing' || view === 'football') S.product = view;
+    if (view === 'race' || view === 'match') S.product = view === 'race' ? 'racing' : 'football';
+    S.q = '';
+    render();
+    window.scrollTo(0, 0);
+  }
+
   document.addEventListener('click', function (ev) {
     const el = ev.target.closest('[data-act]');
     if (!el) return;
-    const act = el.dataset.act;
+    const act = el.dataset.act, id = el.dataset.id;
 
-    if (act === 'product') { S.product = el.dataset.id; S.detail = null; S.q = ''; render(); }
-    else if (act === 'section') { S.section = el.dataset.id; S.detail = null; render(); }
-    else if (act === 'race') { S.detail = { type: 'race', id: el.dataset.id }; render(); window.scrollTo(0, 0); }
-    else if (act === 'match') { S.detail = { type: 'match', id: el.dataset.id }; render(); window.scrollTo(0, 0); }
-    else if (act === 'back') { S.detail = null; render(); }
+    if (act === 'nav') go(id === 'following' ? 'tipsters' : id, null);
+    else if (act === 'sub') { S.sub = id; render(); }
+    else if (act === 'race') go('race', id);
+    else if (act === 'match') go('match', id);
+    else if (act === 'tipster') go('tipster', id);
+    else if (act === 'back') history.length > 1 ? history.back() : go('home');
     else if (act === 'day') { S.day = +el.dataset.day; render(); }
     else if (act === 'tz') { S.tzMode = S.tzMode === 'local' ? 'venue' : 'local'; render(); }
     else if (act === 'finished') { S.showFinished = !S.showFinished; render(); }
-    else if (act === 'band') { BS.viewsRecord.setBand(el.dataset.band); render(); }
+    else if (act === 'band') { BS.viewsRecord.setBand(id); render(); }
+    else if (act === 'sport') { BS.viewsHot.setSport(id); render(); }
+    else if (act === 'sort') { BS.viewsHot.setSort(id); render(); }
+    else if (act === 'dir') { BS.viewsHot.setDir(id); render(); }
+    else if (act === 'follow') {
+      const nowFollowing = BS.tipsters.toggleFollow(id);
+      U.toast(nowFollowing ? 'Following ' + id + ' — their tips are on your front page' : 'Unfollowed ' + id,
+        nowFollowing ? '✓' : '·');
+      render();
+    }
     else if (act === 'toggle-region') {
-      S.collapsed[el.dataset.id] = !S.collapsed[el.dataset.id];
+      S.collapsed[id] = !S.collapsed[id];
       const sec = el.closest('.region');
-      sec.dataset.open = String(!S.collapsed[el.dataset.id]);
+      sec.dataset.open = String(!S.collapsed[id]);
       el.setAttribute('aria-expanded', sec.dataset.open);
     }
     else if (act === 'theme') cycleTheme();
     else if (act === 'health') showHealth();
     else if (act === 'tip') {
       U.openTipSheet({
-        product: S.product, refId: el.dataset.ref, refKind: el.dataset.kind,
+        product: el.dataset.kind === 'race' ? 'racing' : 'football',
+        refId: el.dataset.ref, refKind: el.dataset.kind,
         selection: el.dataset.sel, market: el.dataset.market, event: el.dataset.event,
         quotedOdds: parseFloat(el.dataset.odds), startTs: +el.dataset.start, tz: el.dataset.tz
       });
@@ -2433,18 +3397,15 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     if (!el) return;
     S.q = el.value;
     clearTimeout(el._t);
-    el._t = setTimeout(() => {
+    el._t = setTimeout(function () {
       const pos = el.selectionStart;
-      render().then(() => {
+      render().then(function () {
         const again = C.$('[data-act="search"]');
         if (again) { again.focus(); try { again.setSelectionRange(pos, pos); } catch (e) {} }
       });
     }, 220);
   });
-
-  document.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Escape' && C.$('.sheet')) U.closeSheet();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && C.$('.sheet')) U.closeSheet(); });
   window.addEventListener('hashchange', () => { readHash(); render(); });
 
   function cycleTheme() {
@@ -2455,7 +3416,6 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     try { localStorage.setItem('betstable.theme', next); } catch (e) {}
     U.toast(next ? next[0].toUpperCase() + next.slice(1) + ' theme' : 'Matching your system', '◐');
   }
-
   function showHealth() {
     const h = BS.provider.health();
     const ago = ts => Math.max(0, Math.round((Date.now() - ts) / 1000)) + 's ago';
@@ -2463,8 +3423,7 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
       ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', '📡');
   }
 
-  /* ---------------- age gate ----------------
-     A compliance requirement that belongs in code, not in a policy page. */
+  /* ---------------- age gate ---------------- */
   function ageGate() {
     let seen = null;
     try { seen = localStorage.getItem('betstable.age.v1'); } catch (e) {}
@@ -2472,11 +3431,15 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
     const el = document.createElement('div');
     el.id = 'agegate';
     el.innerHTML = '<div class="scrim"></div><div class="sheet" role="dialog" aria-label="Age check">' +
-      '<div class="grabber"></div><h3>Are you 18 or over?</h3>' +
-      '<p class="sheet-sub">BetStable and ScoreMore are for adults only. We store this answer on this device.</p>' +
+      '<div class="grabber"></div>' +
+      '<div style="display:flex;justify-content:center;margin-bottom:10px">' +
+      C.unwrap(U.roundel('', {})).replace('class="roundel "', 'style="width:64px;height:64px"') + '</div>' +
+      '<h3 style="text-align:center">Are you 18 or over?</h3>' +
+      '<p class="sheet-sub" style="text-align:center">BetStable and ScoreMore are for adults only. ' +
+      'We store this answer on this device.</p>' +
       '<div class="warnbox"><span>⚠️</span><span>Betting involves a risk of loss. Never stake money you cannot ' +
       'afford to lose. Free, confidential help: BeGambleAware.org.</span></div>' +
-      '<button class="btn" data-act="agegate">I am 18 or over</button>' +
+      '<button class="btn block" data-act="agegate">I am 18 or over</button>' +
       '<p style="font-size:11.5px;color:var(--ink-3);margin:12px 0 0;text-align:center">' +
       'If you are under 18, please close this page.</p></div>';
     document.body.appendChild(el);
@@ -2490,24 +3453,20 @@ main { flex: 1; width: 100%; max-width: 1180px; margin: 0 auto; padding: 14px 12
       if (t) document.documentElement.setAttribute('data-theme', t);
     } catch (e) {}
     readHash();
-    render().then(() => { runSettlement(); });
-
+    render().then(runSettlement);
     setInterval(runSettlement, 15000);
-    // Countdowns go stale fast; refresh the list views while nothing is in hand.
     setInterval(function () {
       if (document.hidden || C.$('.sheet')) return;
-      const active = document.activeElement;
-      if (active && active.matches && active.matches('input')) return;
-      if (S.section === 'record' || S.section === 'rankings') return;
+      const a = document.activeElement;
+      if (a && a.matches && a.matches('input')) return;
+      if (['me', 'tipsters', 'tipster'].indexOf(S.view) >= 0) return;
       const y = window.scrollY;
       render().then(() => window.scrollTo(0, y));
     }, 30000);
   }
 
-  BS.app = { render, boot, runSettlement };
-  document.addEventListener('DOMContentLoaded', function () {
-    if (!ageGate()) boot();
-  });
+  BS.app = { render, boot, runSettlement, go };
+  document.addEventListener('DOMContentLoaded', function () { if (!ageGate()) boot(); });
 })(window.BS = window.BS || {});
 
 </script>

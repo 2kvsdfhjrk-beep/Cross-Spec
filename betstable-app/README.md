@@ -1,10 +1,23 @@
 # BetStable · ScoreMore
 
-A working prototype of the app: two products in one shell, driven by a feed
-interface that a real odds/results provider can be dropped into.
+A working prototype of the app: a cross-sport front page, two products, and a
+feed interface a real odds/results provider can be dropped into.
 
+- **Home** — hot tips across both sports, who you follow, and the two doors in
 - **BetStable** — horse racing across nine jurisdictions
 - **ScoreMore** — football across eighteen competitions
+- **Hot** — every live tip, ranked by agreement, filterable by sport
+- **Me** — your own record: ROI with its interval, drawdown, the ledger
+
+## Design
+
+Palette and mark are taken from the logo: pine `#00231F`, grass `#065B07`,
+barn tan `#AF6E4B`, cream `#F6F0E1`. The roundel is rebuilt as vector so it
+works as a favicon, a hero watermark and an empty-state mark, with a simplified
+variant below 40px where the fence and horseshoe turn to mud. Dark grounds carry
+grain and a warm glow; cream surfaces carry a paper highlight above a warm
+shadow. Montserrat 900 carries the wordmark and every figure; Figtree runs the
+interface.
 
 ## Run it
 
@@ -59,10 +72,13 @@ src/feed-racing.js      jurisdictions, venues, racecard generation
 src/feed-football.js    competitions, fixture and in-play generation
 src/provider.js         the feed interface — the swap-in point
 src/store.js            append-only ledger, ROI/CI/drawdown, hashes, Merkle root
+src/tipsters.js         the roster, following, and the heat score behind Hot
 src/ui.js               tip sheet, silks, odds buttons, toasts
 src/views-racing.js     today, next 7 days, racecard
 src/views-football.js   today, next 7 days, match page
 src/views-record.js     my record with equity curve, ranked tables
+src/views-home.js       the front page
+src/views-hot.js        hot tips, tipster directory, tipster profile
 src/app.js              routing, settlement job, clock, age gate
 ```
 
@@ -75,6 +91,9 @@ src/app.js              routing, settlement job, clock, age gate
 - Stakes are fixed at one unit. There is no stake field.
 - The ledger has `addTip` and `settle`. There is no update and no delete.
 - Rankings sort on the **bottom** of the 95% interval, with a 100-tip minimum.
+- Heat is agreement between tipsters with a record, close to the off — never a
+  confidence score, and the app says so where it is shown.
+- Following is one list, so a follow made in a table shows on the front page.
 - Age gate on first load, stored on the device; 18+ and BeGambleAware on every
   screen.
 
@@ -85,3 +104,5 @@ src/app.js              routing, settlement job, clock, age gate
 - The ledger is `localStorage`, so it is per-device and per-browser.
 - Odds bands in the ranked table re-seed the sample rather than filtering a real
   tip history.
+- Tipster records are generated, and their live tips are attached to real events
+  from the feed so they open and settle like your own.

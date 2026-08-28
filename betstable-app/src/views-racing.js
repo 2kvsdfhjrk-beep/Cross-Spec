@@ -97,7 +97,7 @@
     C.mount(root, C.html`
       ${toolbar(false)}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now)) :
-        U.empty('🐴', 'No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
+        U.empty('No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
           'Every meeting on the feed has finished for the day. Tomorrow\'s cards are in Next 7 days.')}
       ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
     `);
@@ -146,7 +146,7 @@
         until then a race shows its entries and expected field size, with no jockeys and no prices.
       </span></div>` : ''}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now, { showCountdown: sel === 0 })) :
-        U.empty('📅', 'Nothing scheduled', 'No meetings on the feed for this day yet.')}
+        U.empty('Nothing scheduled', 'No meetings on the feed for this day yet.')}
     `);
   }
 
@@ -170,7 +170,7 @@
   /* ---------- racecard ---------- */
   function racecard(root, raceId) {
     const race = U.index.races.get(raceId);
-    if (!race) { C.mount(root, U.empty('🤷', 'Race not loaded', 'Go back and pick the meeting again.')); return; }
+    if (!race) { C.mount(root, U.empty('Race not loaded', 'Go back and pick the meeting again.')); return; }
     const meeting = U.index.meetings.get(race.meetingId);
     const now = Date.now();
     const st = S.raceState(race, now);

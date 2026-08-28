@@ -172,7 +172,7 @@
               </span>
               <span class="ret ${t.ret >= 0 ? 'good' : 'bad'}">${C.fmtUnits(t.ret)}</span>
             </div>`)}
-        </div>` : U.empty('📒', 'Nothing settled yet', 'Post a tip from today\'s card and it will settle here automatically once the result comes in.')}
+        </div>` : U.empty('Nothing settled yet', 'Post a tip from today\'s card and it will settle here automatically once the result comes in.')}
       </div>
 
       <div class="panel">
@@ -192,24 +192,28 @@
     if (s.n >= 2) initChart(root, s.equity);
   }
 
-  /* ---------- rankings ---------- */
+  /* ---------- rankings ----------
+     The same roster as the tipster directory, so a follow made here shows up
+     on the front page, and vice versa. */
   const BANDS = [['all', 'All prices'], ['short', '1.0 – 2.0'], ['mid', '2.0 – 5.0'], ['long', '5.0 +']];
   let band = 'all';
 
   function rankings(root) {
     const product = U.state.product;
-    const rows = BS.store.leaderboard(band, product).slice();
+    const rows = BS.tipsters.all().filter(t => t.sport === product && t.ranked)
+      .map(t => Object.assign({}, t));
     const mine = BS.store.stats(BS.store.tips().filter(t => t.product === product));
     if (mine.enough) {
-      rows.push({ handle: BS.store.handle(), n: mine.n, roi: mine.roi, lo: mine.lo, hi: mine.hi, maxDD: mine.maxDD, me: true });
-      rows.sort((a, b) => b.lo - a.lo);
+      rows.push({ handle: BS.store.handle(), n: mine.n, roi: mine.roi, lo: mine.lo, hi: mine.hi,
+        maxDD: mine.maxDD, me: true });
     }
-    const SCALE = 34;                       // ±34% covers every plausible interval
+    rows.sort((a, b) => b.lo - a.lo);
+    const SCALE = 34;
     const pos = v => Math.max(0, Math.min(100, (v + SCALE) / (2 * SCALE) * 100));
 
     C.mount(root, C.html`
       <div class="toolbar">
-        ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-band="${b[0]}">${b[1]}</button>`)}
+        ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-id="${b[0]}">${b[1]}</button>`)}
       </div>
 
       <div class="notice"><span>📏</span><span>
@@ -220,26 +224,32 @@
       <div class="panel">
         <div class="panel-head">
           <h3>${product === 'racing' ? 'BetStable' : 'ScoreMore'} · ROI table</h3>
-          <span class="meta">${BANDS.find(b => b[0] === band)[1]}</span>
+          <span class="meta">${BANDS.find(b => b[0] === band)[1]} · ${rows.length} ranked</span>
         </div>
         <div style="overflow-x:auto">
           <table class="board">
-            <thead><tr><th>#</th><th>Tipster</th><th>Settled</th><th>ROI · 95% range</th><th>Max DD</th></tr></thead>
+            <thead><tr><th>#</th><th>Tipster</th><th>Settled</th><th>ROI · 95% range</th><th>Max DD</th><th></th></tr></thead>
             <tbody>
-              ${rows.filter(r => r.n >= 100).map((r, i) => C.html`
+              ${rows.map((r, i) => C.html`
                 <tr class="${r.me ? 'me' : ''}">
-                  <td style="color:var(--ink-3);font-weight:700">${i + 1}</td>
-                  <td style="font-weight:700">${r.handle}${r.me ? C.raw(' <span class="badge won" style="margin-left:6px">you</span>') : ''}</td>
+                  <td style="color:var(--ink-3);font-weight:800">${i + 1}</td>
+                  <td>
+                    ${r.me ? C.html`<span style="font-weight:800">${r.handle}</span><span class="badge won" style="margin-left:6px">you</span>`
+                      : C.html`<button data-act="tipster" data-id="${r.handle}" style="display:flex;align-items:center;gap:9px;font-weight:800">
+                          ${U.avatar(r.silk, 'sm')}${r.handle}</button>`}
+                  </td>
                   <td>${r.n}</td>
                   <td>
                     <span class="range">
-                      <i class="${r.lo > 0 ? 'up' : r.hi < 0 ? 'down' : 'neg'}" style="left:${pos(r.lo).toFixed(1)}%;right:${(100 - pos(r.hi)).toFixed(1)}%"></i>
+                      <i class="${r.lo > 0 ? 'up' : r.hi < 0 ? 'down' : ''}" style="left:${pos(r.lo).toFixed(1)}%;right:${(100 - pos(r.hi)).toFixed(1)}%"></i>
                       <span class="zero" style="left:50%"></span>
                       <b style="left:${pos(r.roi).toFixed(1)}%"></b>
                     </span>
                     <span class="rangeval">${C.fmtPct(r.lo)} to ${C.fmtPct(r.hi)}</span>
                   </td>
                   <td style="color:var(--ink-2)">${C.fmtSigned(r.maxDD)}</td>
+                  <td>${r.me ? '' : C.html`<button class="follow-btn" data-act="follow" data-id="${r.handle}"
+                    aria-pressed="${String(BS.tipsters.isFollowing(r.handle))}">${BS.tipsters.isFollowing(r.handle) ? '✓' : '+ Follow'}</button>`}</td>
                 </tr>`)}
             </tbody>
           </table>

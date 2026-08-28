@@ -115,7 +115,7 @@
     C.mount(root, C.html`
       ${toolbar(false)}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
-        U.empty('⚽', 'No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
+        U.empty('No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
           'Every match on today\'s feed has finished. Tomorrow\'s fixtures are in Next 7 days.')}
       ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
     `);
@@ -146,13 +146,13 @@
         <b>Line-ups firm up closer to kick-off.</b> Expected XIs appear inside 48 hours and are confirmed about an hour before.
       </span></div>` : ''}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
-        U.empty('📅', 'No fixtures', 'Nothing scheduled on the feed for this day.')}
+        U.empty('No fixtures', 'Nothing scheduled on the feed for this day.')}
     `);
   }
 
   function match(root, id) {
     const fx = U.index.fixtures.get(id);
-    if (!fx) { C.mount(root, U.empty('🤷', 'Match not loaded', 'Go back and pick the fixture again.')); return; }
+    if (!fx) { C.mount(root, U.empty('Match not loaded', 'Go back and pick the fixture again.')); return; }
     const now = Date.now();
     const st = F.fixtureState(fx, now);
     const ls = F.lineupState(fx, now);
