@@ -119,7 +119,7 @@
       const sH = Math.max(0.15, C.gauss(fr, 1.35, 0.45));
       const sA = Math.max(0.15, C.gauss(fr, 1.0, 0.45));
       const sD = 0.78 + fr() * 0.25;
-      const odds = C.priceUp([sH, sD, sA], 1.06 + fr() * 0.04);
+      const odds = C.priceUp([sH, sD, sA], 1.06 + fr() * 0.04, 26);
       const tot = sH + sD + sA;
       const goals = goalScript(fr, sH / tot, sA / tot);
       const ouProbs = [0.52 + fr() * 0.16, 0.48 - fr() * 0.16];
@@ -129,7 +129,7 @@
         compId: comp.id, comp: comp.name, region: comp.region, tz: comp.tz,
         home: teams[i], away: teams[i + 1], koTs: koTs, dateKey: dateKey, dayOffset: dayOffset,
         odds: { home: odds[0], draw: odds[1], away: odds[2] },
-        ou25: C.priceUp(ouProbs, 1.05), btts: C.priceUp(bttsProbs, 1.05),
+        ou25: C.priceUp(ouProbs, 1.05, 12), btts: C.priceUp(bttsProbs, 1.05, 12),
         probs: { home: sH / tot, draw: sD / tot, away: sA / tot },
         form: {
           home: Array.from({ length: 5 }, () => C.pick(fr, ['W', 'W', 'D', 'L'])).join(''),

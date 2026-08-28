@@ -192,8 +192,8 @@
     const jockeys = C.pickN(r, JOCKEYS[style], n);
     const trainers = C.pickN(r, TRAINERS[style], Math.min(n, TRAINERS[style].length));
     // A plausible market: a couple of short prices, a long tail.
-    const strengths = horses.map((_, i) => Math.pow(Math.max(0.05, C.gauss(r, 1, 0.55)), 2) * (i === 0 ? 2.2 : 1));
-    const odds = C.priceUp(strengths, 1.14 + r() * 0.08);
+    const strengths = horses.map((_, i) => Math.pow(Math.max(0.22, C.gauss(r, 1, 0.5)), 2) * (i === 0 ? 2.2 : 1));
+    const odds = C.priceUp(strengths, 1.14 + r() * 0.08, 150);
     const total = strengths.reduce((a, b) => a + b, 0);
     return horses.map((horse, i) => ({
       no: i + 1,

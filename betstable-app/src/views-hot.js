@@ -38,7 +38,7 @@
       </span></div>
 
       ${shown.length
-        ? C.html`<div class="hotgrid">${shown.map(g => BS.viewsHome.hotCard(g, now))}</div>`
+        ? C.html`<div class="mod"><div class="rows">${shown.map(g => BS.viewsHome.tipRow(g, now))}</div></div>`
         : U.empty('Nothing live in this filter',
             'No tipster has posted on an upcoming ' + (sportFilter === 'all' ? 'event' : sportFilter + ' event') +
             ' yet. Tips cluster in the hour before the off.')}
@@ -61,11 +61,13 @@
 
   /* ---------- tipster directory ---------- */
   let dirFilter = 'all';
+  let dirSort = 'roi';
   function tipsters(root) {
     let list = T.all();
     if (dirFilter === 'racing' || dirFilter === 'football') list = list.filter(t => t.sport === dirFilter);
     if (dirFilter === 'following') list = list.filter(t => T.isFollowing(t.handle));
-    list = list.slice().sort((a, b) => (b.ranked - a.ranked) || (b.lo - a.lo));
+    const cmp = T.SORTS[dirSort] || T.SORTS.roi;
+    list = list.slice().sort(cmp);
     const followed = T.followingList();
 
     C.mount(root, C.html`
@@ -74,13 +76,17 @@
         <button class="chip ${dirFilter === 'racing' ? 'on' : ''}" data-act="dir" data-id="racing">🐴 Racing</button>
         <button class="chip ${dirFilter === 'football' ? 'on' : ''}" data-act="dir" data-id="football">⚽ Football</button>
         <button class="chip ${dirFilter === 'following' ? 'on' : ''}" data-act="dir" data-id="following">Following ${followed.length}</button>
+        <span style="flex:1"></span>
+        ${BS.viewsHome.select('sort-dir', dirSort,
+          [['roi', 'ROI, all time'], ['streak', 'Profit streak'], ['last7', 'Last 7 days'],
+           ['last30', 'Last 30 days'], ['followers', 'Most followed']])}
       </div>
       <div class="notice"><span>📏</span><span>
         Sorted by the <b>bottom of each 95% range</b>, with unranked tipsters last. Anyone under 100 settled tips
         is shown but never ranked — a short hot run is not a record.
       </span></div>
       ${list.length
-        ? C.html`<div class="tipster-grid">${list.map(t => BS.viewsHome.tipsterCard(t))}</div>`
+        ? C.html`<div class="mod"><div class="rows">${list.map(t => BS.viewsHome.tipsterRow(t, dirSort))}</div></div>`
         : U.empty('You are not following anyone yet',
             'Follow a tipster and they appear here, on your front page, and highlighted in every table.',
             C.html`<button class="btn" data-act="dir" data-id="all">Browse everyone</button>`)}
@@ -190,6 +196,7 @@
     hot, tipsters, profile,
     setSport: s => { sportFilter = s; },
     setSort: s => { sortBy = s; },
-    setDir: d => { dirFilter = d; }
+    setDir: d => { dirFilter = d; },
+    setDirSort: v => { dirSort = v; }
   };
 })(window.BS = window.BS || {});

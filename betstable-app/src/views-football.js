@@ -170,6 +170,10 @@
           <h1>${fx.home} v ${fx.away}</h1>
           <div class="sub">${fx.comp} · ${U.day(fx.koTs, fx.tz)} · form ${fx.form.home} v ${fx.form.away}</div>
         </div>
+${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pressed="' +
+          String(BS.store.isFav(fx.id)) + '" aria-label="Star this event"><svg viewBox="0 0 24 24" fill="' +
+          (BS.store.isFav(fx.id) ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.8" ' +
+          'stroke-linejoin="round"><path d="M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z"/></svg></button>')}
         <div class="when">
           <div class="t">${st.state === 'upcoming' ? U.time(fx.koTs, fx.tz) : st.score[0] + '–' + st.score[1]}</div>
           <div class="cd">${st.state === 'live' ? st.minute + "' live" : st.state === 'ft' ? 'Full time' : 'in ' + C.countdown(fx.koTs, now)}</div>

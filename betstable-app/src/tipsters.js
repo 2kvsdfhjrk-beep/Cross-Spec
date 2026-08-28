@@ -56,7 +56,12 @@
       strike: 18 + r() * 26,
       followers: C.rint(r, 40, 9400),
       since: 2023 + C.rint(r, 0, 2),
-      ranked: n >= 100
+      ranked: n >= 100,
+      // Short-run form, kept separate from the record so nobody confuses a good
+      // fortnight with an edge.
+      streak: C.rint(r, 0, 9),
+      last7: Math.round(C.gauss(r, 1.2, 6.5) * 10) / 10,
+      last30: Math.round(C.gauss(r, 3.4, 13) * 10) / 10
     };
   });
 
@@ -222,8 +227,18 @@
     return pts;
   }
 
+  const SORTS = {
+    streak: (a, b) => b.streak - a.streak || b.last7 - a.last7,
+    last7: (a, b) => b.last7 - a.last7,
+    last30: (a, b) => b.last30 - a.last30,
+    roi: (a, b) => (b.ranked - a.ranked) || (b.lo - a.lo),
+    followers: (a, b) => b.followers - a.followers
+  };
+  const sorted = key => ROSTER.slice().sort(SORTS[key] || SORTS.roi);
+
   BS.tipsters = {
     all: () => ROSTER.slice(),
+    sorted, SORTS,
     get: h => byHandle.get(h),
     isFollowing, toggleFollow, followingList,
     hotTips, openTipsFor, curveFor, upcomingEvents, asEvent

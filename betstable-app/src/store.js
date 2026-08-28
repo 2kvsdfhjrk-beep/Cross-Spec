@@ -173,7 +173,30 @@
     return rows;
   }
 
+  /* ---------- favourites ----------
+     A starred event, so the front page can show what you actually care about. */
+  const FAV_KEY = 'betstable.favourites.v1';
+  let favs = null;
+  function loadFavs() {
+    if (favs) return favs;
+    try {
+      const raw = localStorage.getItem(FAV_KEY);
+      favs = new Set(raw ? JSON.parse(raw) : []);
+    } catch (e) { favs = new Set(); }
+    return favs;
+  }
+  const isFav = id => loadFavs().has(id);
+  function toggleFav(id) {
+    const f = loadFavs();
+    const on = !f.has(id);
+    if (on) f.add(id); else f.delete(id);
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(Array.from(f))); } catch (e) {}
+    return on;
+  }
+  const favList = () => Array.from(loadFavs());
+
   BS.store = {
+    isFav, toggleFav, favList,
     load, save, addTip, settle, stats, leaderboard, merkleRoot, tipHash,
     tips: () => load().tips,
     handle: () => load().handle,

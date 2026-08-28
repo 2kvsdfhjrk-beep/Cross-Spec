@@ -9,7 +9,9 @@
     racing: 'M8 20c-2-2.6-3.2-5-3.2-8a7.2 7.2 0 0 1 14.4 0c0 3-1.2 5.4-3.2 8M6.4 19.4h3.2M14.4 19.4h3.2',
     football: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.6l3.7 2.7-1.4 4.4H9.7L8.3 10.3zM12 3v4.6M19.6 9.6l-3.9.7M16.9 19l-2.6-4.3M7.1 19l2.6-4.3M4.4 9.6l3.9.7',
     hot: 'M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z',
-    me: 'M5 4h11l3 3v13H5zM8.5 9.5h7M8.5 13h7M8.5 16.5h4'
+    me: 'M5 4h11l3 3v13H5zM8.5 9.5h7M8.5 13h7M8.5 16.5h4',
+    people: 'M9.4 11.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2zM3.6 19.4c0-3 2.6-5.2 5.8-5.2s5.8 2.2 5.8 5.2M16.6 11a2.6 2.6 0 1 0 0-5.2M17.2 14.4c2.4.3 4.2 2.2 4.2 4.8',
+    star: 'M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z'
   };
   const icon = k => C.raw('<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
     'stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' +
@@ -17,10 +19,10 @@
 
   const NAV = [
     { id: 'home', label: 'Home', icon: 'home' },
+    { id: 'hot', label: 'Hot tips', icon: 'hot' },
     { id: 'racing', label: 'BetStable', icon: 'racing' },
     { id: 'football', label: 'ScoreMore', icon: 'football' },
-    { id: 'hot', label: 'Hot', icon: 'hot' },
-    { id: 'me', label: 'Me', icon: 'me' }
+    { id: 'tipsters', label: 'Tipsters', icon: 'people' }
   ];
   const SUBS = [
     { id: 'today', label: 'Today' },
@@ -50,8 +52,8 @@
     else if (S.view === 'tipster') h = '#tipster/' + encodeURIComponent(S.detailId);
     if (location.hash !== h) history.replaceState(null, '', h);
   }
-  const navFor = v => v === 'race' ? S.product : v === 'match' ? S.product
-    : (v === 'tipsters' || v === 'tipster' || v === 'following') ? 'hot' : v;
+  const navFor = v => (v === 'race' || v === 'match') ? S.product
+    : (v === 'tipster' || v === 'following') ? 'tipsters' : v;
 
   /* ---------------- chrome ---------------- */
   function appbar() {
@@ -74,11 +76,13 @@
             <span class="led"></span><span class="hide-sm">${bad ? bad + ' degraded' : 'Feeds live'}</span>
           </button>
           <button class="icon-btn" data-act="theme" aria-label="Switch theme">◐</button>
+          <button class="icon-btn profile ${navFor(S.view) === 'me' ? 'on' : ''}" data-act="nav" data-id="me"
+            aria-label="My record">${icon('me')}${pendingCount() ? C.raw('<span class="dot"></span>') : ''}</button>
         </div>
         <div class="mainnav" role="tablist" aria-label="Main">
           ${NAV.map(n => C.html`
             <button role="tab" aria-selected="${String(active === n.id)}" data-act="nav" data-id="${n.id}">
-              ${n.label}${n.id === 'me' && pendingCount() ? C.html`<span class="count">${pendingCount()}</span>` : ''}
+              ${n.label}
             </button>`)}
         </div>
         ${inProduct ? C.html`<div class="mainnav subnav" style="border-top:1px solid var(--line-soft)">
@@ -146,7 +150,6 @@
     chrome();
 
     const view = C.$('#view');
-    view.className = S.view === 'home' ? 'bleed' : '';
     try {
       switch (S.view) {
         case 'home': await BS.viewsHome.home(view); break;
@@ -259,6 +262,11 @@
     else if (act === 'sport') { BS.viewsHot.setSport(id); render(); }
     else if (act === 'sort') { BS.viewsHot.setSort(id); render(); }
     else if (act === 'dir') { BS.viewsHot.setDir(id); render(); }
+    else if (act === 'fav') {
+      const on = BS.store.toggleFav(id);
+      U.toast(on ? 'Starred — it will wait for you on the front page' : 'Removed from favourites', on ? '★' : '☆');
+      render();
+    }
     else if (act === 'follow') {
       const nowFollowing = BS.tipsters.toggleFollow(id);
       U.toast(nowFollowing ? 'Following ' + id + ' — their tips are on your front page' : 'Unfollowed ' + id,
@@ -288,6 +296,16 @@
       C.$('#agegate').remove();
       boot();
     }
+  });
+
+  document.addEventListener('change', function (ev) {
+    const el = ev.target.closest('select[data-act]');
+    if (!el) return;
+    const act = el.dataset.act;
+    if (act === 'sort-hot') BS.viewsHome.setSort('hot', el.value);
+    else if (act === 'sort-tipsters') BS.viewsHome.setSort('tipsters', el.value);
+    else if (act === 'sort-dir') BS.viewsHot.setDirSort(el.value);
+    render();
   });
 
   document.addEventListener('input', function (ev) {

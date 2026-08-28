@@ -96,13 +96,14 @@
 
   /* ---------- odds ---------- */
   /** Decimal odds from probabilities, with a realistic book overround. */
-  function priceUp(probs, overround) {
+  function priceUp(probs, overround, cap) {
     const total = probs.reduce((a, b) => a + b, 0);
+    const max = cap || 200;              // no real book prices a horse at 6800
     return probs.map(p => {
       const implied = (p / total) * (overround || 1.16);
       const dec = 1 / implied;
-      const step = dec < 3 ? 0.05 : dec < 8 ? 0.25 : dec < 20 ? 1 : 5;
-      return Math.max(1.05, Math.round(dec / step) * step);
+      const step = dec < 3 ? 0.05 : dec < 8 ? 0.25 : dec < 20 ? 1 : dec < 50 ? 5 : 25;
+      return Math.min(max, Math.max(1.05, Math.round(dec / step) * step));
     });
   }
   const fmtOdds = o => o >= 10 ? o.toFixed(0) : o.toFixed(2);

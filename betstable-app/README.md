@@ -3,7 +3,8 @@
 A working prototype of the app: a cross-sport front page, two products, and a
 feed interface a real odds/results provider can be dropped into.
 
-- **Home** — hot tips across both sports, who you follow, and the two doors in
+- **Home** — a stack of scannable modules: hot tips, your tipsters, who is in
+  form, and the events you starred
 - **BetStable** — horse racing across nine jurisdictions
 - **ScoreMore** — football across eighteen competitions
 - **Hot** — every live tip, ranked by agreement, filterable by sport
@@ -11,10 +12,16 @@ feed interface a real odds/results provider can be dropped into.
 
 ## Design
 
+The front page is a stack of plain modules — header, optional sort, rows, one
+action — so the whole thing is scannable in a single pass and every route to a
+tip is two taps. The design effort goes into rhythm, hierarchy and tap targets
+rather than decoration.
+
 Palette and mark are taken from the logo: pine `#00231F`, grass `#065B07`,
-barn tan `#AF6E4B`, cream `#F6F0E1`. The roundel is rebuilt as vector so it
-works as a favicon, a hero watermark and an empty-state mark, with a simplified
-variant below 40px where the fence and horseshoe turn to mud. Dark grounds carry
+barn tan `#AF6E4B`, cream `#F6F0E1`. The roundel is redrawn from the logo —
+wide overhanging dark roof, planked tan walls, green cross-braced door, fence
+rails running out to the ring — with a simplified variant below 40px where the
+planks, horseshoe and fence turn to mud. Dark grounds carry
 grain and a warm glow; cream surfaces carry a paper highlight above a warm
 shadow. Montserrat 900 carries the wordmark and every figure; Figtree runs the
 interface.
@@ -94,6 +101,9 @@ src/app.js              routing, settlement job, clock, age gate
 - Heat is agreement between tipsters with a record, close to the off — never a
   confidence score, and the app says so where it is shown.
 - Following is one list, so a follow made in a table shows on the front page.
+- Short-run form (streak, last 7, last 30) is kept separate from the record, so
+  a good fortnight is never presented as an edge.
+- Prices are capped at realistic maxima — 150 for a horse, 26 for a 1X2 line.
 - Age gate on first load, stored on the device; 18+ and BeGambleAware on every
   screen.
 

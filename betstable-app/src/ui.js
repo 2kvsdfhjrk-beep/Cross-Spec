@@ -39,37 +39,53 @@
      state and a loading mark without ever going fuzzy. */
   function roundel(cls, opts) {
     const o = opts || {};
-    const ring = o.ring || '#00231F';
-    const ground = o.ground || '#F6F0E1';
-    const wall = '#AF6E4B', roof = '#7F4228', door = '#065B07', dark = '#00231F';
-    // Below ~40px the fence, windows and horseshoe turn to mud, so the small
-    // mark keeps only the shapes that still read: ring, roof, walls, door.
-    const detail = o.simple ? '' :
+    const ring = o.ring || '#00231F';       // pine — the circle and the roof
+    const ground = o.ground || '#F6F0E1';   // cream — the disc behind everything
+    const wall = '#AF6E4B', plank = '#7F4228', door = '#065B07';
+    const id = 'r' + (roundel._n = (roundel._n || 0) + 1);
+    // Below ~40px the planks, horseshoe and fence turn to mud; the small mark
+    // keeps only the shapes that still read.
+    const small = !!o.simple;
+
+    const planks = small ? '' :
+      [37.5, 42, 58, 62.5].map(x =>
+        '<rect x="' + x + '" y="41" width="1.6" height="16" fill="' + plank + '" opacity=".55"/>').join('') +
+      '<path d="M34 36.5 50 30l16 6.5" fill="none" stroke="' + plank + '" stroke-width="1.4" opacity=".5"/>';
+
+    const fence = small ? '' :
       '<g fill="' + ring + '">' +
-        '<rect x="4" y="57" width="92" height="4.6" rx="2.3"/>' +
-        '<rect x="10" y="49" width="5" height="20" rx="2"/>' +
-        '<rect x="85" y="49" width="5" height="20" rx="2"/>' +
+        '<rect x="6" y="47.4" width="28" height="2.6" rx="1.3"/>' +
+        '<rect x="66" y="47.4" width="28" height="2.6" rx="1.3"/>' +
+        '<rect x="6" y="52.4" width="28" height="2.6" rx="1.3"/>' +
+        '<rect x="66" y="52.4" width="28" height="2.6" rx="1.3"/>' +
+        '<rect x="14.5" y="43" width="3.4" height="16" rx="1.5"/>' +
+        '<rect x="82.1" y="43" width="3.4" height="16" rx="1.5"/>' +
       '</g>';
-    const trim = o.simple ? '' :
-      '<path d="M46.6 39.6a3.6 3.6 0 0 1 6.8 0" fill="none" stroke="' + ground +
-        '" stroke-width="2.1" stroke-linecap="round"/>' +
-      '<path d="M46.5 39.4v2.6M53.5 39.4v2.6" stroke="' + ground + '" stroke-width="2.1" stroke-linecap="round"/>' +
-      '<rect x="34" y="47" width="4.4" height="7" rx="2.2" fill="' + dark + '"/>' +
-      '<rect x="61.6" y="47" width="4.4" height="7" rx="2.2" fill="' + dark + '"/>';
-    const id = 'rc' + (roundel._n = (roundel._n || 0) + 1);
+
+    const shoe = small ? '' :
+      '<g fill="none" stroke="' + ground + '" stroke-width="2" stroke-linecap="round">' +
+        '<path d="M46 38.6a4 4 0 0 1 8 0"/><path d="M45.9 38.4v2.4M54.1 38.4v2.4"/></g>';
+
     return C.raw('<svg class="roundel ' + (cls || '') + '" viewBox="0 0 100 100" aria-hidden="true">' +
       '<defs><clipPath id="' + id + '"><circle cx="50" cy="50" r="41"/></clipPath></defs>' +
       '<circle cx="50" cy="50" r="41" fill="' + ground + '"/>' +
-      '<g clip-path="url(#' + id + ')">' + detail +
-        '<rect x="' + (o.simple ? 28 : 30) + '" y="40" width="' + (o.simple ? 44 : 40) + '" height="26" fill="' + wall + '"/>' +
-        '<path d="M50 20 80 42.4H72L50 25.6 28 42.4h-8z" fill="' + roof + '"/>' +
-        '<path d="M50 25.6 72 42.4H28z" fill="' + wall + '"/>' +
-        '<rect x="' + (o.simple ? 41 : 43) + '" y="' + (o.simple ? 45 : 47) + '" width="' + (o.simple ? 18 : 14) +
-          '" height="' + (o.simple ? 21 : 19) + '" fill="' + door + '"/>' +
-        (o.simple ? '' : '<path d="M43 47l14 19M57 47L43 66" stroke="' + ground + '" stroke-width="1.9"/>') +
-        trim +
+      '<g clip-path="url(#' + id + ')">' +
+        fence +
+        // ground line the barn and fence stand on
+        '<rect x="4" y="57" width="92" height="3.4" fill="' + ring + '"/>' +
+        // walls
+        '<rect x="' + (small ? 31 : 33) + '" y="41" width="' + (small ? 38 : 34) + '" height="16" fill="' + wall + '"/>' +
+        planks +
+        // the signature shape: a shallow gable with wide overhanging eaves
+        '<path d="M50 22.5 87 44.5h-9.6L50 28.2 22.6 44.5H13z" fill="' + ring + '"/>' +
+        '<path d="M50 29.4 74 43.4H26z" fill="' + wall + '"/>' +
+        shoe +
+        // doors
+        '<rect x="' + (small ? 43 : 44.5) + '" y="' + (small ? 43 : 44) + '" width="' + (small ? 14 : 11) +
+          '" height="' + (small ? 17 : 16) + '" fill="' + door + '"/>' +
+        (small ? '' : '<path d="M44.5 44 55.5 60M55.5 44 44.5 60" stroke="' + ground + '" stroke-width="1.7"/>') +
       '</g>' +
-      '<circle cx="50" cy="50" r="41" fill="none" stroke="' + ring + '" stroke-width="' + (o.simple ? 9 : 7) + '"/>' +
+      '<circle cx="50" cy="50" r="41" fill="none" stroke="' + ring + '" stroke-width="' + (small ? 9 : 7.5) + '"/>' +
       '</svg>');
   }
 
