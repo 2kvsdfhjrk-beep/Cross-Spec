@@ -164,7 +164,7 @@
         </div>
         ${settled.length ? C.html`<div class="tiplist">
           ${settled.slice(0, 40).map(t => C.html`
-            <div class="tip-row">
+            <div class="tip-row ${BS.app.justSettled().some(x => x.id === t.id) ? 'just-settled' : ''}">
               <span class="badge ${t.won ? 'won' : 'lost'}">${t.won ? 'Won' : 'Lost'}</span>
               <span>
                 <div class="sel2">${t.selection}</div>

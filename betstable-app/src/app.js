@@ -84,7 +84,8 @@
       </div>`;
   }
 
-  const TICKER_ON = ['home', 'racing/today', 'racing/week', 'football/today', 'football/week',
+  // Home carries the run-in banner, so it does not need the strip as well.
+  const TICKER_ON = ['racing/today', 'racing/week', 'football/today', 'football/week',
     'hot', 'hot/racing', 'hot/football'];
   function ticker() {
     if (TICKER_ON.indexOf(S.route) < 0) return C.raw('');
@@ -165,6 +166,8 @@
       }
       else await BS.viewsHome.home(view);
       chrome();
+      BS.fx.stagger(view);
+      BS.fx.mountBanner(view);
     } finally { rendering = false; }
   }
 
@@ -185,11 +188,13 @@
   }
 
   /* ---------------- settlement job ---------------- */
+  let justSettled = [];
   function runSettlement() {
     const now = Date.now();
     const pending = BS.store.tips().filter(t => t.status === 'pending');
     BS.provider.setPending(pending.length);
     let settled = 0;
+    const winners = [];
     for (const t of pending) {
       if (t.refKind === 'race') {
         const race = U.index.races.get(t.refId);
@@ -199,6 +204,7 @@
         const won = !!runner && res.positions[0] === runner.no;
         const winner = race.runners.find(x => x.no === res.positions[0]);
         BS.store.settle(t.id, won, won ? t.odds - 1 : -1, 'Won by ' + (winner ? winner.horse : '—'));
+        if (won) winners.push(t);
         settled++;
       } else if (t.refKind === 'fixture') {
         const fx = U.index.fixtures.get(t.refId);
@@ -216,14 +222,23 @@
           won = t.selection.indexOf('Not') === 0 ? !btts : btts;
         }
         BS.store.settle(t.id, won, won ? t.odds - 1 : -1, sc[0] + '–' + sc[1]);
+        if (won) winners.push(t);
         settled++;
       }
     }
     const h = BS.provider.health();
     h.settlement.lastSuccess = now; h.results.lastSuccess = now;
     if (settled) {
+      justSettled = winners;
       U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', '⚙️');
-      render();
+      render().then(function () {
+        // One celebration, for one thing: a tip of yours came in.
+        if (!winners.length) return;
+        BS.fx.confetti({ count: 40 + winners.length * 30 });
+        U.toast(winners.length === 1
+          ? 'Winner — ' + winners[0].selection + ' at ' + C.fmtOdds(winners[0].odds)
+          : winners.length + ' winners settled', '🎉');
+      });
     }
   }
 
@@ -254,11 +269,13 @@
     else if (act === 'dir') { BS.viewsHot.setDir(id); render(); }
     else if (act === 'fav') {
       const on = BS.store.toggleFav(id);
+      if (on) BS.fx.pop(el, 'var(--warn)');
       U.toast(on ? 'Starred — it will wait for you on the front page' : 'Removed from favourites', on ? '★' : '☆');
       render();
     }
     else if (act === 'follow') {
       const on = BS.tipsters.toggleFollow(id);
+      if (on) BS.fx.pop(el);
       U.toast(on ? 'Following ' + id : 'Unfollowed ' + id, on ? '✓' : '·');
       render();
     }
@@ -408,6 +425,6 @@
     }, 30000);
   }
 
-  BS.app = { render, boot, runSettlement, go };
+  BS.app = { render, boot, runSettlement, go, justSettled: () => justSettled };
   document.addEventListener('DOMContentLoaded', function () { if (!ageGate()) boot(); });
 })(window.BS = window.BS || {});

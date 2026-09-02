@@ -38,6 +38,28 @@ The Experts page shows the last run, the next run, the current holders and the
 recent changes. The "simulate next week" button is a demo affordance and says so;
 the real job runs server-side and cannot be triggered by hand.
 
+## Motion
+
+`src/fx.js` is the motion and celebration layer, and everything in it obeys two
+rules: motion has to mean something, and anyone who asks for reduced motion gets
+the end state instantly rather than a slower show.
+
+- **The run-in** — the front page opens on a track with a runner on it, placed by
+  how close the next race or kick-off actually is. It creeps along on a one-second
+  tick, breaks into a canter inside three minutes, and reads as a countdown from
+  across the room. A ball replaces the jockey in ScoreMore.
+- **The stamp** — posting a tip is the one irreversible act in the app, so it gets
+  the one piece of theatre: the mark comes down on the record with a shockwave.
+- **Confetti** — fires for exactly one thing, a tip of yours coming in. Anything
+  more and it stops meaning anything.
+- **Staggered entrances**, pressable feedback on every control, a dot burst when
+  you follow someone, live countdowns that throb inside the last few minutes, and
+  a themed loader that tells you which product you are waiting on.
+
+Colour comes from a six-value accent set per product — hay, clay, moss, pine,
+rust and wheat for BetStable; broadcast blues with one warm signal colour for
+ScoreMore — used for module hues, heat meters, stat bars and confetti.
+
 ## Navigation
 
 One model, three presentations, all rendering from `MENU` in `src/menu.js`, so a
@@ -136,6 +158,7 @@ src/views-home.js       the front page
 src/views-hot.js        hot tips, tipster directory, tipster profile
 src/views-extra.js      favourites and settings
 src/menu.js             the navigation model and its three presentations
+src/fx.js               motion: the run-in, the stamp, confetti, stagger, loaders
 src/account.js          claiming a handle, and the validation behind it
 src/experts.js          the two badges and the weekly job that maintains them
 src/views-browse.js     all courses → country → meeting → card, and next off

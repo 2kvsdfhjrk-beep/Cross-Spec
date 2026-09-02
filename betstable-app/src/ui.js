@@ -143,8 +143,8 @@
   const emptyRow = (title, body, action) => C.html`
     <div class="empty row2">${roundel()}<div><h3>${title}</h3><p>${body}</p></div>${action || ''}</div>`;
 
-  const skeleton = n => C.raw(Array.from({ length: n || 4 },
-    () => '<div class="skel skel-row"></div>').join(''));
+  // A themed loader beats four grey slabs, and it names what is loading.
+  const skeleton = () => BS.fx.loader(state.product);
 
   /* ---------- toast ---------- */
   let toastTimer;
@@ -252,9 +252,14 @@
       product: c.product, event: c.event, market: c.market, selection: c.selection,
       odds: c.frozen.odds, refId: c.refId, refKind: c.refKind, startTs: c.startTs
     });
-    closeSheet();
-    toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', '🔒');
-    BS.app.render();
+    // The one irreversible act in the app gets the one piece of theatre.
+    const seal = C.$('.sheet');
+    if (seal) seal.classList.add('sealing');
+    BS.fx.stamp({ word: 'SEALED' }).then(function () {
+      closeSheet();
+      toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', '🔒');
+      BS.app.render();
+    });
   }
 
   const hasTipOn = (refId, selection) => BS.store.tips().some(

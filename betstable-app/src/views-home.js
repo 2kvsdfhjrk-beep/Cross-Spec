@@ -137,12 +137,26 @@
       return fx ? T.asEvent('match', fx) : null;
     }).filter(e => e && e.startTs > now).sort((a, b) => a.startTs - b.startTs).slice(0, 5);
 
+    // The next thing due to happen, drawn as a track you can read at a glance.
+    const nextRace = racesToCome.slice().sort((a, b) => a.offTs - b.offTs)[0];
+    const nextFx = matchesLeft.filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs)[0];
+    const useFootball = U.state.product === 'football' && nextFx;
+    const banner = useFootball
+      ? { route: 'football/match/' + nextFx.id, startTs: nextFx.koTs,
+          name: nextFx.home + ' v ' + nextFx.away, sub: nextFx.comp }
+      : nextRace
+        ? { route: 'racing/race/' + nextRace.id, startTs: nextRace.offTs,
+            name: nextRace.flag + ' ' + nextRace.venue,
+            sub: nextRace.name + ' · ' + nextRace.runners.length + ' runners' }
+        : null;
+
     C.mount(root, C.html`
+      ${BS.fx.banner(banner, useFootball ? 'football' : 'racing')}
       <div class="today-bar">
-        <span><b>${racesToCome.length}</b> races to come</span>
-        <span><b>${matchesLeft.length}</b> matches today</span>
-        <span><b>${hot.length}</b> live tips</span>
-        <span><b>${following.length}</b> followed</span>
+        <span><b data-n="${racesToCome.length}">0</b> races to come</span>
+        <span><b data-n="${matchesLeft.length}">0</b> matches today</span>
+        <span><b data-n="${hot.length}">0</b> live tips</span>
+        <span><b data-n="${following.length}">0</b> followed</span>
       </div>
 
       <div class="doors">
@@ -200,6 +214,7 @@
         There is no edit and no delete — not for tipsters, not for us.
       </p>
     `);
+    C.$$('[data-n]', root).forEach(el => BS.fx.countUp(el, +el.dataset.n, { dur: 800 }));
   }
 
   /** Keep both sports present even though racing carries far more volume. */
