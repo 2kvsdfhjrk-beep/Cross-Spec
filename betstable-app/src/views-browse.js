@@ -66,7 +66,7 @@
           ${navRow({
             route: 'racing/next', title: 'Next races',
             sub: 'Every course, in time order',
-            lead: C.raw('<span class="row-ic">⏱</span>'),
+            lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('clock')) + '</span>'),
             right: nextOff ? C.countdown(nextOff.offTs, now) : '',
             soon: nextOff && nextOff.offTs - now < 9e5
           })}
@@ -74,7 +74,7 @@
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.globe)}</span><h2>Racing today</h2>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('globe')}</span><h2>Racing today</h2>
           <span class="mod-meta">by country</span></div>
         <div class="rows">
           ${BS.racing.REGIONS.filter(r => byRegion.has(r.id)).map(r => {
@@ -94,7 +94,7 @@
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.cal)}</span><h2>Tomorrow</h2></div>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('calendar')}</span><h2>Tomorrow</h2></div>
         <div class="rows">
           ${tomorrow.slice(0, 6).map(m => navRow({
             route: 'racing/meeting/' + m.id, title: m.venue,
@@ -237,6 +237,16 @@
       byRegion.get(f.region).push(f);
     });
     const next = live.filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs)[0];
+    const tByComp = new Map();
+    tomorrow.forEach(f => {
+      if (!tByComp.has(f.compId)) tByComp.set(f.compId, []);
+      tByComp.get(f.compId).push(f);
+    });
+    const tomorrowComps = Array.from(tByComp.entries()).map(function (e) {
+      const comp = BS.football.COMPS.find(c => c.id === e[0]);
+      const first = e[1].sort((a, b) => a.koTs - b.koTs)[0];
+      return [e[0], comp || { name: e[0] }, e[1].length, first.koTs, first.tz];
+    }).sort((a, b) => b[2] - a[2]).slice(0, 5);
 
     C.mount(root, C.html`
       <div class="page-head"><h1>All competitions</h1><span class="sub">${live.length} matches today</span></div>
@@ -245,14 +255,14 @@
         <div class="rows">
           ${navRow({
             route: 'football/next', title: 'Next kick-offs', sub: 'Every competition, in time order',
-            lead: C.raw('<span class="row-ic">⏱</span>'),
+            lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('clock')) + '</span>'),
             right: next ? C.countdown(next.koTs, now) : ''
           })}
         </div>
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.globe)}</span><h2>Football today</h2>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('globe')}</span><h2>Football today</h2>
           <span class="mod-meta">by region</span></div>
         <div class="rows">
           ${BS.football.REGIONS.filter(r => byRegion.has(r.id)).map(r => {
@@ -262,7 +272,8 @@
             const nLive = fx.filter(f => BS.football.fixtureState(f, now).state === 'live').length;
             return navRow({
               route: 'football/region/' + r.id, title: r.name,
-              sub: comps.size + (comps.size === 1 ? ' competition · ' : ' competitions · ') + fx.length + ' matches',
+              sub: comps.size + (comps.size === 1 ? ' competition · ' : ' competitions · ') +
+                fx.length + (fx.length === 1 ? ' match' : ' matches'),
               lead: C.raw('<span class="row-ic">' + r.flag + '</span>'),
               right: nLive ? C.raw('<span class="livechip"><span class="pulse"></span>' + nLive + ' live</span>')
                 : nx ? U.time(nx.koTs, nx.tz) : '',
@@ -274,8 +285,16 @@
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.cal)}</span><h2>Tomorrow</h2>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('calendar')}</span><h2>Tomorrow</h2>
           <span class="mod-meta">${tomorrow.length} matches</span></div>
+        <div class="rows">
+          ${tomorrowComps.length ? tomorrowComps.map(e => navRow({
+            route: 'football/comp/' + e[0], title: e[1].name,
+            sub: e[2] + (e[2] === 1 ? ' match' : ' matches'),
+            lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('football')) + '</span>'),
+            right: U.time(e[3], e[4])
+          })) : C.html`<p class="row-empty">Nothing scheduled tomorrow on the feed.</p>`}
+        </div>
         <button class="mod-cta" data-act="go" data-route="football/week">All seven days</button>
       </div>
     `);
@@ -305,7 +324,7 @@
             return navRow({
               route: 'football/comp/' + e[0], title: comp ? comp.name : e[0],
               sub: list.length + (list.length === 1 ? ' match' : ' matches'),
-              lead: C.raw('<span class="row-ic">⚽</span>'),
+              lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('football')) + '</span>'),
               right: nx ? U.time(nx.koTs, nx.tz) : 'all played',
               rightSub: nx ? C.countdown(nx.koTs, now) : ''
             });
@@ -383,11 +402,6 @@
       ${!all.length ? U.empty('Nothing left today', 'Tomorrow\'s fixtures are in Next 7 days.') : ''}
     `);
   }
-
-  const ICON = {
-    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5S14.4 18.1 12 20.5c-2.4-2.4-3.6-5.3-3.6-8.5S9.6 5.9 12 3.5z"/></svg>',
-    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M9 4v4M15 4v4"/></svg>'
-  };
 
   BS.viewsBrowse = {
     racingIndex, racingRegion, racingMeeting, racingNext,

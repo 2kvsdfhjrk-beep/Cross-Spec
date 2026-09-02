@@ -186,7 +186,7 @@
         </div>
       </div>
 
-      <div class="notice"><span>🔒</span><span><b>Append-only.</b> There is no edit and no delete in this app.
+      <div class="notice">${BS.icons.icon('lock')}<span><b>Append-only.</b> There is no edit and no delete in this app.
         A correction is published as a void that points at the original, and the original stays where it is.</span></div>
     `);
     if (s.n >= 2) initChart(root, s.equity);
@@ -216,7 +216,7 @@
         ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-id="${b[0]}">${b[1]}</button>`)}
       </div>
 
-      <div class="notice"><span>📏</span><span>
+      <div class="notice">${BS.icons.icon('ruler')}<span>
         Ranked on the <b>bottom of the 95% range</b>, not the headline figure — a big number from a small sample
         does not outrank a solid one from a long record. Minimum 100 settled tips to appear at all.
       </span></div>
@@ -249,13 +249,13 @@
                   </td>
                   <td style="color:var(--ink-2)">${C.fmtSigned(r.maxDD)}</td>
                   <td>${r.me ? '' : C.html`<button class="follow-btn" data-act="follow" data-id="${r.handle}"
-                    aria-pressed="${String(BS.tipsters.isFollowing(r.handle))}">${BS.tipsters.isFollowing(r.handle) ? '✓' : '+ Follow'}</button>`}</td>
+                    aria-pressed="${String(BS.tipsters.isFollowing(r.handle))}">${BS.icons.icon(BS.tipsters.isFollowing(r.handle) ? 'check' : 'follow')}</button>`}</td>
                 </tr>`)}
             </tbody>
           </table>
         </div>
       </div>
-      ${!mine.enough ? C.html`<div class="notice"><span>🌱</span><span>
+      ${!mine.enough ? C.html`<div class="notice">${BS.icons.icon('sparkle')}<span>
         Your ${product === 'racing' ? 'racing' : 'football'} record has <b>${mine.n} settled tips</b>.
         You appear in this table at 100.</span></div>` : ''}
     `);

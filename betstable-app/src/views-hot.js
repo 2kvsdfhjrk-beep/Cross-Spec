@@ -23,15 +23,15 @@
     C.mount(root, C.html`
       <div class="toolbar">
         <button class="chip ${sportFilter === 'all' ? 'on' : ''}" data-act="sport" data-id="all">Both sports</button>
-        <button class="chip ${sportFilter === 'racing' ? 'on' : ''}" data-act="sport" data-id="racing">🐴 Racing</button>
-        <button class="chip ${sportFilter === 'football' ? 'on' : ''}" data-act="sport" data-id="football">⚽ Football</button>
+        <button class="chip ${sportFilter === 'racing' ? 'on' : ''}" data-act="sport" data-id="racing">${BS.icons.icon('racing')} Racing</button>
+        <button class="chip ${sportFilter === 'football' ? 'on' : ''}" data-act="sport" data-id="football">${BS.icons.icon('football')} Football</button>
         <span style="flex:1"></span>
         <button class="chip ${sortBy === 'heat' ? 'on' : ''}" data-act="sort" data-id="heat">Hottest</button>
         <button class="chip ${sortBy === 'time' ? 'on' : ''}" data-act="sort" data-id="time">Off soonest</button>
         <button class="chip ${sortBy === 'price' ? 'on' : ''}" data-act="sort" data-id="price">Biggest price</button>
       </div>
 
-      <div class="notice"><span>🔥</span><span>
+      <div class="notice">${BS.icons.icon('hot')}<span>
         <b>Heat is agreement, not confidence.</b> It rises when several tipsters with a real record land on the
         same selection close to the off. It is not a prediction, and a hot tip loses as often as its price says it will.
         ${followedCount ? C.raw('<b>' + followedCount + '</b> of these include someone you follow.') : ''}
@@ -73,15 +73,15 @@
     C.mount(root, C.html`
       <div class="toolbar">
         <button class="chip ${dirFilter === 'all' ? 'on' : ''}" data-act="dir" data-id="all">All ${T.all().length}</button>
-        <button class="chip ${dirFilter === 'racing' ? 'on' : ''}" data-act="dir" data-id="racing">🐴 Racing</button>
-        <button class="chip ${dirFilter === 'football' ? 'on' : ''}" data-act="dir" data-id="football">⚽ Football</button>
+        <button class="chip ${dirFilter === 'racing' ? 'on' : ''}" data-act="dir" data-id="racing">${BS.icons.icon('racing')} Racing</button>
+        <button class="chip ${dirFilter === 'football' ? 'on' : ''}" data-act="dir" data-id="football">${BS.icons.icon('football')} Football</button>
         <button class="chip ${dirFilter === 'following' ? 'on' : ''}" data-act="dir" data-id="following">Following ${followed.length}</button>
         <span style="flex:1"></span>
         ${BS.viewsHome.select('sort-dir', dirSort,
           [['roi', 'ROI, all time'], ['streak', 'Profit streak'], ['last7', 'Last 7 days'],
            ['last30', 'Last 30 days'], ['followers', 'Most followed']])}
       </div>
-      <div class="notice"><span>📏</span><span>
+      <div class="notice">${BS.icons.icon('ruler')}<span>
         Sorted by the <b>bottom of each 95% range</b>, with unranked tipsters last. Anyone under 100 settled tips
         is shown but never ranked — a short hot run is not a record.
       </span></div>
@@ -113,14 +113,14 @@
           <h1>${t.handle}${BS.viewsAccount.badgeChips(t.handle)}</h1>
           <div class="b">${t.bio}</div>
           <div style="display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--on-dark-2);font-weight:650">
-            <span>${t.sport === 'racing' ? '🐴 Racing' : '⚽ Football'}</span>
+            <span>${BS.icons.icon(t.sport === 'racing' ? 'racing' : 'football')} ${t.sport === 'racing' ? 'Racing' : 'Football'}</span>
             <span>${t.followers.toLocaleString()} followers</span>
             <span>since ${t.since}</span>
           </div>
         </div>
         <button class="follow-btn" data-act="follow" data-id="${t.handle}" aria-pressed="${String(following)}"
           style="${following ? '' : 'background:var(--grass-500);border-color:var(--grass-500);color:#08201B'}">
-          ${following ? '✓ Following' : '+ Follow'}
+          ${following ? C.html`${BS.icons.icon('check')} Following` : C.html`${BS.icons.icon('follow')} Follow`}
         </button>
       </div>
 
@@ -167,7 +167,7 @@
         </div>` : U.empty('Nothing live', t.handle + ' has no open tips right now. They post on a slice of the card, not all of it.')}
       </div>
 
-      <div class="notice"><span>🔒</span><span>
+      <div class="notice">${BS.icons.icon('lock')}<span>
         This record is append-only. ${t.handle} cannot edit a tip, delete a loser, or change a price after posting —
         and the bad months stay visible for exactly that reason.</span></div>
     `);

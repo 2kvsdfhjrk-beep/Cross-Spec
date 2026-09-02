@@ -1,5 +1,5 @@
 <title>BetStable · ScoreMore</title>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Montserrat:wght@800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,85..100,500..800&family=Archivo+Narrow:wght@500;600;700&family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* ==========================================================================
    BetStable / ScoreMore
@@ -132,24 +132,36 @@
 html, body { height: 100%; }
 body {
   margin: 0; background: var(--bg); color: var(--ink);
-  font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 15px; line-height: 1.45; font-variant-numeric: tabular-nums;
+  font-family: var(--font-ui);
+  font-size: 15px; line-height: 1.5; letter-spacing: -.004em;
   -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
   transition: background-color .25s ease, color .25s ease;
 }
-h1, h2, h3, h4 { margin: 0; line-height: 1.15; letter-spacing: -.015em; font-weight: 700; }
-h1, h2, .display { font-family: 'Montserrat', 'Figtree', system-ui, sans-serif; font-weight: 800; }
+/* Type scale. Display tightens as it grows, labels open up as they shrink —
+   the two moves that separate set type from default type. */
+h1, h2, h3, h4 { margin: 0; font-weight: 700; }
+h1, h2, .display {
+  font-family: var(--font-display); font-weight: 700;
+  font-stretch: 96%; font-optical-sizing: auto;
+}
+h1 { font-size: clamp(1.5rem, 4.6vw, 1.95rem); line-height: 1.06; letter-spacing: -.032em; }
+h2 { font-size: 1.06rem; line-height: 1.15; letter-spacing: -.022em; }
+h3 { font-size: .95rem; line-height: 1.25; letter-spacing: -.014em; }
+/* Numbers get their own face and never wobble in a column. */
+.num, .data { font-family: var(--font-data); font-variant-numeric: tabular-nums; font-weight: 700;
+  letter-spacing: -.005em; }
+.eyebrow, .micro { font-size: .69rem; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; background: none; border: 0; padding: 0; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-.mono { font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace; }
+.mono { font-family: var(--font-mono); letter-spacing: -.02em; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
-.num { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: -.02em; }
+.num { font-family: var(--font-data); font-weight: 800; letter-spacing: -.02em; }
 
 /* ---------------- wordmark ---------------- */
-.wordmark { font-family: 'Montserrat', sans-serif; font-weight: 900; letter-spacing: -.03em;
+.wordmark { font-family: var(--font-display); font-weight: 800; font-stretch: 94%; letter-spacing: -.03em;
   text-transform: uppercase; line-height: 1; white-space: nowrap; }
 .wordmark .a { color: var(--ink); }
 .wordmark .b { color: var(--accent); }
@@ -215,7 +227,7 @@ a { color: inherit; }
 .mi .mi-ic svg { width: 16px; height: 16px; }
 .mi .mi-sub { display: block; font-size: 12px; color: var(--ink-3); font-weight: 550; margin-top: 1px; }
 .mi .mi-badge { margin-left: auto; font-size: 11.5px; font-weight: 750; color: var(--ink-3); }
-.menu-label { padding: 11px 12px 5px; font-size: 10.5px; font-weight: 800; letter-spacing: .1em;
+.menu-label { padding: 13px 12px 5px; font-size: 10.5px; font-weight: 650; letter-spacing: .11em;
   text-transform: uppercase; color: var(--ink-3); }
 .menu-sep { height: 1px; background: var(--line-soft); margin: 6px 4px; }
 
@@ -246,7 +258,7 @@ a { color: inherit; }
 }
 .dp .k, .dp .n { display: block; }
 .dp .k { font-size: 10px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; opacity: .82; }
-.dp .n { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 15px; letter-spacing: -.02em; }
+.dp .n { font-family: var(--font-display); font-weight: 800; font-size: 15px; letter-spacing: -.02em; }
 .dp.racing { background: linear-gradient(145deg, var(--tan-500), var(--wood-700)); }
 .dp.football { background: linear-gradient(145deg, var(--sky-500), var(--sky-800)); }
 .dp[aria-current="true"] { outline: 2.5px solid var(--accent); outline-offset: 2px; }
@@ -321,7 +333,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .row-title { display: flex; align-items: baseline; gap: 7px; font-size: 15px; font-weight: 700;
   letter-spacing: -.01em; }
 .row-title .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.row-title .odds { font-family: 'Montserrat', sans-serif; font-weight: 900; color: var(--accent); flex: none; }
+.row-title .odds { font-family: var(--font-data); font-variant-numeric: tabular-nums; font-weight: 700; color: var(--accent); flex: none; }
 .row-sub { display: block; font-size: 12.5px; color: var(--ink-3); font-weight: 600; margin-top: 1px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .row-end { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 3px; flex: none; }
@@ -341,10 +353,10 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .backers .txt { font-size: 11.5px; font-weight: 650; color: var(--ink-3); }
 .backers.mine .txt { color: var(--good); font-weight: 750; }
 
-.heatpill { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 10.5px; padding: 2px 7px;
+.heatpill { font-family: var(--font-data); font-weight: 700; font-size: 10.5px; padding: 2px 7px;
   border-radius: 999px; background: var(--surface-3); color: var(--ink-2); }
 .stat-big { text-align: right; flex: none; }
-.stat-big b { display: block; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 16px; letter-spacing: -.02em; }
+.stat-big b { display: block; font-family: var(--font-data); font-weight: 700; font-size: 16px; letter-spacing: -.02em; }
 .stat-big small { display: block; font-size: 10px; color: var(--ink-3); font-weight: 700; }
 .stat-big.good b { color: var(--good); }
 .stat-big.bad b { color: var(--bad); }
@@ -384,22 +396,22 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .door.racing { background: linear-gradient(140deg, var(--tan-500), var(--wood-700)); }
 .door.football { background: linear-gradient(140deg, var(--sky-500), var(--sky-800)); }
 .door > * { position: relative; }
-.door .kicker { font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .85; }
-.door .name { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 20px; letter-spacing: -.03em; }
+.door .kicker { font-size: 10px; font-weight: 650; letter-spacing: .11em; text-transform: uppercase; opacity: .85; }
+.door .name { font-family: var(--font-display); font-weight: 800; font-size: 20px; letter-spacing: -.03em; }
 .door .meta { font-size: 12px; font-weight: 600; opacity: .92; }
 @media (max-width: 400px) { .door .name { font-size: 17px; } .door .meta { font-size: 11px; } }
 
 .today-bar { display: flex; flex-wrap: wrap; gap: 5px 18px; padding: 10px 14px; margin-bottom: 12px;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-m);
   box-shadow: var(--lift-1); font-size: 12.5px; color: var(--ink-3); font-weight: 620; }
-.today-bar b { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 15px; color: var(--ink); margin-right: 4px; }
+.today-bar b { font-family: var(--font-data); font-weight: 700; font-size: 15px; color: var(--ink); margin-right: 4px; }
 .foot-note { margin: 4px 2px 0; font-size: 12px; color: var(--ink-3); line-height: 1.55; }
 
 /* ---------------- ticker ---------------- */
 .ticker { display: flex; gap: 8px; padding: 8px 12px; overflow-x: auto; scrollbar-width: none;
   background: var(--surface-2); border-bottom: 1px solid var(--line); }
 .ticker::-webkit-scrollbar { display: none; }
-.ticker-label { display: flex; align-items: center; flex: none; font-size: 10.5px; font-weight: 800;
+.ticker-label { display: flex; align-items: center; flex: none; font-size: 10.5px; font-weight: 650;
   letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .ticker-item { flex: none; display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px;
   border: 1px solid var(--line); background: var(--surface); font-size: 13px; font-weight: 620; }
@@ -419,7 +431,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
   background: var(--surface); text-align: left; box-shadow: var(--lift-1); }
 .day .dow, .day .dnum, .day .dmeta { display: block; }
 .day .dow { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-.day .dnum { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; }
+.day .dnum { font-family: var(--font-data); font-size: 15px; font-weight: 800; }
 .day .dmeta { font-size: 11px; color: var(--ink-3); }
 .day[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); }
 
@@ -464,7 +476,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .detail-head h1 { font-size: 19px; }
 .detail-head .sub { font-size: 13px; color: var(--ink-2); margin-top: 4px; }
 .detail-head .when { margin-left: auto; text-align: right; flex: none; }
-.detail-head .when .t { font-family: 'Montserrat', sans-serif; font-size: 23px; font-weight: 900; letter-spacing: -.03em; }
+.detail-head .when .t { font-family: var(--font-data); font-size: 23px; font-weight: 700; letter-spacing: -.03em; }
 .detail-head .when .cd { font-size: 12.5px; font-weight: 750; color: var(--accent); }
 .detail-head .fav-btn { order: 3; }
 
@@ -480,8 +492,8 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .runner .who .sep { color: var(--ink-3); margin: 0 5px; }
 .runner .form { font-size: 11.5px; color: var(--ink-3); letter-spacing: .07em; }
 .silk { width: 28px; height: 28px; border-radius: var(--r-s); border: 1px solid var(--line); flex: none; }
-.odds-btn { min-width: 68px; height: 42px; padding: 0 13px; border-radius: var(--r-m); border: 1px solid var(--line);
-  background: var(--surface-2); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 15px;
+.odds-btn { font-variant-numeric: tabular-nums; min-width: 68px; height: 42px; padding: 0 13px; border-radius: var(--r-m); border: 1px solid var(--line);
+  background: var(--surface-2); font-family: var(--font-data); font-weight: 800; font-size: 15px;
   transition: transform .1s, background .14s, border-color .14s; }
 .odds-btn:hover { background: var(--accent-soft); border-color: var(--accent); }
 .odds-btn:active { transform: scale(.96); }
@@ -517,8 +529,8 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .statgrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 11px; margin-bottom: 14px; }
 @media (min-width: 720px) { .statgrid { grid-template-columns: repeat(4, 1fr); } }
 .stat { padding: 14px 15px; border: 1px solid var(--line); border-radius: var(--r-m); background: var(--surface); box-shadow: var(--lift-1); }
-.stat .k { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
-.stat .v { font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 900; margin-top: 3px; letter-spacing: -.03em; }
+.stat .k { font-size: 10.5px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.stat .v { font-family: var(--font-data); font-variant-numeric: tabular-nums; font-size: 24px; font-weight: 700; margin-top: 3px; letter-spacing: -.03em; }
 .stat .sub { font-size: 11.5px; color: var(--ink-2); }
 .stat .v.good { color: var(--good); } .stat .v.bad { color: var(--bad); }
 
@@ -534,7 +546,7 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .tip-row:last-child { border-bottom: 0; }
 .tip-row .sel2 { font-weight: 700; font-size: 14px; }
 .tip-row .ev { font-size: 12.5px; color: var(--ink-2); }
-.tip-row .ret { font-family: 'Montserrat', sans-serif; font-weight: 800; }
+.tip-row .ret { font-family: var(--font-data); font-weight: 800; }
 .tip-row .ret.good { color: var(--good); } .tip-row .ret.bad { color: var(--bad); }
 .badge { display: inline-flex; align-items: center; justify-content: center; padding: 2px 9px; border-radius: 999px;
   font-size: 11px; font-weight: 750; }
@@ -544,8 +556,9 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .badge.lost { background: var(--bad-soft); color: var(--bad); }
 
 .board { width: 100%; border-collapse: collapse; }
+.board td { font-variant-numeric: tabular-nums; }
 .board th, .board td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--line-soft); font-size: 13.5px; }
-.board th { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.board th { font-size: 10.5px; font-weight: 650; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .board tr:last-child td { border-bottom: 0; }
 .board tr.me { background: var(--accent-soft); }
 .board tr:hover { background: var(--surface-2); }
@@ -583,14 +596,14 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 @keyframes rise { to { transform: translateY(0) } }
 .grabber { width: 38px; height: 4px; border-radius: 4px; background: var(--line); margin: 4px auto 14px; }
 @media (min-width: 620px) { .grabber { display: none; } }
-.sheet h3 { font-family: 'Montserrat', sans-serif; font-size: 19px; font-weight: 900; letter-spacing: -.03em; }
+.sheet h3 { font-family: var(--font-display); font-size: 19px; font-weight: 800; letter-spacing: -.03em; }
 .sheet .sheet-sub { font-size: 13px; color: var(--ink-2); margin: 3px 0 15px; }
 .freeze { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--r-m);
   background: linear-gradient(140deg, var(--brand-2), var(--brand)); color: #fff; margin-bottom: 13px;
   position: relative; overflow: hidden; }
 .freeze::before { content: ""; position: absolute; inset: 0; background-image: var(--grain); opacity: .14; mix-blend-mode: overlay; }
 .freeze > * { position: relative; }
-.freeze .big { font-family: 'Montserrat', sans-serif; font-size: 29px; font-weight: 900; letter-spacing: -.03em; }
+.freeze .big { font-family: var(--font-data); font-size: 29px; font-weight: 700; letter-spacing: -.03em; }
 .freeze .lbl { font-size: 10.5px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; opacity: .8; }
 .freeze .note { margin-left: auto; text-align: right; font-size: 11.5px; opacity: .85; }
 .kv { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; }
@@ -661,9 +674,9 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
 .xbadge.value { background: var(--warn-soft); color: var(--warn); }
 
 /* time chip used across the browse screens */
-.timechip { flex: none; min-width: 56px; padding: 6px 8px; border-radius: var(--r-s);
+.timechip { font-variant-numeric: tabular-nums; flex: none; min-width: 56px; padding: 6px 8px; border-radius: var(--r-s);
   border: 1px solid var(--line); background: var(--surface-2); text-align: center;
-  font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 13px; }
+  font-family: var(--font-data); font-weight: 800; font-size: 13px; }
 
 /* settings */
 .setting { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid var(--line-soft); }
@@ -686,6 +699,15 @@ main { flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding: 16px 12
    ========================================================================== */
 
 :root {
+  /* Three faces, three jobs. Bricolage carries names and headings and has
+     enough character to stop the page reading as a template; Archivo Narrow
+     carries every number, the way a racecard does; Instrument Sans stays out
+     of the way everywhere else. */
+  --font-display: 'Bricolage Grotesque', 'Instrument Sans', system-ui, sans-serif;
+  --font-ui: 'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-data: 'Archivo Narrow', 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
   --ease-out: cubic-bezier(.22, .9, .3, 1);
   --ease-spring: cubic-bezier(.34, 1.56, .5, 1);
   --ease-thud: cubic-bezier(.2, 1.4, .35, 1);
@@ -754,10 +776,10 @@ body::before {
   opacity: .16; mix-blend-mode: overlay; }
 .runin > * { position: relative; }
 .runin-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
-.runin-k { font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
-.runin-name { font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 17px; letter-spacing: -.02em;
+.runin-k { font-size: 10.5px; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; opacity: .75; }
+.runin-name { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -.02em;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.runin-cd { margin-left: auto; font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 19px;
+.runin-cd { margin-left: auto; font-family: var(--font-data); font-weight: 700; font-size: 19px;
   letter-spacing: -.02em; flex: none; }
 .runin-track { display: block; position: relative; height: 28px; }
 .runin-rail { position: absolute; left: 0; right: 0; top: 19px; height: 3px; border-radius: 3px;
@@ -857,7 +879,7 @@ body::before {
 .fx-stamp.go .fx-stamp-ring { animation: shock .7s var(--ease-out) .32s forwards; }
 @keyframes shock { 0% { transform: scale(1); opacity: .8 } 100% { transform: scale(2.6); opacity: 0 } }
 .fx-stamp-word {
-  position: absolute; margin-top: 116px; font-family: 'Montserrat', sans-serif; font-weight: 900;
+  position: absolute; margin-top: 116px; font-family: var(--font-display); font-weight: 900;
   font-size: 15px; letter-spacing: .3em; color: var(--accent); opacity: 0;
 }
 .fx-stamp.go .fx-stamp-word { animation: fxIn .3s var(--ease-out) .42s forwards; }
@@ -935,6 +957,67 @@ body::before {
   .stat::after { transform: scaleX(1); animation: none; }
   .freeze::after { display: none; }
 }
+
+
+/* ==========================================================================
+   TYPESET SURFACES
+   Hairlines instead of outlines, dividers that align to the text column, and
+   icons that sit on the baseline of the label beside them.
+   ========================================================================== */
+
+.ic { width: 1.15em; height: 1.15em; flex: none; vertical-align: -.16em; }
+.row-ic .ic, .mod-ic .ic { width: 17px; height: 17px; }
+.chip .ic, .follow-btn .ic { width: 14px; height: 14px; }
+.notice > .ic { width: 17px; height: 17px; margin-top: 1px; color: var(--ink-3); }
+.warnbox > .ic { width: 17px; height: 17px; margin-top: 1px; }
+.toast .toast-ic { display: grid; place-items: center; }
+.toast .ic { width: 16px; height: 16px; }
+.search .ic { color: var(--ink-3); }
+.tabs .ic { width: 15px; height: 15px; margin-right: 5px; }
+.xbadge .ic { width: 12px; height: 12px; margin-right: 2px; }
+
+/* the run-in marker and the loader wear silks */
+.marker { display: block; width: 26px; height: 26px; }
+.marker svg { width: 100%; height: 100%; display: block; border-radius: 7px;
+  box-shadow: 0 2px 5px rgba(0,0,0,.35), 0 0 0 2px rgba(255,255,255,.9); }
+.marker-ball svg { border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
+.runin-runner { animation: bob .5s ease-in-out infinite alternate; }
+.runin.imminent .runin-runner { animation-duration: .22s; }
+.loader-runner { width: 30px; height: 30px; }
+.loader-runner .marker { width: 30px; height: 30px; }
+
+/* Dividers line up with the text column, not the card edge. */
+.rows > * { border-bottom: 0 !important; }
+.rows > * + *::after {
+  content: ""; position: absolute; left: 57px; right: 0; top: 0; height: 1px;
+  background: var(--line-soft); pointer-events: none;
+}
+.rows > .row-static + .row-static::after, .rows > * + .row-empty::after { left: 15px; }
+.tiplist > * + *, .runners > * + *, .board tbody tr + tr { position: relative; }
+
+/* Cards carry weight through elevation, not a drawn outline. */
+.mod, .panel, .card, .runners, .region, .meeting, .comp-block, .stat, .today-bar,
+.detail-head, .search, .day {
+  border-color: color-mix(in srgb, var(--ink) 8%, transparent);
+}
+:root[data-theme="dark"] .mod, :root[data-theme="dark"] .panel, :root[data-theme="dark"] .stat,
+:root:not([data-theme="light"]) .mod, :root:not([data-theme="light"]) .panel,
+:root:not([data-theme="light"]) .stat {
+  border-color: color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.mod-head { border-bottom-color: var(--line-soft); background: transparent; }
+.mod-head h2 { letter-spacing: -.022em; }
+
+/* Optical alignment: a 17px icon in a 30px chip needs the chip, not padding. */
+.mod-ic, .row-ic { display: grid; place-items: center; }
+
+/* Buttons read as one weight class rather than three. */
+.btn { font-family: var(--font-ui); font-weight: 600; letter-spacing: -.01em; }
+.mod-cta { font-family: var(--font-ui); font-weight: 600; letter-spacing: -.005em; }
+.chip, .follow-btn { font-weight: 600; letter-spacing: -.005em; }
+.row-title { font-weight: 600; letter-spacing: -.014em; }
+.row-sub { font-weight: 450; }
+.field-label { font-weight: 600; letter-spacing: .002em; }
 
 </style>
 <div class="app" id="app">
@@ -2114,11 +2197,11 @@ body::before {
 
   const BADGES = {
     consistent: {
-      id: 'consistent', label: 'Consistent', full: 'Consistent expert', icon: '📈',
+      id: 'consistent', label: 'Consistent', full: 'Consistent expert', icon: 'trend',
       rule: 'In profit across each of the last three 30-day periods, on a profitable record of 100+ settled tips.'
     },
     value: {
-      id: 'value', label: 'Value', full: 'Value expert', icon: '💎',
+      id: 'value', label: 'Value', full: 'Value expert', icon: 'gem',
       rule: 'Profitable with an average winning price of 4.5 or bigger, and at least 12 winners at those prices.'
     }
   };
@@ -2292,6 +2375,77 @@ body::before {
     handle: () => (load() || {}).handle || null,
     create, signOut, checkHandle, checkEmail
   };
+})(window.BS = window.BS || {});
+
+</script>
+<script>
+/* icons.js — one icon family.
+
+   Drawn on a 24 grid, 1.7 stroke, round caps and joins, and optically balanced
+   against each other rather than each one drawn in isolation. Emoji were doing
+   this job before; they came from a dozen different type designers and it
+   showed. Country flags stay as emoji — those are legitimately flags. */
+(function (BS) {
+  'use strict';
+  const C = BS.core;
+
+  const P = {
+    /* navigation */
+    home: 'M3.5 10.8 12 3.6l8.5 7.2M5.9 9.9v9.4a1 1 0 0 0 1 1h10.2a1 1 0 0 0 1-1V9.9',
+    menu: 'M4 7.2h16M4 12h16M4 16.8h11',
+    close: 'M6.4 6.4 17.6 17.6M17.6 6.4 6.4 17.6',
+    chevron: 'M9.5 5.5 16 12l-6.5 6.5',
+    back: 'M14.5 5.5 8 12l6.5 6.5',
+    search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM16.2 16.2 20.5 20.5',
+
+    /* the two products */
+    racing: 'M7.8 20.2c-1.9-2.6-3-5-3-8a7.2 7.2 0 0 1 14.4 0c0 3-1.1 5.4-3 8M6.3 19.6h3M14.7 19.6h3',
+    football: 'M12 20.8a8.8 8.8 0 1 0 0-17.6 8.8 8.8 0 0 0 0 17.6zM12 7.7l3.6 2.6-1.4 4.3H9.8L8.4 10.3zM12 3.2v4.5M20.4 10.1l-4.8.2M17.5 19.1l-3.1-4M6.5 19.1l3.1-4M3.6 10.1l4.8.2',
+
+    /* content */
+    hot: 'M12 3.4c2.9 3.8 5.8 5.3 5.8 9.2a5.8 5.8 0 1 1-11.6 0c0-2.9 1.9-4.3 2.9-6.7 1.5 1.1 1.9 2.9 2.9 4.3.5-2.4 0-4.8 0-6.8z',
+    clock: 'M12 20.6a8.6 8.6 0 1 0 0-17.2 8.6 8.6 0 0 0 0 17.2zM12 7.3V12l3.1 1.9',
+    calendar: 'M5.2 6.4h13.6a1 1 0 0 1 1 1v11.2a1 1 0 0 1-1 1H5.2a1 1 0 0 1-1-1V7.4a1 1 0 0 1 1-1zM4.2 10.4h15.6M8.6 4v4.2M15.4 4v4.2',
+    week: 'M4.4 5.6h15.2a1 1 0 0 1 1 1v11.8a1 1 0 0 1-1 1H4.4a1 1 0 0 1-1-1V6.6a1 1 0 0 1 1-1zM3.4 9.6h17.2M8.6 12.8h2M13.4 12.8h2M8.6 16.2h2M13.4 16.2h2',
+    globe: 'M12 20.6a8.6 8.6 0 1 0 0-17.2 8.6 8.6 0 0 0 0 17.2zM3.6 12h16.8M12 3.4c2.2 2.4 3.4 5.3 3.4 8.6S14.2 18.2 12 20.6C9.8 18.2 8.6 15.3 8.6 12S9.8 5.8 12 3.4z',
+    star: 'M12 3.9l2.6 5.3 5.8.8-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z',
+    people: 'M9.3 11.4a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM3.4 19.6c0-3.1 2.7-5.4 5.9-5.4s5.9 2.3 5.9 5.4M16.6 11.1a2.7 2.7 0 1 0 0-5.4M17.3 14.5c2.5.3 4.3 2.3 4.3 5',
+    follow: 'M12 5.4v13.2M5.4 12h13.2',
+    ledger: 'M6 3.6h9.2L19 7.4v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-15.8a1 1 0 0 1 1-1zM14.8 3.8v3.8h3.8M8.4 11.4h7.2M8.4 14.6h7.2M8.4 17.8h4',
+    trophy: 'M7.4 4.2h9.2v4.4a4.6 4.6 0 0 1-9.2 0zM7.4 5.6H4.8v2.2a3 3 0 0 0 2.6 3M16.6 5.6h2.6v2.2a3 3 0 0 1-2.6 3M10.2 13.6h3.6l.6 3.6H9.6zM8 20.4h8',
+    chart: 'M4 19.6h16M4.6 15.4l4.4-5 3.5 3.2 6.7-7.2',
+    gem: 'M7.4 4.4h9.2l3.4 4.8L12 20 4 9.2zM4 9.2h16M9.6 9.2 12 20l2.4-10.8M7.4 4.4 9.6 9.2M16.6 4.4 14.4 9.2',
+    trend: 'M4 17.2l5.2-5.4 3.4 3.2 6.2-6.8M15.6 8h3.6v3.6',
+    cog: 'M12 15.1a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2zM19.1 14.2a1.6 1.6 0 0 0 .3 1.8l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a1.9 1.9 0 1 1-3.8 0v-.2a1.6 1.6 0 0 0-2.7-1.1l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.6 1.6 0 0 0-1.1-2.7h-.3a1.9 1.9 0 1 1 0-3.8h.2a1.6 1.6 0 0 0 1.1-2.7l-.1-.1A1.9 1.9 0 1 1 7.3 4l.1.1a1.6 1.6 0 0 0 2.7-1.1v-.3a1.9 1.9 0 1 1 3.8 0v.2a1.6 1.6 0 0 0 2.7 1.1l.1-.1A1.9 1.9 0 1 1 19.4 6.6l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a1.9 1.9 0 1 1 0 3.8h-.2a1.6 1.6 0 0 0-1.4.9z',
+    lock: 'M6.6 10.6h10.8a1 1 0 0 1 1 1v7.4a1 1 0 0 1-1 1H6.6a1 1 0 0 1-1-1v-7.4a1 1 0 0 1 1-1zM8.6 10.4V7.8a3.4 3.4 0 0 1 6.8 0v2.6',
+    ruler: 'M3.8 14.4 14.4 3.8l5.8 5.8L9.6 20.2zM7.6 10.6l1.8 1.8M10.4 7.8l1.8 1.8M13.2 5l1.8 1.8M4.9 13.3l1.8 1.8',
+    signal: 'M4.6 12.6a10.4 10.4 0 0 1 14.8 0M7.6 15.6a6.2 6.2 0 0 1 8.8 0M12 19.4h.01',
+    flag: 'M6 20.4V4.2M6 5.2h11.4l-2 3.4 2 3.4H6',
+    info: 'M12 20.6a8.6 8.6 0 1 0 0-17.2 8.6 8.6 0 0 0 0 17.2zM12 11.2v5M12 7.9h.01',
+    check: 'M5.4 12.6 10 17.2 18.6 6.8',
+    sparkle: 'M12 3.6l1.7 4.9 4.9 1.7-4.9 1.7L12 16.8l-1.7-4.9-4.9-1.7 4.9-1.7zM18.4 15.2l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z'
+  };
+
+  /** Stroked icon. `size` is a CSS length; the stroke stays optically even. */
+  function icon(name, cls, opts) {
+    const o = opts || {};
+    return C.raw('<svg class="ic ' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
+      'stroke="currentColor" stroke-width="' + (o.w || 1.7) + '" stroke-linecap="round" ' +
+      'stroke-linejoin="round" aria-hidden="true"><path d="' + (P[name] || P.info) + '"/></svg>');
+  }
+
+  /** The marker that runs along the run-in track and the loader rail. */
+  function marker(product, silk) {
+    if (product === 'football') {
+      return C.raw('<span class="marker marker-ball">' +
+        C.unwrap(BS.ui.ballMark('', { simple: true, ring: '#FFFFFF', ground: '#FFFFFF', panel: '#134B74' })) +
+        '</span>');
+    }
+    const s = silk || { a: '#E0A83B', b: '#7F4228', pattern: 'hoops' };
+    return C.raw('<span class="marker marker-silk">' + C.unwrap(BS.ui.silkSvg(s)) + '</span>');
+  }
+
+  BS.icons = { P, icon, marker, has: n => !!P[n] };
 })(window.BS = window.BS || {});
 
 </script>
@@ -2476,7 +2630,9 @@ body::before {
   let runInTimer = null;
   function banner(ev, product) {
     if (!ev) return C.raw('');
-    const glyph = product === 'football' ? '⚽' : '🏇';
+    // The marker is the runner's own silks — an asset the app already draws —
+    // rather than a stock glyph from someone else's type foundry.
+    const glyph = BS.icons.marker(product, ev.silk);
     return C.html`
       <button class="runin" data-act="go" data-route="${ev.route}" data-start="${ev.startTs}"
         aria-label="Next up: ${ev.name}">
@@ -2488,7 +2644,7 @@ body::before {
         <span class="runin-track">
           <span class="runin-rail"></span>
           <span class="runin-post"></span>
-          <span class="runin-runner" data-runner><span class="glyph">${glyph}</span></span>
+          <span class="runin-runner" data-runner>${glyph}</span>
         </span>
         <span class="runin-foot"><span>${ev.sub}</span></span>
       </button>`;
@@ -2513,7 +2669,7 @@ body::before {
   /** A loading state that says which product you are waiting on. */
   const loader = product => C.raw(
     '<div class="loader"><div class="loader-track"><span class="loader-rail"></span>' +
-    '<span class="loader-runner">' + (product === 'football' ? '⚽' : '🏇') + '</span></div>' +
+    '<span class="loader-runner">' + C.unwrap(BS.icons.marker(product)) + '</span></div>' +
     '<div class="loader-label">' + (product === 'football' ? 'Pulling in fixtures…' : 'Pulling in the cards…') + '</div></div>');
 
   BS.fx = { reduced, stagger, countUp, confetti, stamp, typeOut, runIn, press, pop, banner, mountBanner, loader };
@@ -2676,7 +2832,7 @@ body::before {
     const el = document.createElement('div');
     el.className = 'toast';
     el.setAttribute('role', 'status');
-    el.innerHTML = C.unwrap(C.html`<span>${icon || '✓'}</span><span>${msg}</span>`);
+    el.innerHTML = C.unwrap(C.html`<span class="toast-ic">${BS.icons.icon(icon || 'check')}</span><span>${msg}</span>`);
     document.body.appendChild(el);
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.remove(), 3200);
@@ -2689,7 +2845,7 @@ body::before {
 
   function openTipSheet(ctx) {
     if (ctx.startTs <= Date.now()) {
-      toast('That event has started — tips are closed', '⛔');
+      toast('That event has started — tips are closed', 'info');
       return;
     }
     const frozen = BS.provider.freezeOdds(ctx.quotedOdds);
@@ -2718,7 +2874,7 @@ body::before {
       <h3>${c.selection}</h3>
       <p class="sheet-sub">${c.market} · ${c.event}</p>
 
-      ${f.moved ? C.raw('<div class="warnbox"><span>⚡</span><span>The price moved while you were tapping. ' +
+      ${f.moved ? C.raw('<div class="warnbox">' + C.unwrap(BS.icons.icon('info')) + '<span>The price moved while you were tapping. ' +
         C.fmtOdds(c.quotedOdds) + ' is gone — this is the live price, and it is the one that gets written.</span></div>') : ''}
 
       <div class="freeze">
@@ -2769,7 +2925,7 @@ body::before {
   function confirmTip() {
     const c = sheetCtx;
     if (!c) return;
-    if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', '⛔'); return; }
+    if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', 'info'); return; }
     if (!BS.account.isSignedIn()) { closeSheet(); BS.app.go('signup'); return; }
     const rec = BS.store.addTip({
       product: c.product, event: c.event, market: c.market, selection: c.selection,
@@ -2780,7 +2936,7 @@ body::before {
     if (seal) seal.classList.add('sealing');
     BS.fx.stamp({ word: 'SEALED' }).then(function () {
       closeSheet();
-      toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', '🔒');
+      toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', 'lock');
       BS.app.render();
     });
   }
@@ -2817,26 +2973,8 @@ body::before {
   'use strict';
   const C = BS.core, U = BS.ui;
 
-  const P = {
-    home: 'M3 10.6 12 3.2l9 7.4M5.6 9.6V20h12.8V9.6',
-    racing: 'M8 20c-2-2.6-3.2-5-3.2-8a7.2 7.2 0 0 1 14.4 0c0 3-1.2 5.4-3.2 8M6.4 19.4h3.2M14.4 19.4h3.2',
-    football: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.6l3.7 2.7-1.4 4.4H9.7L8.3 10.3zM12 3v4.6M19.6 9.6l-3.9.7M16.9 19l-2.6-4.3M7.1 19l2.6-4.3M4.4 9.6l3.9.7',
-    hot: 'M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z',
-    people: 'M9.4 11.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2zM3.6 19.4c0-3 2.6-5.2 5.8-5.2s5.8 2.2 5.8 5.2M16.6 11a2.6 2.6 0 1 0 0-5.2M17.2 14.4c2.4.3 4.2 2.2 4.2 4.8',
-    me: 'M5 4h11l3 3v13H5zM8.5 9.5h7M8.5 13h7M8.5 16.5h4',
-    star: 'M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z',
-    calendar: 'M4.5 6.5h15v13h-15zM4.5 10.5h15M8.5 4v4M15.5 4v4',
-    week: 'M4 5.5h16v14H4zM4 9.5h16M9 13h2M13 13h2M9 16.5h2M13 16.5h2',
-    trophy: 'M7 4h10v4.5a5 5 0 0 1-10 0zM7 5.5H4.5V8A3 3 0 0 0 7 11M17 5.5h2.5V8A3 3 0 0 1 17 11M10 13.5h4l.6 3.5H9.4zM8 20h8',
-    follow: 'M12 5.5v13M5.5 12h13',
-    cog: 'M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM19.4 14.4a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3.3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3.3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
-    menu: 'M4 7h16M4 12h16M4 17h16',
-    close: 'M6 6l12 12M18 6L6 18',
-    clock: 'M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17zM12 7.4V12l3.1 2'
-  };
-  const icon = (k, cls) => C.raw('<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
-    'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
-    'aria-hidden="true"><path d="' + (P[k] || P.home) + '"/></svg>');
+  // The shared family; 'me' is the ledger glyph.
+  const icon = (k, cls) => BS.icons.icon(k === 'me' ? 'ledger' : k, cls);
 
   /* ---------- the model ----------
      `route` is what the app navigates to; `items` turn an entry into a menu. */
@@ -3160,7 +3298,7 @@ body::before {
       ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now)) :
         U.empty('No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
           'Every meeting on the feed has finished for the day. Tomorrow\'s cards are in Next 7 days.')}
-      ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
+      ${hidden > 0 ? C.html`<div class="notice">${BS.icons.icon('clock')}<span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
     `);
   }
 
@@ -3168,11 +3306,11 @@ body::before {
     return C.html`
       <div class="toolbar">
         <label class="search">
-          <span aria-hidden="true">🔍</span>
+          ${BS.icons.icon('search')}
           <input type="search" placeholder="Course, country or region" value="${U.state.q}" data-act="search" aria-label="Search meetings">
         </label>
         <button class="chip" data-act="tz" aria-pressed="${String(U.state.tzMode === 'venue')}">
-          🕑 ${U.state.tzMode === 'venue' ? 'Course time' : 'My time'}
+          ${BS.icons.icon('clock')} ${U.state.tzMode === 'venue' ? 'Course time' : 'My time'}
         </button>
         ${isWeek ? '' : C.html`<button class="chip" data-act="finished" aria-pressed="${String(U.state.showFinished)}">Show finished</button>`}
       </div>`;
@@ -3202,7 +3340,7 @@ body::before {
     C.mount(root, C.html`
       ${toolbar(true)}
       ${daystrip(now, days)}
-      ${sel > 0 ? C.html`<div class="notice"><span>📋</span><span>
+      ${sel > 0 ? C.html`<div class="notice">${BS.icons.icon('ledger')}<span>
         <b>${declared} of ${total} races declared.</b> Runners and riders are published about 48 hours out —
         until then a race shows its entries and expected field size, with no jockeys and no prices.
       </span></div>` : ''}
@@ -3257,11 +3395,11 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + race.id + '" aria-p
         </div>
       </div>
 
-      ${!race.declared ? C.html`<div class="notice"><span>⏳</span><span>
+      ${!race.declared ? C.html`<div class="notice">${BS.icons.icon('clock')}<span>
         <b>Not yet declared.</b> These are entries. Final runners, riders and prices arrive about 48 hours
         before the off — you can't post a tip until then, because there is no price to freeze.</span></div>` : ''}
 
-      ${st === 'result' ? C.html`<div class="notice"><span>🏁</span><span>
+      ${st === 'result' ? C.html`<div class="notice">${BS.icons.icon('flag')}<span>
         <b>Result in.</b> Any tip on this race has been settled from the results feed. Nobody marked it by hand.</span></div>` : ''}
 
       <div class="runners">
@@ -3386,11 +3524,11 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + race.id + '" aria-p
     return C.html`
       <div class="toolbar">
         <label class="search">
-          <span aria-hidden="true">🔍</span>
+          ${BS.icons.icon('search')}
           <input type="search" placeholder="Team, competition or country" value="${U.state.q}" data-act="search" aria-label="Search fixtures">
         </label>
         <button class="chip" data-act="tz" aria-pressed="${String(U.state.tzMode === 'venue')}">
-          🕑 ${U.state.tzMode === 'venue' ? 'Local kick-off' : 'My time'}
+          ${BS.icons.icon('clock')} ${U.state.tzMode === 'venue' ? 'Local kick-off' : 'My time'}
         </button>
         ${isWeek ? '' : C.html`<button class="chip" data-act="finished" aria-pressed="${String(U.state.showFinished)}">Show finished</button>`}
       </div>`;
@@ -3415,7 +3553,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + race.id + '" aria-p
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
         U.empty('No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
           'Every match on today\'s feed has finished. Tomorrow\'s fixtures are in Next 7 days.')}
-      ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
+      ${hidden > 0 ? C.html`<div class="notice">${BS.icons.icon('clock')}<span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
     `);
   }
 
@@ -3440,7 +3578,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + race.id + '" aria-p
             <span class="dmeta">${days[d].length} matches</span>
           </button>`)}
       </div>
-      ${sel > 0 ? C.html`<div class="notice"><span>📋</span><span>
+      ${sel > 0 ? C.html`<div class="notice">${BS.icons.icon('ledger')}<span>
         <b>Line-ups firm up closer to kick-off.</b> Expected XIs appear inside 48 hours and are confirmed about an hour before.
       </span></div>` : ''}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
@@ -3495,7 +3633,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
             ${mk('Both teams to score', fx.btts[0], 'BTTS', 'BTTS yes')}
             ${mk('Not both teams to score', fx.btts[1], 'BTTS', 'BTTS no')}
           </div>
-        </div>` : C.html`<div class="notice"><span>🏁</span><span>
+        </div>` : C.html`<div class="notice">${BS.icons.icon('flag')}<span>
           <b>Betting closed.</b> ${st.state === 'live' ? 'The match is in play.' : 'Tips on this match have been settled from the results feed.'}
         </span></div>`}
 
@@ -3708,7 +3846,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         </div>
       </div>
 
-      <div class="notice"><span>🔒</span><span><b>Append-only.</b> There is no edit and no delete in this app.
+      <div class="notice">${BS.icons.icon('lock')}<span><b>Append-only.</b> There is no edit and no delete in this app.
         A correction is published as a void that points at the original, and the original stays where it is.</span></div>
     `);
     if (s.n >= 2) initChart(root, s.equity);
@@ -3738,7 +3876,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         ${BANDS.map(b => C.html`<button class="chip ${band === b[0] ? 'on' : ''}" data-act="band" data-id="${b[0]}">${b[1]}</button>`)}
       </div>
 
-      <div class="notice"><span>📏</span><span>
+      <div class="notice">${BS.icons.icon('ruler')}<span>
         Ranked on the <b>bottom of the 95% range</b>, not the headline figure — a big number from a small sample
         does not outrank a solid one from a long record. Minimum 100 settled tips to appear at all.
       </span></div>
@@ -3771,13 +3909,13 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
                   </td>
                   <td style="color:var(--ink-2)">${C.fmtSigned(r.maxDD)}</td>
                   <td>${r.me ? '' : C.html`<button class="follow-btn" data-act="follow" data-id="${r.handle}"
-                    aria-pressed="${String(BS.tipsters.isFollowing(r.handle))}">${BS.tipsters.isFollowing(r.handle) ? '✓' : '+ Follow'}</button>`}</td>
+                    aria-pressed="${String(BS.tipsters.isFollowing(r.handle))}">${BS.icons.icon(BS.tipsters.isFollowing(r.handle) ? 'check' : 'follow')}</button>`}</td>
                 </tr>`)}
             </tbody>
           </table>
         </div>
       </div>
-      ${!mine.enough ? C.html`<div class="notice"><span>🌱</span><span>
+      ${!mine.enough ? C.html`<div class="notice">${BS.icons.icon('sparkle')}<span>
         Your ${product === 'racing' ? 'racing' : 'football'} record has <b>${mine.n} settled tips</b>.
         You appear in this table at 100.</span></div>` : ''}
     `);
@@ -3803,7 +3941,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     return C.html`
       <section class="mod">
         <div class="mod-head">
-          <span class="mod-ic">${C.raw(opts.icon)}</span>
+          <span class="mod-ic">${BS.icons.icon(opts.icon)}</span>
           <h2>${opts.title}</h2>
           ${opts.meta ? C.html`<span class="mod-meta">${opts.meta}</span>` : ''}
           ${opts.tools || ''}
@@ -3822,13 +3960,10 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     </label>`;
 
   const ICONS = {
-    flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z"/></svg>',
-    people: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.6.2 4.5 2.1 4.5 4.8"/></svg>',
-    chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15l4.5-5 3.5 3.2L20 6"/><path d="M4 20h16"/></svg>',
-    star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z"/></svg>',
-    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'
+    flame: 'hot', people: 'people', chart: 'trend', star: 'star', clock: 'clock'
   };
-  const sportIcon = s => C.raw('<span class="row-ic ' + s + '">' + (s === 'racing' ? '🐴' : '⚽') + '</span>');
+  const sportIcon = s => C.raw('<span class="row-ic ' + s + '">' +
+    C.unwrap(BS.icons.icon(s === 'racing' ? 'racing' : 'football')) + '</span>');
 
   /* ---------- rows ---------- */
   function tipRow(g, now) {
@@ -3875,7 +4010,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         <button class="follow-btn" data-act="follow" data-id="${t.handle}"
           aria-pressed="${String(T.isFollowing(t.handle))}"
           aria-label="${T.isFollowing(t.handle) ? 'Unfollow ' + t.handle : 'Follow ' + t.handle}"
-          title="${T.isFollowing(t.handle) ? 'Unfollow' : 'Follow'}">${T.isFollowing(t.handle) ? '✓' : '+'}</button>
+          title="${T.isFollowing(t.handle) ? 'Unfollow' : 'Follow'}">${BS.icons.icon(T.isFollowing(t.handle) ? 'check' : 'follow')}</button>
       </div>`;
   }
 
@@ -3937,6 +4072,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       : nextRace
         ? { route: 'racing/race/' + nextRace.id, startTs: nextRace.offTs,
             name: nextRace.flag + ' ' + nextRace.venue,
+            silk: nextRace.runners[0] && nextRace.runners[0].silk,
             sub: nextRace.name + ' · ' + nextRace.runners.length + ' runners' }
         : null;
 
@@ -4056,15 +4192,15 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     C.mount(root, C.html`
       <div class="toolbar">
         <button class="chip ${sportFilter === 'all' ? 'on' : ''}" data-act="sport" data-id="all">Both sports</button>
-        <button class="chip ${sportFilter === 'racing' ? 'on' : ''}" data-act="sport" data-id="racing">🐴 Racing</button>
-        <button class="chip ${sportFilter === 'football' ? 'on' : ''}" data-act="sport" data-id="football">⚽ Football</button>
+        <button class="chip ${sportFilter === 'racing' ? 'on' : ''}" data-act="sport" data-id="racing">${BS.icons.icon('racing')} Racing</button>
+        <button class="chip ${sportFilter === 'football' ? 'on' : ''}" data-act="sport" data-id="football">${BS.icons.icon('football')} Football</button>
         <span style="flex:1"></span>
         <button class="chip ${sortBy === 'heat' ? 'on' : ''}" data-act="sort" data-id="heat">Hottest</button>
         <button class="chip ${sortBy === 'time' ? 'on' : ''}" data-act="sort" data-id="time">Off soonest</button>
         <button class="chip ${sortBy === 'price' ? 'on' : ''}" data-act="sort" data-id="price">Biggest price</button>
       </div>
 
-      <div class="notice"><span>🔥</span><span>
+      <div class="notice">${BS.icons.icon('hot')}<span>
         <b>Heat is agreement, not confidence.</b> It rises when several tipsters with a real record land on the
         same selection close to the off. It is not a prediction, and a hot tip loses as often as its price says it will.
         ${followedCount ? C.raw('<b>' + followedCount + '</b> of these include someone you follow.') : ''}
@@ -4106,15 +4242,15 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     C.mount(root, C.html`
       <div class="toolbar">
         <button class="chip ${dirFilter === 'all' ? 'on' : ''}" data-act="dir" data-id="all">All ${T.all().length}</button>
-        <button class="chip ${dirFilter === 'racing' ? 'on' : ''}" data-act="dir" data-id="racing">🐴 Racing</button>
-        <button class="chip ${dirFilter === 'football' ? 'on' : ''}" data-act="dir" data-id="football">⚽ Football</button>
+        <button class="chip ${dirFilter === 'racing' ? 'on' : ''}" data-act="dir" data-id="racing">${BS.icons.icon('racing')} Racing</button>
+        <button class="chip ${dirFilter === 'football' ? 'on' : ''}" data-act="dir" data-id="football">${BS.icons.icon('football')} Football</button>
         <button class="chip ${dirFilter === 'following' ? 'on' : ''}" data-act="dir" data-id="following">Following ${followed.length}</button>
         <span style="flex:1"></span>
         ${BS.viewsHome.select('sort-dir', dirSort,
           [['roi', 'ROI, all time'], ['streak', 'Profit streak'], ['last7', 'Last 7 days'],
            ['last30', 'Last 30 days'], ['followers', 'Most followed']])}
       </div>
-      <div class="notice"><span>📏</span><span>
+      <div class="notice">${BS.icons.icon('ruler')}<span>
         Sorted by the <b>bottom of each 95% range</b>, with unranked tipsters last. Anyone under 100 settled tips
         is shown but never ranked — a short hot run is not a record.
       </span></div>
@@ -4146,14 +4282,14 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
           <h1>${t.handle}${BS.viewsAccount.badgeChips(t.handle)}</h1>
           <div class="b">${t.bio}</div>
           <div style="display:flex;gap:14px;margin-top:9px;font-size:12.5px;color:var(--on-dark-2);font-weight:650">
-            <span>${t.sport === 'racing' ? '🐴 Racing' : '⚽ Football'}</span>
+            <span>${BS.icons.icon(t.sport === 'racing' ? 'racing' : 'football')} ${t.sport === 'racing' ? 'Racing' : 'Football'}</span>
             <span>${t.followers.toLocaleString()} followers</span>
             <span>since ${t.since}</span>
           </div>
         </div>
         <button class="follow-btn" data-act="follow" data-id="${t.handle}" aria-pressed="${String(following)}"
           style="${following ? '' : 'background:var(--grass-500);border-color:var(--grass-500);color:#08201B'}">
-          ${following ? '✓ Following' : '+ Follow'}
+          ${following ? C.html`${BS.icons.icon('check')} Following` : C.html`${BS.icons.icon('follow')} Follow`}
         </button>
       </div>
 
@@ -4200,7 +4336,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         </div>` : U.empty('Nothing live', t.handle + ' has no open tips right now. They post on a slice of the card, not all of it.')}
       </div>
 
-      <div class="notice"><span>🔒</span><span>
+      <div class="notice">${BS.icons.icon('lock')}<span>
         This record is append-only. ${t.handle} cannot edit a tip, delete a loser, or change a price after posting —
         and the bad months stay visible for exactly that reason.</span></div>
     `);
@@ -4432,7 +4568,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
           ${navRow({
             route: 'racing/next', title: 'Next races',
             sub: 'Every course, in time order',
-            lead: C.raw('<span class="row-ic">⏱</span>'),
+            lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('clock')) + '</span>'),
             right: nextOff ? C.countdown(nextOff.offTs, now) : '',
             soon: nextOff && nextOff.offTs - now < 9e5
           })}
@@ -4440,7 +4576,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.globe)}</span><h2>Racing today</h2>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('globe')}</span><h2>Racing today</h2>
           <span class="mod-meta">by country</span></div>
         <div class="rows">
           ${BS.racing.REGIONS.filter(r => byRegion.has(r.id)).map(r => {
@@ -4460,7 +4596,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.cal)}</span><h2>Tomorrow</h2></div>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('calendar')}</span><h2>Tomorrow</h2></div>
         <div class="rows">
           ${tomorrow.slice(0, 6).map(m => navRow({
             route: 'racing/meeting/' + m.id, title: m.venue,
@@ -4603,6 +4739,16 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       byRegion.get(f.region).push(f);
     });
     const next = live.filter(f => f.koTs > now).sort((a, b) => a.koTs - b.koTs)[0];
+    const tByComp = new Map();
+    tomorrow.forEach(f => {
+      if (!tByComp.has(f.compId)) tByComp.set(f.compId, []);
+      tByComp.get(f.compId).push(f);
+    });
+    const tomorrowComps = Array.from(tByComp.entries()).map(function (e) {
+      const comp = BS.football.COMPS.find(c => c.id === e[0]);
+      const first = e[1].sort((a, b) => a.koTs - b.koTs)[0];
+      return [e[0], comp || { name: e[0] }, e[1].length, first.koTs, first.tz];
+    }).sort((a, b) => b[2] - a[2]).slice(0, 5);
 
     C.mount(root, C.html`
       <div class="page-head"><h1>All competitions</h1><span class="sub">${live.length} matches today</span></div>
@@ -4611,14 +4757,14 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         <div class="rows">
           ${navRow({
             route: 'football/next', title: 'Next kick-offs', sub: 'Every competition, in time order',
-            lead: C.raw('<span class="row-ic">⏱</span>'),
+            lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('clock')) + '</span>'),
             right: next ? C.countdown(next.koTs, now) : ''
           })}
         </div>
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.globe)}</span><h2>Football today</h2>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('globe')}</span><h2>Football today</h2>
           <span class="mod-meta">by region</span></div>
         <div class="rows">
           ${BS.football.REGIONS.filter(r => byRegion.has(r.id)).map(r => {
@@ -4628,7 +4774,8 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
             const nLive = fx.filter(f => BS.football.fixtureState(f, now).state === 'live').length;
             return navRow({
               route: 'football/region/' + r.id, title: r.name,
-              sub: comps.size + (comps.size === 1 ? ' competition · ' : ' competitions · ') + fx.length + ' matches',
+              sub: comps.size + (comps.size === 1 ? ' competition · ' : ' competitions · ') +
+                fx.length + (fx.length === 1 ? ' match' : ' matches'),
               lead: C.raw('<span class="row-ic">' + r.flag + '</span>'),
               right: nLive ? C.raw('<span class="livechip"><span class="pulse"></span>' + nLive + ' live</span>')
                 : nx ? U.time(nx.koTs, nx.tz) : '',
@@ -4640,8 +4787,16 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       </div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw(ICON.cal)}</span><h2>Tomorrow</h2>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('calendar')}</span><h2>Tomorrow</h2>
           <span class="mod-meta">${tomorrow.length} matches</span></div>
+        <div class="rows">
+          ${tomorrowComps.length ? tomorrowComps.map(e => navRow({
+            route: 'football/comp/' + e[0], title: e[1].name,
+            sub: e[2] + (e[2] === 1 ? ' match' : ' matches'),
+            lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('football')) + '</span>'),
+            right: U.time(e[3], e[4])
+          })) : C.html`<p class="row-empty">Nothing scheduled tomorrow on the feed.</p>`}
+        </div>
         <button class="mod-cta" data-act="go" data-route="football/week">All seven days</button>
       </div>
     `);
@@ -4671,7 +4826,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
             return navRow({
               route: 'football/comp/' + e[0], title: comp ? comp.name : e[0],
               sub: list.length + (list.length === 1 ? ' match' : ' matches'),
-              lead: C.raw('<span class="row-ic">⚽</span>'),
+              lead: C.raw('<span class="row-ic">' + C.unwrap(BS.icons.icon('football')) + '</span>'),
               right: nx ? U.time(nx.koTs, nx.tz) : 'all played',
               rightSub: nx ? C.countdown(nx.koTs, now) : ''
             });
@@ -4750,11 +4905,6 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     `);
   }
 
-  const ICON = {
-    globe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.3 3.6 8.5S14.4 18.1 12 20.5c-2.4-2.4-3.6-5.3-3.6-8.5S9.6 5.9 12 3.5z"/></svg>',
-    cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="6" width="16" height="14" rx="2"/><path d="M4 10h16M9 4v4M15 4v4"/></svg>'
-  };
-
   BS.viewsBrowse = {
     racingIndex, racingRegion, racingMeeting, racingNext,
     footballIndex, footballRegion, footballComp, footballNext
@@ -4785,7 +4935,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
             <button class="btn secondary" data-act="signout">Sign out</button>
           </div>
         </div>
-        <div class="notice"><span>🔒</span><span>Your handle is permanent. Records are published under it and
+        <div class="notice">${BS.icons.icon('lock')}<span>Your handle is permanent. Records are published under it and
           cannot be edited, deleted, or moved to a different name.</span></div>
       `);
       return;
@@ -4887,7 +5037,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     if (b.value) out.push(X.BADGES.value);
     if (!out.length) return C.raw('');
     return C.raw(out.map(x => '<span class="xbadge ' + x.id + '" title="' + C.esc(x.rule) + '">' +
-      x.icon + ' ' + C.esc(x.label) + '</span>').join(''));
+      C.unwrap(BS.icons.icon(x.icon)) + C.esc(x.label) + '</span>').join(''));
   }
 
   function experts(root) {
@@ -4903,7 +5053,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       <div class="page-head"><h1>Experts</h1><span class="sub">recalculated every Monday</span></div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw('⚙️')}</span><h2>Weekly check</h2></div>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('cog')}</span><h2>Weekly check</h2></div>
         <div class="rows">
           <div class="row row-static">
             <span class="row-main">
@@ -4925,13 +5075,13 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       <div class="tabs" role="tablist" style="margin-bottom:14px">
         ${Object.keys(X.BADGES).map(k => C.html`
           <button role="tab" aria-selected="${String(tab === k)}" data-act="expert-tab" data-id="${k}">
-            ${X.BADGES[k].icon} ${X.BADGES[k].full}
+            ${BS.icons.icon(X.BADGES[k].icon)}${X.BADGES[k].full}
           </button>`)}
       </div>
 
-      <div class="notice"><span>📏</span><span><b>${badge.full}.</b> ${badge.rule}
+      <div class="notice">${BS.icons.icon('ruler')}<span><b>${badge.full}.</b> ${badge.rule}
         Badges are awarded and removed by the weekly job — nobody can keep one that the record stopped supporting.</span></div>
-      ${X.simOffset() ? C.html`<div class="notice"><span>🧪</span><span>
+      ${X.simOffset() ? C.html`<div class="notice">${BS.icons.icon('sparkle')}<span>
         You have simulated <b>${X.simOffset()} ${X.simOffset() === 1 ? 'week' : 'weeks'}</b> ahead of the real clock.
         In the live product this job runs on the server every Monday and cannot be triggered by hand.</span></div>` : ''}
 
@@ -4953,7 +5103,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
                 <button class="follow-btn" data-act="follow" data-id="${t.handle}"
                   aria-pressed="${String(BS.tipsters.isFollowing(t.handle))}"
                   aria-label="${BS.tipsters.isFollowing(t.handle) ? 'Unfollow' : 'Follow'} ${t.handle}"
-                  >${BS.tipsters.isFollowing(t.handle) ? '✓' : '+'}</button>
+                  >${BS.icons.icon(BS.tipsters.isFollowing(t.handle) ? 'check' : 'follow')}</button>
               </div>`;
           }) : C.html`<p class="row-empty">Nobody holds this badge after the latest check. That is the point of
             checking: the list is allowed to be empty.</p>`}
@@ -4965,7 +5115,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
         <div class="rows">
           ${log.length ? log.map(e => C.html`
             <div class="row row-static">
-              <span class="row-ic">${e.action === 'awarded' ? '↑' : '↓'}</span>
+              <span class="row-ic">${BS.icons.icon(e.action === 'awarded' ? 'trend' : 'chart')}</span>
               <span class="row-main">
                 <span class="row-title"><span class="nm">${e.handle}</span></span>
                 <span class="row-sub">${e.action === 'awarded' ? 'Awarded' : 'Lost'} ${X.BADGES[e.badge].full.toLowerCase()} · week ${e.week}</span>
@@ -5216,14 +5366,14 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     h.settlement.lastSuccess = now; h.results.lastSuccess = now;
     if (settled) {
       justSettled = winners;
-      U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', '⚙️');
+      U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', 'cog');
       render().then(function () {
         // One celebration, for one thing: a tip of yours came in.
         if (!winners.length) return;
         BS.fx.confetti({ count: 40 + winners.length * 30 });
         U.toast(winners.length === 1
           ? 'Winner — ' + winners[0].selection + ' at ' + C.fmtOdds(winners[0].odds)
-          : winners.length + ' winners settled', '🎉');
+          : winners.length + ' winners settled', 'sparkle');
       });
     }
   }
@@ -5256,13 +5406,13 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     else if (act === 'fav') {
       const on = BS.store.toggleFav(id);
       if (on) BS.fx.pop(el, 'var(--warn)');
-      U.toast(on ? 'Starred — it will wait for you on the front page' : 'Removed from favourites', on ? '★' : '☆');
+      U.toast(on ? 'Starred — it will wait for you on the front page' : 'Removed from favourites', 'star');
       render();
     }
     else if (act === 'follow') {
       const on = BS.tipsters.toggleFollow(id);
       if (on) BS.fx.pop(el);
-      U.toast(on ? 'Following ' + id : 'Unfollowed ' + id, on ? '✓' : '·');
+      U.toast(on ? 'Following ' + id : 'Unfollowed ' + id, on ? 'check' : 'close');
       render();
     }
     else if (act === 'toggle-region') {
@@ -5286,7 +5436,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     else if (act === 'health') showHealth();
     else if (act === 'signout') {
       BS.account.signOut();
-      U.toast('Signed out on this device. Your record stays exactly where it is.', '·');
+      U.toast('Signed out on this device. Your record stays exactly where it is.', 'info');
       go('home');
     }
     else if (act === 'expert-tab') { BS.viewsAccount.setTab(id); render(); }
@@ -5294,7 +5444,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       const res = BS.experts.simulateNextWeek(Date.now());
       U.toast(res.changes.length
         ? res.changes.length + ' badge ' + (res.changes.length === 1 ? 'change' : 'changes') + ' recorded'
-        : 'Checked — no badges changed that week', '⚙️');
+        : 'Checked — no badges changed that week', 'cog');
       render();
     }
     else if (act === 'signup-cta') go('signup');
@@ -5361,7 +5511,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
     const h = BS.provider.health();
     const ago = ts => Math.max(0, Math.round((Date.now() - ts) / 1000)) + 's ago';
     U.toast('Odds ' + ago(h.odds.lastSuccess) + ' · Results ' + ago(h.results.lastSuccess) +
-      ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', '📡');
+      ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', 'signal');
   }
 
   function ageGate() {
@@ -5397,7 +5547,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
       runSettlement();
       if (res.ran && res.changes.length) {
         U.toast('Weekly expert check: ' + res.changes.length + ' badge ' +
-          (res.changes.length === 1 ? 'change' : 'changes'), '⚙️');
+          (res.changes.length === 1 ? 'change' : 'changes'), 'cog');
       }
     });
     setInterval(runSettlement, 15000);

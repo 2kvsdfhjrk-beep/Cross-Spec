@@ -13,7 +13,7 @@
     return C.html`
       <section class="mod">
         <div class="mod-head">
-          <span class="mod-ic">${C.raw(opts.icon)}</span>
+          <span class="mod-ic">${BS.icons.icon(opts.icon)}</span>
           <h2>${opts.title}</h2>
           ${opts.meta ? C.html`<span class="mod-meta">${opts.meta}</span>` : ''}
           ${opts.tools || ''}
@@ -32,13 +32,10 @@
     </label>`;
 
   const ICONS = {
-    flame: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z"/></svg>',
-    people: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><circle cx="17" cy="9" r="2.6"/><path d="M16 14.2c2.6.2 4.5 2.1 4.5 4.8"/></svg>',
-    chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15l4.5-5 3.5 3.2L20 6"/><path d="M4 20h16"/></svg>',
-    star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z"/></svg>',
-    clock: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>'
+    flame: 'hot', people: 'people', chart: 'trend', star: 'star', clock: 'clock'
   };
-  const sportIcon = s => C.raw('<span class="row-ic ' + s + '">' + (s === 'racing' ? '🐴' : '⚽') + '</span>');
+  const sportIcon = s => C.raw('<span class="row-ic ' + s + '">' +
+    C.unwrap(BS.icons.icon(s === 'racing' ? 'racing' : 'football')) + '</span>');
 
   /* ---------- rows ---------- */
   function tipRow(g, now) {
@@ -85,7 +82,7 @@
         <button class="follow-btn" data-act="follow" data-id="${t.handle}"
           aria-pressed="${String(T.isFollowing(t.handle))}"
           aria-label="${T.isFollowing(t.handle) ? 'Unfollow ' + t.handle : 'Follow ' + t.handle}"
-          title="${T.isFollowing(t.handle) ? 'Unfollow' : 'Follow'}">${T.isFollowing(t.handle) ? '✓' : '+'}</button>
+          title="${T.isFollowing(t.handle) ? 'Unfollow' : 'Follow'}">${BS.icons.icon(T.isFollowing(t.handle) ? 'check' : 'follow')}</button>
       </div>`;
   }
 
@@ -147,6 +144,7 @@
       : nextRace
         ? { route: 'racing/race/' + nextRace.id, startTs: nextRace.offTs,
             name: nextRace.flag + ' ' + nextRace.venue,
+            silk: nextRace.runners[0] && nextRace.runners[0].silk,
             sub: nextRace.name + ' · ' + nextRace.runners.length + ' runners' }
         : null;
 

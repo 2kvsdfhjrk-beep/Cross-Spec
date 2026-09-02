@@ -153,7 +153,7 @@
     const el = document.createElement('div');
     el.className = 'toast';
     el.setAttribute('role', 'status');
-    el.innerHTML = C.unwrap(C.html`<span>${icon || '✓'}</span><span>${msg}</span>`);
+    el.innerHTML = C.unwrap(C.html`<span class="toast-ic">${BS.icons.icon(icon || 'check')}</span><span>${msg}</span>`);
     document.body.appendChild(el);
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => el.remove(), 3200);
@@ -166,7 +166,7 @@
 
   function openTipSheet(ctx) {
     if (ctx.startTs <= Date.now()) {
-      toast('That event has started — tips are closed', '⛔');
+      toast('That event has started — tips are closed', 'info');
       return;
     }
     const frozen = BS.provider.freezeOdds(ctx.quotedOdds);
@@ -195,7 +195,7 @@
       <h3>${c.selection}</h3>
       <p class="sheet-sub">${c.market} · ${c.event}</p>
 
-      ${f.moved ? C.raw('<div class="warnbox"><span>⚡</span><span>The price moved while you were tapping. ' +
+      ${f.moved ? C.raw('<div class="warnbox">' + C.unwrap(BS.icons.icon('info')) + '<span>The price moved while you were tapping. ' +
         C.fmtOdds(c.quotedOdds) + ' is gone — this is the live price, and it is the one that gets written.</span></div>') : ''}
 
       <div class="freeze">
@@ -246,7 +246,7 @@
   function confirmTip() {
     const c = sheetCtx;
     if (!c) return;
-    if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', '⛔'); return; }
+    if (c.startTs <= Date.now()) { closeSheet(); toast('Event started — tip rejected', 'info'); return; }
     if (!BS.account.isSignedIn()) { closeSheet(); BS.app.go('signup'); return; }
     const rec = BS.store.addTip({
       product: c.product, event: c.event, market: c.market, selection: c.selection,
@@ -257,7 +257,7 @@
     if (seal) seal.classList.add('sealing');
     BS.fx.stamp({ word: 'SEALED' }).then(function () {
       closeSheet();
-      toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', '🔒');
+      toast('Tip posted · ' + rec.hash.slice(0, 8) + ' · settles automatically', 'lock');
       BS.app.render();
     });
   }

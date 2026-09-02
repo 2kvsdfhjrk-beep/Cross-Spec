@@ -99,7 +99,7 @@
       ${groups.length ? groups.map(g => regionBlock(g.id, g.meetings, now)) :
         U.empty('No cards match', q ? 'Nothing here matches “' + U.state.q + '”. Try a course or a country.' :
           'Every meeting on the feed has finished for the day. Tomorrow\'s cards are in Next 7 days.')}
-      ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
+      ${hidden > 0 ? C.html`<div class="notice">${BS.icons.icon('clock')}<span><b>${hidden} ${hidden === 1 ? 'meeting has' : 'meetings have'} finished</b> and ${hidden === 1 ? 'is' : 'are'} hidden. A course only appears while it still has a race to come.</span></div>` : ''}
     `);
   }
 
@@ -107,11 +107,11 @@
     return C.html`
       <div class="toolbar">
         <label class="search">
-          <span aria-hidden="true">🔍</span>
+          ${BS.icons.icon('search')}
           <input type="search" placeholder="Course, country or region" value="${U.state.q}" data-act="search" aria-label="Search meetings">
         </label>
         <button class="chip" data-act="tz" aria-pressed="${String(U.state.tzMode === 'venue')}">
-          🕑 ${U.state.tzMode === 'venue' ? 'Course time' : 'My time'}
+          ${BS.icons.icon('clock')} ${U.state.tzMode === 'venue' ? 'Course time' : 'My time'}
         </button>
         ${isWeek ? '' : C.html`<button class="chip" data-act="finished" aria-pressed="${String(U.state.showFinished)}">Show finished</button>`}
       </div>`;
@@ -141,7 +141,7 @@
     C.mount(root, C.html`
       ${toolbar(true)}
       ${daystrip(now, days)}
-      ${sel > 0 ? C.html`<div class="notice"><span>📋</span><span>
+      ${sel > 0 ? C.html`<div class="notice">${BS.icons.icon('ledger')}<span>
         <b>${declared} of ${total} races declared.</b> Runners and riders are published about 48 hours out —
         until then a race shows its entries and expected field size, with no jockeys and no prices.
       </span></div>` : ''}
@@ -196,11 +196,11 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + race.id + '" aria-p
         </div>
       </div>
 
-      ${!race.declared ? C.html`<div class="notice"><span>⏳</span><span>
+      ${!race.declared ? C.html`<div class="notice">${BS.icons.icon('clock')}<span>
         <b>Not yet declared.</b> These are entries. Final runners, riders and prices arrive about 48 hours
         before the off — you can't post a tip until then, because there is no price to freeze.</span></div>` : ''}
 
-      ${st === 'result' ? C.html`<div class="notice"><span>🏁</span><span>
+      ${st === 'result' ? C.html`<div class="notice">${BS.icons.icon('flag')}<span>
         <b>Result in.</b> Any tip on this race has been settled from the results feed. Nobody marked it by hand.</span></div>` : ''}
 
       <div class="runners">

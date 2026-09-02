@@ -16,11 +16,11 @@
 
   const BADGES = {
     consistent: {
-      id: 'consistent', label: 'Consistent', full: 'Consistent expert', icon: '📈',
+      id: 'consistent', label: 'Consistent', full: 'Consistent expert', icon: 'trend',
       rule: 'In profit across each of the last three 30-day periods, on a profitable record of 100+ settled tips.'
     },
     value: {
-      id: 'value', label: 'Value', full: 'Value expert', icon: '💎',
+      id: 'value', label: 'Value', full: 'Value expert', icon: 'gem',
       rule: 'Profitable with an average winning price of 4.5 or bigger, and at least 12 winners at those prices.'
     }
   };

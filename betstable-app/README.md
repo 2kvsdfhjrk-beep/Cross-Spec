@@ -38,6 +38,27 @@ The Experts page shows the last run, the next run, the current holders and the
 recent changes. The "simulate next week" button is a demo affordance and says so;
 the real job runs server-side and cannot be triggered by hand.
 
+## Type
+
+Three faces, three jobs, none of them the safe default:
+
+| Role | Face | Why |
+|---|---|---|
+| Display | **Bricolage Grotesque** | Variable width and optical size; enough character to stop headings reading as a template |
+| Data | **Archivo Narrow** | Every odd, time, price and figure — condensed with real tabular figures, the way a racecard sets numbers |
+| Interface | **Instrument Sans** | Quiet, warm, stays out of the way |
+
+Display tightens as it grows (−.032em at h1) and uppercase micro-labels open up
+(+.1em at 11px) — the two moves that separate set type from default type.
+Weights go through `font-weight`, `font-stretch` and `font-optical-sizing`
+rather than `font-variation-settings`, which silently overrides `font-weight`.
+
+Icons are one family (`src/icons.js`), drawn on a 24 grid at 1.7 stroke and
+balanced against each other rather than each drawn alone. The emoji that were
+doing this job came from a dozen different foundries and it showed. Country
+flags stay as emoji — those are legitimately flags — and the run-in marker wears
+the runner's own silks.
+
 ## Motion
 
 `src/fx.js` is the motion and celebration layer, and everything in it obeys two
@@ -159,6 +180,7 @@ src/views-hot.js        hot tips, tipster directory, tipster profile
 src/views-extra.js      favourites and settings
 src/menu.js             the navigation model and its three presentations
 src/fx.js               motion: the run-in, the stamp, confetti, stagger, loaders
+src/icons.js            one icon family, and the silks/ball run-in marker
 src/account.js          claiming a handle, and the validation behind it
 src/experts.js          the two badges and the weekly job that maintains them
 src/views-browse.js     all courses → country → meeting → card, and next off

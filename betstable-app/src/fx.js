@@ -178,7 +178,9 @@
   let runInTimer = null;
   function banner(ev, product) {
     if (!ev) return C.raw('');
-    const glyph = product === 'football' ? '⚽' : '🏇';
+    // The marker is the runner's own silks — an asset the app already draws —
+    // rather than a stock glyph from someone else's type foundry.
+    const glyph = BS.icons.marker(product, ev.silk);
     return C.html`
       <button class="runin" data-act="go" data-route="${ev.route}" data-start="${ev.startTs}"
         aria-label="Next up: ${ev.name}">
@@ -190,7 +192,7 @@
         <span class="runin-track">
           <span class="runin-rail"></span>
           <span class="runin-post"></span>
-          <span class="runin-runner" data-runner><span class="glyph">${glyph}</span></span>
+          <span class="runin-runner" data-runner>${glyph}</span>
         </span>
         <span class="runin-foot"><span>${ev.sub}</span></span>
       </button>`;
@@ -215,7 +217,7 @@
   /** A loading state that says which product you are waiting on. */
   const loader = product => C.raw(
     '<div class="loader"><div class="loader-track"><span class="loader-rail"></span>' +
-    '<span class="loader-runner">' + (product === 'football' ? '⚽' : '🏇') + '</span></div>' +
+    '<span class="loader-runner">' + C.unwrap(BS.icons.marker(product)) + '</span></div>' +
     '<div class="loader-label">' + (product === 'football' ? 'Pulling in fixtures…' : 'Pulling in the cards…') + '</div></div>');
 
   BS.fx = { reduced, stagger, countUp, confetti, stamp, typeOut, runIn, press, pop, banner, mountBanner, loader };

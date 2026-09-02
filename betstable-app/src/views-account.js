@@ -20,7 +20,7 @@
             <button class="btn secondary" data-act="signout">Sign out</button>
           </div>
         </div>
-        <div class="notice"><span>🔒</span><span>Your handle is permanent. Records are published under it and
+        <div class="notice">${BS.icons.icon('lock')}<span>Your handle is permanent. Records are published under it and
           cannot be edited, deleted, or moved to a different name.</span></div>
       `);
       return;
@@ -122,7 +122,7 @@
     if (b.value) out.push(X.BADGES.value);
     if (!out.length) return C.raw('');
     return C.raw(out.map(x => '<span class="xbadge ' + x.id + '" title="' + C.esc(x.rule) + '">' +
-      x.icon + ' ' + C.esc(x.label) + '</span>').join(''));
+      C.unwrap(BS.icons.icon(x.icon)) + C.esc(x.label) + '</span>').join(''));
   }
 
   function experts(root) {
@@ -138,7 +138,7 @@
       <div class="page-head"><h1>Experts</h1><span class="sub">recalculated every Monday</span></div>
 
       <div class="mod">
-        <div class="mod-head"><span class="mod-ic">${C.raw('⚙️')}</span><h2>Weekly check</h2></div>
+        <div class="mod-head"><span class="mod-ic">${BS.icons.icon('cog')}</span><h2>Weekly check</h2></div>
         <div class="rows">
           <div class="row row-static">
             <span class="row-main">
@@ -160,13 +160,13 @@
       <div class="tabs" role="tablist" style="margin-bottom:14px">
         ${Object.keys(X.BADGES).map(k => C.html`
           <button role="tab" aria-selected="${String(tab === k)}" data-act="expert-tab" data-id="${k}">
-            ${X.BADGES[k].icon} ${X.BADGES[k].full}
+            ${BS.icons.icon(X.BADGES[k].icon)}${X.BADGES[k].full}
           </button>`)}
       </div>
 
-      <div class="notice"><span>📏</span><span><b>${badge.full}.</b> ${badge.rule}
+      <div class="notice">${BS.icons.icon('ruler')}<span><b>${badge.full}.</b> ${badge.rule}
         Badges are awarded and removed by the weekly job — nobody can keep one that the record stopped supporting.</span></div>
-      ${X.simOffset() ? C.html`<div class="notice"><span>🧪</span><span>
+      ${X.simOffset() ? C.html`<div class="notice">${BS.icons.icon('sparkle')}<span>
         You have simulated <b>${X.simOffset()} ${X.simOffset() === 1 ? 'week' : 'weeks'}</b> ahead of the real clock.
         In the live product this job runs on the server every Monday and cannot be triggered by hand.</span></div>` : ''}
 
@@ -188,7 +188,7 @@
                 <button class="follow-btn" data-act="follow" data-id="${t.handle}"
                   aria-pressed="${String(BS.tipsters.isFollowing(t.handle))}"
                   aria-label="${BS.tipsters.isFollowing(t.handle) ? 'Unfollow' : 'Follow'} ${t.handle}"
-                  >${BS.tipsters.isFollowing(t.handle) ? '✓' : '+'}</button>
+                  >${BS.icons.icon(BS.tipsters.isFollowing(t.handle) ? 'check' : 'follow')}</button>
               </div>`;
           }) : C.html`<p class="row-empty">Nobody holds this badge after the latest check. That is the point of
             checking: the list is allowed to be empty.</p>`}
@@ -200,7 +200,7 @@
         <div class="rows">
           ${log.length ? log.map(e => C.html`
             <div class="row row-static">
-              <span class="row-ic">${e.action === 'awarded' ? '↑' : '↓'}</span>
+              <span class="row-ic">${BS.icons.icon(e.action === 'awarded' ? 'trend' : 'chart')}</span>
               <span class="row-main">
                 <span class="row-title"><span class="nm">${e.handle}</span></span>
                 <span class="row-sub">${e.action === 'awarded' ? 'Awarded' : 'Lost'} ${X.BADGES[e.badge].full.toLowerCase()} · week ${e.week}</span>

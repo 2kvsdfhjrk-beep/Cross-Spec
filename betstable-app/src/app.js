@@ -230,14 +230,14 @@
     h.settlement.lastSuccess = now; h.results.lastSuccess = now;
     if (settled) {
       justSettled = winners;
-      U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', '⚙️');
+      U.toast(settled + (settled === 1 ? ' tip settled' : ' tips settled') + ' from the results feed', 'cog');
       render().then(function () {
         // One celebration, for one thing: a tip of yours came in.
         if (!winners.length) return;
         BS.fx.confetti({ count: 40 + winners.length * 30 });
         U.toast(winners.length === 1
           ? 'Winner — ' + winners[0].selection + ' at ' + C.fmtOdds(winners[0].odds)
-          : winners.length + ' winners settled', '🎉');
+          : winners.length + ' winners settled', 'sparkle');
       });
     }
   }
@@ -270,13 +270,13 @@
     else if (act === 'fav') {
       const on = BS.store.toggleFav(id);
       if (on) BS.fx.pop(el, 'var(--warn)');
-      U.toast(on ? 'Starred — it will wait for you on the front page' : 'Removed from favourites', on ? '★' : '☆');
+      U.toast(on ? 'Starred — it will wait for you on the front page' : 'Removed from favourites', 'star');
       render();
     }
     else if (act === 'follow') {
       const on = BS.tipsters.toggleFollow(id);
       if (on) BS.fx.pop(el);
-      U.toast(on ? 'Following ' + id : 'Unfollowed ' + id, on ? '✓' : '·');
+      U.toast(on ? 'Following ' + id : 'Unfollowed ' + id, on ? 'check' : 'close');
       render();
     }
     else if (act === 'toggle-region') {
@@ -300,7 +300,7 @@
     else if (act === 'health') showHealth();
     else if (act === 'signout') {
       BS.account.signOut();
-      U.toast('Signed out on this device. Your record stays exactly where it is.', '·');
+      U.toast('Signed out on this device. Your record stays exactly where it is.', 'info');
       go('home');
     }
     else if (act === 'expert-tab') { BS.viewsAccount.setTab(id); render(); }
@@ -308,7 +308,7 @@
       const res = BS.experts.simulateNextWeek(Date.now());
       U.toast(res.changes.length
         ? res.changes.length + ' badge ' + (res.changes.length === 1 ? 'change' : 'changes') + ' recorded'
-        : 'Checked — no badges changed that week', '⚙️');
+        : 'Checked — no badges changed that week', 'cog');
       render();
     }
     else if (act === 'signup-cta') go('signup');
@@ -375,7 +375,7 @@
     const h = BS.provider.health();
     const ago = ts => Math.max(0, Math.round((Date.now() - ts) / 1000)) + 's ago';
     U.toast('Odds ' + ago(h.odds.lastSuccess) + ' · Results ' + ago(h.results.lastSuccess) +
-      ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', '📡');
+      ' · Settlement ' + ago(h.settlement.lastSuccess) + ' (' + h.settlement.pending + ' pending)', 'signal');
   }
 
   function ageGate() {
@@ -411,7 +411,7 @@
       runSettlement();
       if (res.ran && res.changes.length) {
         U.toast('Weekly expert check: ' + res.changes.length + ' badge ' +
-          (res.changes.length === 1 ? 'change' : 'changes'), '⚙️');
+          (res.changes.length === 1 ? 'change' : 'changes'), 'cog');
       }
     });
     setInterval(runSettlement, 15000);

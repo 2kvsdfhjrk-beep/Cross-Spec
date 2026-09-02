@@ -88,11 +88,11 @@
     return C.html`
       <div class="toolbar">
         <label class="search">
-          <span aria-hidden="true">🔍</span>
+          ${BS.icons.icon('search')}
           <input type="search" placeholder="Team, competition or country" value="${U.state.q}" data-act="search" aria-label="Search fixtures">
         </label>
         <button class="chip" data-act="tz" aria-pressed="${String(U.state.tzMode === 'venue')}">
-          🕑 ${U.state.tzMode === 'venue' ? 'Local kick-off' : 'My time'}
+          ${BS.icons.icon('clock')} ${U.state.tzMode === 'venue' ? 'Local kick-off' : 'My time'}
         </button>
         ${isWeek ? '' : C.html`<button class="chip" data-act="finished" aria-pressed="${String(U.state.showFinished)}">Show finished</button>`}
       </div>`;
@@ -117,7 +117,7 @@
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
         U.empty('No matches match', q ? 'Nothing today matches “' + U.state.q + '”.' :
           'Every match on today\'s feed has finished. Tomorrow\'s fixtures are in Next 7 days.')}
-      ${hidden > 0 ? C.html`<div class="notice"><span>🌙</span><span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
+      ${hidden > 0 ? C.html`<div class="notice">${BS.icons.icon('clock')}<span><b>${hidden} finished ${hidden === 1 ? 'match' : 'matches'}</b> hidden. A competition only shows while it still has a match to come.</span></div>` : ''}
     `);
   }
 
@@ -142,7 +142,7 @@
             <span class="dmeta">${days[d].length} matches</span>
           </button>`)}
       </div>
-      ${sel > 0 ? C.html`<div class="notice"><span>📋</span><span>
+      ${sel > 0 ? C.html`<div class="notice">${BS.icons.icon('ledger')}<span>
         <b>Line-ups firm up closer to kick-off.</b> Expected XIs appear inside 48 hours and are confirmed about an hour before.
       </span></div>` : ''}
       ${groups.length ? groups.map(g => regionBlock(g.id, g.fixtures, now)) :
@@ -197,7 +197,7 @@ ${C.raw('<button class="fav-btn" data-act="fav" data-id="' + fx.id + '" aria-pre
             ${mk('Both teams to score', fx.btts[0], 'BTTS', 'BTTS yes')}
             ${mk('Not both teams to score', fx.btts[1], 'BTTS', 'BTTS no')}
           </div>
-        </div>` : C.html`<div class="notice"><span>🏁</span><span>
+        </div>` : C.html`<div class="notice">${BS.icons.icon('flag')}<span>
           <b>Betting closed.</b> ${st.state === 'live' ? 'The match is in play.' : 'Tips on this match have been settled from the results feed.'}
         </span></div>`}
 

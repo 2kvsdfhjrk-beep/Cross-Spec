@@ -6,26 +6,8 @@
   'use strict';
   const C = BS.core, U = BS.ui;
 
-  const P = {
-    home: 'M3 10.6 12 3.2l9 7.4M5.6 9.6V20h12.8V9.6',
-    racing: 'M8 20c-2-2.6-3.2-5-3.2-8a7.2 7.2 0 0 1 14.4 0c0 3-1.2 5.4-3.2 8M6.4 19.4h3.2M14.4 19.4h3.2',
-    football: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7.6l3.7 2.7-1.4 4.4H9.7L8.3 10.3zM12 3v4.6M19.6 9.6l-3.9.7M16.9 19l-2.6-4.3M7.1 19l2.6-4.3M4.4 9.6l3.9.7',
-    hot: 'M12 3c3 4 6 5.5 6 9.5A6 6 0 0 1 6 12.5C6 9.5 8 8 9 5.5c1.6 1.2 2 3 3 4.5.5-2.5 0-5 0-7z',
-    people: 'M9.4 11.2a3.1 3.1 0 1 0 0-6.2 3.1 3.1 0 0 0 0 6.2zM3.6 19.4c0-3 2.6-5.2 5.8-5.2s5.8 2.2 5.8 5.2M16.6 11a2.6 2.6 0 1 0 0-5.2M17.2 14.4c2.4.3 4.2 2.2 4.2 4.8',
-    me: 'M5 4h11l3 3v13H5zM8.5 9.5h7M8.5 13h7M8.5 16.5h4',
-    star: 'M12 4l2.5 5.2 5.5.8-4 3.9 1 5.6-5-2.7-5 2.7 1-5.6-4-3.9 5.5-.8z',
-    calendar: 'M4.5 6.5h15v13h-15zM4.5 10.5h15M8.5 4v4M15.5 4v4',
-    week: 'M4 5.5h16v14H4zM4 9.5h16M9 13h2M13 13h2M9 16.5h2M13 16.5h2',
-    trophy: 'M7 4h10v4.5a5 5 0 0 1-10 0zM7 5.5H4.5V8A3 3 0 0 0 7 11M17 5.5h2.5V8A3 3 0 0 1 17 11M10 13.5h4l.6 3.5H9.4zM8 20h8',
-    follow: 'M12 5.5v13M5.5 12h13',
-    cog: 'M12 15.2a3.2 3.2 0 1 0 0-6.4 3.2 3.2 0 0 0 0 6.4zM19.4 14.4a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1v.3a2 2 0 0 1-4 0v-.1a1.6 1.6 0 0 0-2.8-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3.3a2 2 0 0 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3.3a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7h.3a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
-    menu: 'M4 7h16M4 12h16M4 17h16',
-    close: 'M6 6l12 12M18 6L6 18',
-    clock: 'M12 20.5a8.5 8.5 0 1 0 0-17 8.5 8.5 0 0 0 0 17zM12 7.4V12l3.1 2'
-  };
-  const icon = (k, cls) => C.raw('<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" ' +
-    'stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
-    'aria-hidden="true"><path d="' + (P[k] || P.home) + '"/></svg>');
+  // The shared family; 'me' is the ledger glyph.
+  const icon = (k, cls) => BS.icons.icon(k === 'me' ? 'ledger' : k, cls);
 
   /* ---------- the model ----------
      `route` is what the app navigates to; `items` turn an entry into a menu. */
