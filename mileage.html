@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--A1-->
+<title>Mileage Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Martian+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#E6EBEC; --surface:#FCFDFD; --surface-2:#F1F5F5; --surface-3:#E1E9EA;
+  --ink:#0F1D23; --ink-2:#405259; --ink-3:#6B7E85;
+  --line:#CBD6D9; --line-strong:#A9BAC0;
+  --accent:#0E4C5C; --accent-hover:#0A3A47; --accent-ink:#FFFFFF; --accent-soft:#D6E5E8;
+  --business:#A8480F; --business-soft:#EFDCCF;
+  --personal:#3D6E8C; --personal-soft:#D8E4EB;
+  --drum-bg:#0F1D23; --drum-cell:#1B2E36; --drum-ink:#F2F7F7;
+  --danger:#9B2226;
+  --shadow:0 1px 2px rgba(15,29,35,.06), 0 8px 24px -14px rgba(15,29,35,.28);
+  --radius:10px;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans","Helvetica Neue",Arial,sans-serif;
+  --f-data:"Martian Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0C1518; --surface:#152227; --surface-2:#1B2C33; --surface-3:#22363E;
+    --ink:#E4EDEF; --ink-2:#A5B8BE; --ink-3:#7C9199;
+    --line:#26383F; --line-strong:#3A555E;
+    --accent:#43AABF; --accent-hover:#5FBED1; --accent-ink:#06212A; --accent-soft:#1B3C45;
+    --business:#E8944F; --business-soft:#3A2A1D;
+    --personal:#84AECC; --personal-soft:#1D323E;
+    --drum-bg:#060D10; --drum-cell:#12232A; --drum-ink:#EAF3F4;
+    --danger:#E0777A;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0C1518; --surface:#152227; --surface-2:#1B2C33; --surface-3:#22363E;
+  --ink:#E4EDEF; --ink-2:#A5B8BE; --ink-3:#7C9199;
+  --line:#26383F; --line-strong:#3A555E;
+  --accent:#43AABF; --accent-hover:#5FBED1; --accent-ink:#06212A; --accent-soft:#1B3C45;
+  --business:#E8944F; --business-soft:#3A2A1D;
+  --personal:#84AECC; --personal-soft:#1D323E;
+  --drum-bg:#060D10; --drum-cell:#12232A; --drum-ink:#EAF3F4;
+  --danger:#E0777A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 26px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:var(--f-body); font-size:15px; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.is-hidden{display:none !important}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+
+/* ---------- top bar ---------- */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding:14px clamp(16px,3vw,32px);
+  border-bottom:1px solid var(--line); background:var(--surface);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.brand svg{display:block}
+.brand-name{font-family:var(--f-display);font-weight:700;font-size:17px;letter-spacing:-.015em}
+.brand-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ty-chip{
+  display:flex;align-items:baseline;gap:8px;padding:7px 12px;border-radius:999px;
+  background:var(--surface-2);border:1px solid var(--line);font-size:13px;color:var(--ink-2);
+}
+.ty-chip .lbl{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600;white-space:nowrap}
+.ty-chip .val{font-family:var(--f-data);font-weight:700;font-size:12.5px;color:var(--ink)}
+.sync{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
+.sync .dot{width:7px;height:7px;border-radius:50%;background:var(--line-strong)}
+.sync.on .dot{background:var(--accent)}
+
+/* ---------- layout ---------- */
+.app{
+  display:grid;grid-template-columns:minmax(320px,376px) minmax(0,1fr);
+  gap:24px;align-items:start;
+  padding:24px clamp(16px,3vw,32px) 56px;max-width:1320px;margin:0 auto;
+}
+@media (max-width:940px){ .app{grid-template-columns:1fr;gap:20px} }
+.rail{display:flex;flex-direction:column;gap:16px;position:sticky;top:20px}
+@media (max-width:940px){ .rail{position:static} }
+.col{display:flex;flex-direction:column;gap:16px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:13px 16px;border-bottom:1px solid var(--line);
+}
+.card-head h2{font-size:14px;font-weight:600;letter-spacing:.02em}
+.eyebrow{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+/* ---------- odometer drum ---------- */
+.drum-wrap{padding:18px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:9px}
+.drum{display:flex;gap:3px;background:var(--drum-bg);padding:7px;border-radius:6px;box-shadow:inset 0 2px 6px rgba(0,0,0,.45)}
+.drum span{
+  font-family:var(--f-data);font-weight:700;font-size:23px;line-height:1;
+  color:var(--drum-ink);background:linear-gradient(180deg,var(--drum-cell),color-mix(in srgb,var(--drum-cell) 60%, #000));
+  padding:9px 6px;border-radius:3px;min-width:26px;text-align:center;
+}
+.drum span.blank{color:var(--ink-3);opacity:.55}
+.drum-cap{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+/* ---------- log form ---------- */
+.logform{padding:0 16px 16px;display:flex;flex-direction:column;gap:13px}
+.odo-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:9px}
+.field{display:flex;flex-direction:column;gap:5px;min-width:0}
+.field label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.field input,.field select,.field textarea{
+  width:100%;padding:10px 11px;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:8px;font-family:var(--f-data);font-size:15px;font-weight:500;letter-spacing:-.02em;
+}
+.field.text input{font-family:var(--f-body);font-size:14px;letter-spacing:0}
+.field input:focus{border-color:var(--accent);background:var(--surface)}
+.arrow{padding-bottom:11px;color:var(--ink-3);font-size:15px}
+.readout{
+  display:flex;align-items:baseline;justify-content:center;gap:8px;
+  padding:11px;border-radius:8px;background:var(--surface-2);border:1px dashed var(--line-strong);
+}
+.readout .num{font-family:var(--f-data);font-weight:700;font-size:26px;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.readout .unit{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.readout.empty .num{color:var(--ink-3)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px;background:var(--surface-2);border:1px solid var(--line);border-radius:9px}
+.seg button{
+  border:1px solid transparent;background:transparent;border-radius:6px;padding:9px 6px;cursor:pointer;
+  font-family:var(--f-display);font-weight:600;font-size:13.5px;color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.seg button .swatch{width:9px;height:9px;border-radius:2px;background:currentColor;opacity:.75}
+.seg button[data-kind="business"]{color:var(--business)}
+.seg button[data-kind="personal"]{color:var(--personal)}
+.seg button[aria-pressed="true"]{background:var(--surface);border-color:var(--line-strong);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg button:not([aria-pressed="true"]){color:var(--ink-3)}
+details.more{border-top:1px solid var(--line);padding-top:11px}
+details.more summary{
+  cursor:pointer;font-size:12.5px;color:var(--ink-2);font-weight:600;list-style:none;
+  display:flex;align-items:center;gap:6px;
+}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::before{content:"+";font-family:var(--f-data);font-size:13px;color:var(--ink-3)}
+details.more[open] summary::before{content:"–"}
+.more-grid{display:flex;flex-direction:column;gap:10px;padding-top:11px}
+.more-grid .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.datechip{
+  display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-2);
+  background:var(--accent-soft);border-radius:7px;padding:8px 11px;
+}
+.datechip b{font-weight:600;color:var(--ink)}
+.datechip svg{flex:none;color:var(--accent)}
+.btn{
+  border:1px solid var(--line-strong);background:var(--surface-2);color:var(--ink);
+  border-radius:8px;padding:10px 14px;cursor:pointer;font-family:var(--f-display);
+  font-weight:600;font-size:14px;
+}
+.btn:hover{background:var(--surface-3)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn.primary:disabled{opacity:.45;cursor:not-allowed}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 40%,transparent)}
+.btn.big{padding:12px 14px;font-size:15px}
+.hint{font-size:12px;color:var(--ink-3);line-height:1.45}
+
+/* ---------- today ---------- */
+.today-body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.today-figs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.fig{display:flex;flex-direction:column;gap:3px}
+.fig .k{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.fig .v{font-family:var(--f-data);font-weight:700;font-size:19px;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.fig.biz .v{color:var(--business)} .fig.per .v{color:var(--personal)}
+.split{display:flex;height:7px;border-radius:4px;overflow:hidden;background:var(--surface-3);min-width:40px}
+.split i{display:block;height:100%}
+.split i.b{background:var(--business)} .split i.p{background:var(--personal)}
+
+/* ---------- month bar + tiles ---------- */
+.monthbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.monthnav{display:flex;align-items:center;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:3px}
+.monthnav button{background:transparent;border:0;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--ink-2);line-height:1}
+.monthnav button:hover:not(:disabled){background:var(--surface-2);color:var(--ink)}
+.monthnav button:disabled{opacity:.3;cursor:not-allowed}
+.monthnav .label{font-family:var(--f-display);font-weight:600;font-size:15px;padding:0 8px;min-width:150px;text-align:center}
+.badge{
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;
+  padding:5px 9px;border-radius:999px;background:var(--business-soft);color:var(--business);
+}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media (max-width:640px){ .tiles{grid-template-columns:1fr 1fr} }
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;display:flex;flex-direction:column;gap:5px}
+.tile .k{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.tile .v{font-family:var(--f-data);font-weight:700;font-size:22px;letter-spacing:-.055em;font-variant-numeric:tabular-nums;line-height:1.1}
+.tile .s{font-size:11.5px;color:var(--ink-3)}
+.tile.biz{border-left:3px solid var(--business)} .tile.biz .v{color:var(--business)}
+.tile.per{border-left:3px solid var(--personal)} .tile.per .v{color:var(--personal)}
+.tile.claim{border-left:3px solid var(--accent)} .tile.claim .v{color:var(--accent)}
+
+/* ---------- ledger ---------- */
+.ledger-head,.day-head{
+  display:grid;grid-template-columns:96px minmax(70px,1fr) 74px 74px 74px 26px;
+  gap:12px;align-items:center;
+}
+@media (max-width:560px){
+  .ledger-head,.day-head{grid-template-columns:74px 1fr 60px 60px 22px}
+  .ledger-head .c-tot,.day-head .day-fig.tot{display:none}
+}
+.ledger-head{padding:10px 16px;border-bottom:1px solid var(--line);background:var(--surface-2);border-radius:var(--radius) var(--radius) 0 0}
+.ledger-head span{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+.ledger-head .c-biz,.ledger-head .c-per,.ledger-head .c-tot{text-align:right}
+.day+.day{border-top:1px solid var(--line)}
+.day-head{width:100%;background:transparent;border:0;padding:12px 16px;cursor:pointer;text-align:left}
+.day-head:hover{background:var(--surface-2)}
+.day-date{display:flex;align-items:baseline;gap:6px}
+.day-date b{font-family:var(--f-data);font-weight:700;font-size:15px;letter-spacing:-.05em}
+.day-date span{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+.day-fig{font-family:var(--f-data);font-weight:500;font-size:13px;text-align:right;font-variant-numeric:tabular-nums;letter-spacing:-.05em}
+.day-fig.biz{color:var(--business)} .day-fig.per{color:var(--personal)}
+.day-fig.tot{color:var(--ink-2)} .day-fig.zero{color:var(--ink-3);opacity:.45}
+.chev{color:var(--ink-3);transition:transform .15s ease;justify-self:end}
+.day.open .chev{transform:rotate(90deg)}
+.day-body{padding:0 16px 14px 16px;display:flex;flex-direction:column;gap:8px}
+.trip{
+  display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;align-items:center;
+  padding:10px 12px;background:var(--surface-2);border-radius:8px;border-left:3px solid var(--line-strong);
+}
+.trip.b{border-left-color:var(--business)} .trip.p{border-left-color:var(--personal)}
+.trip .time{font-family:var(--f-data);font-size:11.5px;color:var(--ink-3);letter-spacing:-.04em}
+.trip .desc{min-width:0}
+.trip .route{display:block;font-size:13.5px;font-weight:500;overflow-wrap:anywhere}
+.trip .meta{display:block;font-size:11.5px;color:var(--ink-3);font-family:var(--f-data);letter-spacing:-.04em}
+.trip .mi{font-family:var(--f-data);font-weight:700;font-size:14px;letter-spacing:-.05em;white-space:nowrap}
+.trip.b .mi{color:var(--business)} .trip.p .mi{color:var(--personal)}
+.trip .edit{background:transparent;border:1px solid var(--line);border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;color:var(--ink-2)}
+.trip .edit:hover{background:var(--surface);color:var(--ink)}
+.ledger-empty{padding:34px 20px;text-align:center;color:var(--ink-3);display:flex;flex-direction:column;gap:6px;align-items:center}
+.ledger-empty strong{font-family:var(--f-display);color:var(--ink-2);font-size:15px}
+.ledger-foot{
+  display:grid;grid-template-columns:96px minmax(70px,1fr) 74px 74px 74px 26px;gap:12px;align-items:center;
+  padding:12px 16px;border-top:2px solid var(--line-strong);background:var(--surface-2);
+  border-radius:0 0 var(--radius) var(--radius);
+}
+@media (max-width:560px){ .ledger-foot{grid-template-columns:74px 1fr 60px 60px 22px} .ledger-foot .day-fig.tot{display:none} }
+.ledger-foot .lbl{font-size:11px;letter-spacing:.11em;text-transform:uppercase;font-weight:700;color:var(--ink-2)}
+.ledger-foot .day-fig{font-weight:700;font-size:14px}
+
+/* ---------- export ---------- */
+.export{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px}
+.export .grow{flex:1;min-width:180px}
+.export .hint{margin:0}
+
+/* ---------- modal ---------- */
+.backdrop{position:fixed;inset:0;background:rgba(8,18,22,.55);display:flex;align-items:center;justify-content:center;padding:18px;z-index:50}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);width:min(440px,100%);max-height:90vh;overflow:auto}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--line)}
+.modal-head h2{font-size:15px}
+.modal-body{padding:16px;display:flex;flex-direction:column;gap:12px}
+.modal-foot{display:flex;gap:8px;justify-content:space-between;padding:14px 16px;border-top:1px solid var(--line)}
+.icon-btn{background:transparent;border:0;cursor:pointer;color:var(--ink-3);padding:4px;line-height:0;border-radius:6px}
+.icon-btn:hover{color:var(--ink);background:var(--surface-2)}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+  background:var(--ink);color:var(--ground);padding:11px 18px;border-radius:999px;
+  font-size:13.5px;font-weight:500;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);z-index:60;max-width:90vw;text-align:center;
+}
+.toast.bad{background:var(--danger);color:#fff}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important} }
+</style>
+<!--A2-->
+</head>
+<body>
+<!--A3-->
+<header class="topbar">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="1.5" opacity=".35"/>
+      <path d="M4.6 15.6A8.6 8.6 0 0 1 12 3.4a8.6 8.6 0 0 1 7.4 12.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M12 12.4 16.2 8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      <circle cx="12" cy="12.4" r="1.7" fill="currentColor"/>
+    </svg>
+    <div>
+      <div class="brand-name">Mileage Ledger</div>
+      <div class="brand-sub">Odometer log</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="ty-chip">
+      <span class="lbl">Tax year to date</span>
+      <span class="val" id="tyMiles">0 mi</span>
+      <span class="val" id="tyClaim">£0.00</span>
+    </div>
+    <div class="sync" id="sync"><span class="dot"></span><span id="syncText">Loading</span></div>
+  </div>
+</header>
+
+<main class="app">
+  <section class="rail">
+    <article class="card">
+      <div class="drum-wrap">
+        <div class="drum" id="drum" role="img" aria-label="Last recorded odometer reading"></div>
+        <div class="drum-cap" id="drumCap">Last recorded reading</div>
+      </div>
+      <form class="logform" id="logForm" autocomplete="off">
+        <div class="odo-row">
+          <div class="field">
+            <label for="startOdo">Start</label>
+            <input id="startOdo" inputmode="decimal" placeholder="00000">
+          </div>
+          <span class="arrow" aria-hidden="true">→</span>
+          <div class="field">
+            <label for="endOdo">End</label>
+            <input id="endOdo" inputmode="decimal" placeholder="00000">
+          </div>
+        </div>
+        <div class="readout empty" id="readout"><span class="num">—</span><span class="unit">miles</span></div>
+        <div class="seg" id="kindSeg">
+          <button type="button" data-kind="business" aria-pressed="true"><span class="swatch"></span>Business</button>
+          <button type="button" data-kind="personal" aria-pressed="false"><span class="swatch"></span>Personal</button>
+        </div>
+        <details class="more">
+          <summary>Add route &amp; purpose</summary>
+          <div class="more-grid">
+            <div class="pair">
+              <div class="field text"><label for="fFrom">From</label><input id="fFrom" placeholder="Basingstoke"></div>
+              <div class="field text"><label for="fTo">To</label><input id="fTo" placeholder="Croydon"></div>
+            </div>
+            <div class="field text"><label for="fPurpose">Purpose</label><input id="fPurpose" placeholder="Site visit — room controller spec"></div>
+            <p class="hint">HMRC expect a business journey to show where you went and why. Filling this in now saves reconstructing it later.</p>
+          </div>
+        </details>
+        <div class="datechip">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="15" rx="2.5" stroke="currentColor" stroke-width="1.6"/><path d="M3.5 10h17M8 3.5v4M16 3.5v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <span>Dated automatically — <b id="autoDate">today</b></span>
+        </div>
+        <button class="btn primary big" type="submit" id="logBtn">Log drive</button>
+        <p class="hint" id="formHint"></p>
+      </form>
+    </article>
+
+    <article class="card">
+      <div class="card-head"><h2>Today</h2><span class="eyebrow" id="todayDate"></span></div>
+      <div class="today-body">
+        <div class="split" id="todaySplit" role="img" aria-label="Business and personal share of today's miles"><i class="b" style="width:0"></i><i class="p" style="width:0"></i></div>
+        <div class="today-figs">
+          <div class="fig biz"><span class="k">Business</span><span class="v" id="todayBiz">0</span></div>
+          <div class="fig per"><span class="k">Personal</span><span class="v" id="todayPer">0</span></div>
+          <div class="fig"><span class="k">Total</span><span class="v" id="todayTot">0</span></div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="col">
+    <div class="monthbar">
+      <div class="monthnav">
+        <button type="button" id="prevMonth" aria-label="Previous month">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M14.5 5.5 8 12l6.5 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <span class="label" id="monthLabel">—</span>
+        <button type="button" id="nextMonth" aria-label="Next month">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M9.5 5.5 16 12l-6.5 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+      <span class="badge is-hidden" id="demoBadge">Example data</span>
+    </div>
+
+    <div class="tiles">
+      <div class="tile biz"><span class="k">Business</span><span class="v" id="mBiz">0</span><span class="s">miles this month</span></div>
+      <div class="tile per"><span class="k">Personal</span><span class="v" id="mPer">0</span><span class="s">miles this month</span></div>
+      <div class="tile"><span class="k">Total</span><span class="v" id="mTot">0</span><span class="s" id="mDays">0 days driven</span></div>
+      <div class="tile claim"><span class="k">Claimable</span><span class="v" id="mClaim">£0.00</span><span class="s" id="mRate">HMRC 45p / 25p</span></div>
+    </div>
+
+    <article class="card">
+      <div class="ledger-head">
+        <span>Date</span><span>Split</span><span class="c-biz">Business</span><span class="c-per">Personal</span><span class="c-tot">Total</span><span></span>
+      </div>
+      <div id="ledger"></div>
+      <div class="ledger-foot" id="ledgerFoot">
+        <span class="lbl">Month</span><span></span>
+        <span class="day-fig biz" id="fBiz">0</span>
+        <span class="day-fig per" id="fPer">0</span>
+        <span class="day-fig tot" id="fTot">0</span>
+        <span></span>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="export">
+        <div class="grow">
+          <p class="hint" id="exportHint">Exports one workbook: daily totals by date, every journey in full, and a claim summary.</p>
+        </div>
+        <button class="btn" type="button" id="copyBtn">Copy for Excel</button>
+        <button class="btn primary" type="button" id="exportBtn">Export to Excel</button>
+      </div>
+    </article>
+  </section>
+</main>
+
+<div class="backdrop is-hidden" id="backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <h2 id="modalTitle">Edit drive</h2>
+      <button class="icon-btn" type="button" id="closeModal" aria-label="Close">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <form class="modal-body" id="editForm" autocomplete="off">
+      <div class="pair" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field text"><label for="eDate">Date</label><input id="eDate" type="date" required></div>
+        <div class="field text"><label for="eKind">Type</label>
+          <select id="eKind" style="padding:10px 11px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;font-size:14px">
+            <option value="business">Business</option><option value="personal">Personal</option>
+          </select>
+        </div>
+      </div>
+      <div class="pair" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field"><label for="eStart">Start odometer</label><input id="eStart" inputmode="decimal" required></div>
+        <div class="field"><label for="eEnd">End odometer</label><input id="eEnd" inputmode="decimal" required></div>
+      </div>
+      <div class="pair" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field text"><label for="eFrom">From</label><input id="eFrom"></div>
+        <div class="field text"><label for="eTo">To</label><input id="eTo"></div>
+      </div>
+      <div class="field text"><label for="ePurpose">Purpose</label><input id="ePurpose"></div>
+      <p class="hint" id="editHint"></p>
+    </form>
+    <div class="modal-foot">
+      <button class="btn danger" type="button" id="deleteTrip">Delete</button>
+      <button class="btn primary" type="button" id="saveTrip">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast is-hidden" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ------------------------------------------------------------------ *
+   * Constants & helpers
+   * ------------------------------------------------------------------ */
+  var LS_MONTHS = "mileage.v1.months";
+  var LS_TOMBS  = "mileage.v1.tombstones";
+  var RATE_HIGH = 0.45, RATE_LOW = 0.25, RATE_THRESHOLD = 10000; // HMRC AMAP, cars & vans
+  var MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  var DAY_NAMES = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function dateKey(d){ return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function monthKey(dk){ return dk.slice(0, 7); }
+  function parseKey(dk){ var p = dk.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function monthLabel(mk){ var p = mk.split("-"); return MONTH_NAMES[+p[1] - 1] + " " + p[0]; }
+  function miles(n){ return (Math.round(n * 10) / 10).toLocaleString("en-GB", { maximumFractionDigits: 1 }); }
+  function money(n){ return "£" + n.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function longDate(d){ return DAY_NAMES[d.getDay()] + " " + d.getDate() + " " + MONTH_NAMES[d.getMonth()].slice(0, 3) + " " + d.getFullYear(); }
+  function esc(s){ return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function num(v){ var n = parseFloat(String(v).replace(/[, ]/g, "")); return isFinite(n) ? n : NaN; }
+  function newId(){
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return "j" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+  /* UK tax year runs 6 April to 5 April; the 10,000-mile band resets with it. */
+  function taxYearOf(dk){
+    var p = dk.split("-"), y = +p[0], m = +p[1], d = +p[2];
+    return (m > 4 || (m === 4 && d >= 6)) ? y : y - 1;
+  }
+  function taxYearLabel(y){ return y + "/" + String(y + 1).slice(2); }
+
+  /* ------------------------------------------------------------------ *
+   * State
+   * ------------------------------------------------------------------ */
+  var state = {
+    months: {},                 // { "2026-09": [trip, ...] }
+    selected: monthKey(dateKey(new Date())),
+    expanded: {},
+    kind: "business",
+    editing: null,
+    demo: false,
+    db: null,
+    downloads: null,
+    cloudReady: false,
+    merged: false,
+    writing: false
+  };
+
+  function readLocal(){
+    try {
+      var raw = localStorage.getItem(LS_MONTHS);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function writeLocal(months){
+    try { localStorage.setItem(LS_MONTHS, JSON.stringify(months)); } catch (e) {}
+  }
+  function readTombs(){
+    try { var raw = localStorage.getItem(LS_TOMBS); return raw ? JSON.parse(raw) : []; } catch (e) { return []; }
+  }
+  function addTomb(id){
+    try {
+      var t = readTombs(); t.push(id);
+      localStorage.setItem(LS_TOMBS, JSON.stringify(t.slice(-500)));
+    } catch (e) {}
+  }
+
+  function allTrips(){
+    var out = [], mk;
+    for (mk in state.months) if (Object.prototype.hasOwnProperty.call(state.months, mk)) {
+      out = out.concat(state.months[mk]);
+    }
+    out.sort(function(a, b){ return a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0; });
+    return out;
+  }
+  function tripsIn(mk){
+    var list = (state.months[mk] || []).slice();
+    list.sort(function(a, b){ return a.ts < b.ts ? -1 : a.ts > b.ts ? 1 : 0; });
+    return list;
+  }
+  function hasRealData(){
+    for (var mk in state.months) if (state.months[mk] && state.months[mk].length) return true;
+    return false;
+  }
+  function lastReading(){
+    var all = allTrips();
+    return all.length ? all[all.length - 1].end : null;
+  }
+
+  /* Assign each business journey its HMRC rate band, in date order, per tax year. */
+  function applyClaims(){
+    var all = allTrips(), run = {}, i, t, ty, before, after, at45;
+    for (i = 0; i < all.length; i++) {
+      t = all[i];
+      if (t.kind !== "business") { t.claim = 0; continue; }
+      ty = taxYearOf(t.date);
+      before = run[ty] || 0;
+      after = before + t.mi;
+      at45 = Math.max(0, Math.min(after, RATE_THRESHOLD) - Math.min(before, RATE_THRESHOLD));
+      t.claim = at45 * RATE_HIGH + (t.mi - at45) * RATE_LOW;
+      run[ty] = after;
+    }
+    return run;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Persistence — cloud when available, this device otherwise
+   * ------------------------------------------------------------------ */
+  function persist(mk){
+    writeLocal(state.months);
+    if (state.db && state.cloudReady) {
+      state.writing = true;
+      state.db.doc("log/" + mk).set({ journeys: state.months[mk] || [] })
+        .catch(function(err){ toast(storeMessage(err), true); })
+        .then(function(){ state.writing = false; });
+    }
+  }
+  function storeMessage(err){
+    var code = err && err.code;
+    if (code === "quota_exceeded") return "Storage is full — export and clear older months.";
+    if (code === "resource_exhausted") return "Too many changes at once. Try again in a moment.";
+    if (code === "revoked") return "Sync access ended. Changes are saved on this device.";
+    return "Could not sync that change. It is saved on this device.";
+  }
+
+  function ingest(docs){
+    var next = {}, i, d, body;
+    for (i = 0; i < docs.length; i++) {
+      d = docs[i];
+      body = d.data();
+      next[d.id] = (body && Array.isArray(body.journeys)) ? JSON.parse(JSON.stringify(body.journeys)) : [];
+    }
+    return next;
+  }
+
+  function mergeLocalInto(cloud){
+    var local = readLocal(), tombs = readTombs(), changed = [], mk, seen = {}, i, list;
+    for (mk in cloud) for (i = 0; i < cloud[mk].length; i++) seen[cloud[mk][i].id] = true;
+    for (mk in local) {
+      if (!Object.prototype.hasOwnProperty.call(local, mk)) continue;
+      list = local[mk] || [];
+      for (i = 0; i < list.length; i++) {
+        if (seen[list[i].id] || tombs.indexOf(list[i].id) !== -1) continue;
+        if (!cloud[mk]) cloud[mk] = [];
+        cloud[mk].push(list[i]);
+        if (changed.indexOf(mk) === -1) changed.push(mk);
+      }
+    }
+    return changed;
+  }
+
+  function initStore(){
+    state.months = readLocal();
+    setSync(false, "This device");
+    render();
+
+    if (!window.claude || typeof window.claude.use !== "function") return;
+
+    window.claude.use("downloads").then(function(d){ state.downloads = d; }).catch(function(){});
+
+    window.claude.use("db").then(function(db){
+      if (!db) return;
+      state.db = db;
+      db.collection("log").onSnapshot(function(snap){
+        var cloud = ingest(snap.docs), changed = [], j;
+        if (!state.merged) {
+          state.merged = true;
+          state.cloudReady = true;
+          changed = mergeLocalInto(cloud);
+        }
+        state.months = cloud;
+        state.cloudReady = true;
+        writeLocal(state.months);
+        setSync(true, "Synced");
+        render();
+        for (j = 0; j < changed.length; j++) persist(changed[j]);
+      }, function(err){
+        state.cloudReady = false;
+        setSync(false, "This device");
+        if (err && err.code !== "revoked") toast(storeMessage(err), true);
+      });
+    }).catch(function(){});
+  }
+
+  function setSync(on, text){
+    var el = $("sync");
+    el.className = on ? "sync on" : "sync";
+    $("syncText").textContent = text;
+    el.title = on ? "Saved to your account — the same log on every device you open this on."
+                  : "Saved in this browser on this device.";
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Example data — shown until the first real drive is logged.
+   * Never written to storage, never exported.
+   * ------------------------------------------------------------------ */
+  function demoTrips(){
+    var out = [], base = 48210, d = new Date(), guard = 0, days = [];
+    while (days.length < 3 && guard++ < 14) {
+      if (d.getDay() !== 0 && d.getDay() !== 6) days.push(new Date(d));
+      d.setDate(d.getDate() - 1);
+    }
+    days.reverse();
+    var script = [
+      [[ "business", 62, "Basingstoke", "Croydon", "Site survey — AHU sensor schedule" ],
+       [ "business", 41, "Croydon", "Woking", "BMS contractor — wireless demo" ],
+       [ "personal", 9,  "Woking", "Home", "" ]],
+      [[ "business", 88, "Home", "Bristol", "M&E consultant CPD session" ],
+       [ "business", 88, "Bristol", "Home", "Return" ]],
+      [[ "business", 24, "Home", "Reading", "M-Bus metering handover" ],
+       [ "personal", 16, "Reading", "Home", "Via the shops" ]]
+    ];
+    var odo = base;
+    for (var i = 0; i < days.length; i++) {
+      var rows = script[i] || [];
+      for (var k = 0; k < rows.length; k++) {
+        var r = rows[k], start = odo, end = odo + r[1];
+        var when = new Date(days[i]); when.setHours(8 + k * 3, 20, 0, 0);
+        out.push({ id: "demo-" + i + "-" + k, ts: when.toISOString(), date: dateKey(days[i]),
+                   start: start, end: end, mi: r[1], kind: r[0], from: r[2], to: r[3], purpose: r[4] });
+        odo = end;
+      }
+    }
+    return out;
+  }
+  function loadDemo(){
+    var trips = demoTrips(), map = {}, i, mk;
+    for (i = 0; i < trips.length; i++) {
+      mk = monthKey(trips[i].date);
+      (map[mk] = map[mk] || []).push(trips[i]);
+    }
+    state.months = map;
+    state.demo = true;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Rendering
+   * ------------------------------------------------------------------ */
+  function render(){
+    if (!hasRealData()) loadDemo();
+    if (state.demo && localStorage.getItem(LS_MONTHS) && hasRealDataIn(readLocal())) state.demo = false;
+
+    applyClaims();
+    renderDrum();
+    renderToday();
+    renderMonth();
+    renderTaxYear();
+    $("demoBadge").className = state.demo ? "badge" : "badge is-hidden";
+    $("exportBtn").disabled = state.demo;
+    $("copyBtn").disabled = state.demo;
+    $("exportHint").textContent = state.demo
+      ? "The ledger below is an example. Log your first drive and it clears."
+      : "One workbook: daily totals by date, every journey in full, and a claim summary.";
+  }
+  function hasRealDataIn(map){
+    for (var mk in map) if (map[mk] && map[mk].length) return true;
+    return false;
+  }
+
+  function renderDrum(){
+    var last = state.demo ? null : lastReading();
+    var drum = $("drum"), html = "", str, i;
+    if (last == null) {
+      for (i = 0; i < 6; i++) html += '<span class="blank">0</span>';
+      $("drumCap").textContent = "No readings yet";
+      $("startOdo").placeholder = "Reading now";
+    } else {
+      str = String(Math.round(last));
+      while (str.length < 6) str = "0" + str;
+      for (i = 0; i < str.length; i++) html += "<span>" + str[i] + "</span>";
+      $("drumCap").textContent = "Last recorded reading";
+      $("startOdo").placeholder = String(Math.round(last));
+      if (document.activeElement !== $("startOdo") && !$("startOdo").value) $("startOdo").value = Math.round(last);
+    }
+    drum.innerHTML = html;
+    $("autoDate").textContent = longDate(new Date());
+    $("formHint").textContent = last == null
+      ? "First time: put your car's reading now in Start, then the reading at the end of the drive."
+      : "Start is carried over from your last drive. Change it if you have driven since.";
+  }
+
+  function renderToday(){
+    var dk = dateKey(new Date()), list = (state.months[monthKey(dk)] || []).filter(function(t){ return t.date === dk; });
+    var b = 0, p = 0, i;
+    for (i = 0; i < list.length; i++) (list[i].kind === "business" ? (b += list[i].mi) : (p += list[i].mi));
+    $("todayBiz").textContent = miles(b);
+    $("todayPer").textContent = miles(p);
+    $("todayTot").textContent = miles(b + p);
+    $("todayDate").textContent = longDate(new Date());
+    var tot = b + p, split = $("todaySplit");
+    split.children[0].style.width = tot ? (b / tot * 100) + "%" : "0";
+    split.children[1].style.width = tot ? (p / tot * 100) + "%" : "0";
+  }
+
+  function renderTaxYear(){
+    var all = allTrips(), ty = taxYearOf(dateKey(new Date())), mi = 0, claim = 0, i;
+    for (i = 0; i < all.length; i++) {
+      if (all[i].kind !== "business" || taxYearOf(all[i].date) !== ty) continue;
+      mi += all[i].mi; claim += all[i].claim;
+    }
+    $("tyMiles").textContent = miles(mi) + " mi";
+    $("tyClaim").textContent = money(claim);
+    $("tyMiles").parentNode.title = "Business miles and AMAP value for the " + taxYearLabel(ty) + " tax year.";
+  }
+
+  function monthsWithData(){
+    var keys = [], mk;
+    for (mk in state.months) if (state.months[mk] && state.months[mk].length) keys.push(mk);
+    if (keys.indexOf(monthKey(dateKey(new Date()))) === -1) keys.push(monthKey(dateKey(new Date())));
+    keys.sort();
+    return keys;
+  }
+
+  function renderMonth(){
+    var mk = state.selected, list = tripsIn(mk), keys = monthsWithData();
+    $("monthLabel").textContent = monthLabel(mk);
+    $("prevMonth").disabled = mk <= keys[0];
+    $("nextMonth").disabled = mk >= keys[keys.length - 1];
+
+    var days = {}, order = [], i, t;
+    for (i = 0; i < list.length; i++) {
+      t = list[i];
+      if (!days[t.date]) { days[t.date] = { b: 0, p: 0, trips: [] }; order.push(t.date); }
+      days[t.date].trips.push(t);
+      if (t.kind === "business") days[t.date].b += t.mi; else days[t.date].p += t.mi;
+    }
+    order.sort();
+
+    var totB = 0, totP = 0, claim = 0;
+    for (i = 0; i < list.length; i++) {
+      if (list[i].kind === "business") { totB += list[i].mi; claim += list[i].claim; } else totP += list[i].mi;
+    }
+    $("mBiz").textContent = miles(totB);
+    $("mPer").textContent = miles(totP);
+    $("mTot").textContent = miles(totB + totP);
+    $("mDays").textContent = order.length + (order.length === 1 ? " day driven" : " days driven");
+    $("mClaim").textContent = money(claim);
+    $("mRate").textContent = "AMAP, " + taxYearLabel(taxYearOf(mk + "-15")) + " tax year";
+    $("fBiz").textContent = miles(totB);
+    $("fPer").textContent = miles(totP);
+    $("fTot").textContent = miles(totB + totP);
+
+    var html = "", d, day, tot;
+    if (!order.length) {
+      html = '<div class="ledger-empty"><strong>Nothing logged in ' + esc(monthLabel(mk)) + '</strong>' +
+             '<span>Every drive you log lands here, grouped by the day it happened.</span></div>';
+    }
+    for (i = 0; i < order.length; i++) {
+      d = order[i]; day = days[d]; tot = day.b + day.p;
+      var dt = parseKey(d), open = !!state.expanded[d];
+      html += '<div class="day' + (open ? " open" : "") + '">' +
+        '<button class="day-head" type="button" data-date="' + d + '" aria-expanded="' + open + '">' +
+          '<span class="day-date"><b>' + pad(dt.getDate()) + '</b><span>' + DAY_NAMES[dt.getDay()] + '</span></span>' +
+          '<span class="split"><i class="b" style="width:' + (tot ? day.b / tot * 100 : 0) + '%"></i>' +
+          '<i class="p" style="width:' + (tot ? day.p / tot * 100 : 0) + '%"></i></span>' +
+          '<span class="day-fig biz' + (day.b ? "" : " zero") + '">' + miles(day.b) + '</span>' +
+          '<span class="day-fig per' + (day.p ? "" : " zero") + '">' + miles(day.p) + '</span>' +
+          '<span class="day-fig tot">' + miles(tot) + '</span>' +
+          '<span class="chev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9.5 5.5 16 12l-6.5 6.5" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>' +
+        '</button>';
+      if (open) {
+        html += '<div class="day-body">';
+        for (var k = 0; k < day.trips.length; k++) {
+          var tr = day.trips[k], cls = tr.kind === "business" ? "b" : "p";
+          var route = (tr.from || tr.to) ? esc(tr.from || "?") + " → " + esc(tr.to || "?")
+                                         : (tr.kind === "business" ? "Business drive" : "Personal drive");
+          var note = tr.purpose ? esc(tr.purpose) : "";
+          html += '<div class="trip ' + cls + '">' +
+            '<span class="time">' + new Date(tr.ts).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + '</span>' +
+            '<span class="desc"><span class="route">' + route + '</span>' +
+              '<span class="meta">' + Math.round(tr.start).toLocaleString("en-GB") + " → " + Math.round(tr.end).toLocaleString("en-GB") +
+              (note ? '</span><span class="meta">' + note : "") + '</span></span>' +
+            '<span class="mi">' + miles(tr.mi) + ' mi</span>' +
+            '<button class="edit" type="button" data-edit="' + tr.id + '"' + (state.demo ? " disabled" : "") + '>Edit</button>' +
+          '</div>';
+        }
+        html += "</div>";
+      }
+      html += "</div>";
+    }
+    $("ledger").innerHTML = html;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Logging a drive
+   * ------------------------------------------------------------------ */
+  function currentMiles(){
+    var s = num($("startOdo").value), e = num($("endOdo").value);
+    if (!isFinite(s) || !isFinite(e)) return NaN;
+    return e - s;
+  }
+  function updateReadout(){
+    var m = currentMiles(), r = $("readout");
+    if (!isFinite(m)) { r.className = "readout empty"; r.children[0].textContent = "—"; return; }
+    r.className = m > 0 ? "readout" : "readout empty";
+    r.children[0].textContent = m > 0 ? miles(m) : String(Math.round(m * 10) / 10);
+  }
+
+  function logDrive(){
+    var s = num($("startOdo").value), e = num($("endOdo").value);
+    if (!isFinite(s)) { toast("Enter the odometer reading you started on.", true); $("startOdo").focus(); return; }
+    if (!isFinite(e)) { toast("Enter the odometer reading you finished on.", true); $("endOdo").focus(); return; }
+    if (e <= s) { toast("The end reading has to be higher than the start.", true); $("endOdo").focus(); return; }
+    var mi = Math.round((e - s) * 10) / 10;
+    if (mi > 800 && !window.confirm(miles(mi) + " miles in one drive. Log it anyway?")) return;
+
+    var now = new Date(), dk = dateKey(now), mk = monthKey(dk);
+    var trip = {
+      id: newId(), ts: now.toISOString(), date: dk,
+      start: s, end: e, mi: mi, kind: state.kind,
+      from: $("fFrom").value.trim(), to: $("fTo").value.trim(), purpose: $("fPurpose").value.trim()
+    };
+    if (state.demo) { state.months = {}; state.demo = false; }
+    if (!state.months[mk]) state.months[mk] = [];
+    state.months[mk].push(trip);
+    state.selected = mk;
+    state.expanded[dk] = true;
+    persist(mk);
+
+    $("startOdo").value = String(e);
+    $("endOdo").value = "";
+    $("fFrom").value = trip.to || "";
+    $("fTo").value = "";
+    $("fPurpose").value = "";
+    updateReadout();
+    render();
+    toast(miles(mi) + " miles logged as " + trip.kind + " — " + longDate(now));
+    $("endOdo").focus();
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Edit / delete
+   * ------------------------------------------------------------------ */
+  function findTrip(id){
+    for (var mk in state.months) {
+      var list = state.months[mk] || [];
+      for (var i = 0; i < list.length; i++) if (list[i].id === id) return { mk: mk, i: i, trip: list[i] };
+    }
+    return null;
+  }
+  function openEdit(id){
+    var found = findTrip(id);
+    if (!found) return;
+    state.editing = id;
+    var t = found.trip;
+    $("eDate").value = t.date; $("eKind").value = t.kind;
+    $("eStart").value = t.start; $("eEnd").value = t.end;
+    $("eFrom").value = t.from || ""; $("eTo").value = t.to || ""; $("ePurpose").value = t.purpose || "";
+    $("editHint").textContent = "Logged " + new Date(t.ts).toLocaleString("en-GB");
+    $("backdrop").className = "backdrop";
+    $("eEnd").focus();
+  }
+  function closeEdit(){ $("backdrop").className = "backdrop is-hidden"; state.editing = null; }
+
+  function saveEdit(){
+    var found = findTrip(state.editing);
+    if (!found) return closeEdit();
+    var s = num($("eStart").value), e = num($("eEnd").value), dk = $("eDate").value;
+    if (!isFinite(s) || !isFinite(e) || e <= s) { toast("The end reading has to be higher than the start.", true); return; }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dk)) { toast("Pick a valid date.", true); return; }
+
+    var t = found.trip, oldMk = found.mk, newMk = monthKey(dk);
+    var when = parseKey(dk); var prev = new Date(t.ts);
+    when.setHours(prev.getHours(), prev.getMinutes(), prev.getSeconds(), 0);
+
+    t.date = dk; t.ts = when.toISOString(); t.start = s; t.end = e;
+    t.mi = Math.round((e - s) * 10) / 10; t.kind = $("eKind").value;
+    t.from = $("eFrom").value.trim(); t.to = $("eTo").value.trim(); t.purpose = $("ePurpose").value.trim();
+
+    if (newMk !== oldMk) {
+      state.months[oldMk].splice(found.i, 1);
+      if (!state.months[newMk]) state.months[newMk] = [];
+      state.months[newMk].push(t);
+      persist(oldMk); persist(newMk);
+      state.selected = newMk;
+    } else {
+      persist(oldMk);
+    }
+    state.expanded[dk] = true;
+    closeEdit(); render();
+    toast("Drive updated.");
+  }
+
+  function deleteTrip(){
+    var found = findTrip(state.editing);
+    if (!found) return closeEdit();
+    if (!window.confirm("Delete this drive of " + miles(found.trip.mi) + " miles?")) return;
+    addTomb(found.trip.id);
+    state.months[found.mk].splice(found.i, 1);
+    persist(found.mk);
+    closeEdit(); render();
+    toast("Drive deleted.");
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Export
+   * ------------------------------------------------------------------ */
+  function monthTables(mk){
+    var list = tripsIn(mk), days = {}, order = [], i, t;
+    for (i = 0; i < list.length; i++) {
+      t = list[i];
+      if (!days[t.date]) { days[t.date] = { b: 0, p: 0, claim: 0 }; order.push(t.date); }
+      if (t.kind === "business") { days[t.date].b += t.mi; days[t.date].claim += t.claim; }
+      else days[t.date].p += t.mi;
+    }
+    order.sort();
+
+    var daily = [["Date", "Day", "Business (miles)", "Personal (miles)", "Total (miles)", "Business claim (GBP)"]];
+    var tb = 0, tp = 0, tc = 0;
+    for (i = 0; i < order.length; i++) {
+      var d = days[order[i]], dt = parseKey(order[i]);
+      daily.push([dt, DAY_NAMES[dt.getDay()],
+                  round1(d.b), round1(d.p), round1(d.b + d.p), round2(d.claim)]);
+      tb += d.b; tp += d.p; tc += d.claim;
+    }
+    daily.push(["Total", "", round1(tb), round1(tp), round1(tb + tp), round2(tc)]);
+
+    var journeys = [["Date", "Time", "Type", "From", "To", "Purpose", "Start odometer", "End odometer", "Miles", "Claim (GBP)"]];
+    for (i = 0; i < list.length; i++) {
+      t = list[i];
+      journeys.push([parseKey(t.date),
+        new Date(t.ts).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+        t.kind === "business" ? "Business" : "Personal",
+        t.from || "", t.to || "", t.purpose || "",
+        round1(t.start), round1(t.end), round1(t.mi), round2(t.claim)]);
+    }
+
+    var ty = taxYearOf(mk + "-15"), all = allTrips(), tyMi = 0, tyClaim = 0;
+    for (i = 0; i < all.length; i++) {
+      if (all[i].kind === "business" && taxYearOf(all[i].date) === ty) { tyMi += all[i].mi; tyClaim += all[i].claim; }
+    }
+    var summary = [
+      ["Mileage summary", monthLabel(mk)],
+      [],
+      ["Business miles", round1(tb)],
+      ["Personal miles", round1(tp)],
+      ["Total miles", round1(tb + tp)],
+      ["Days driven", order.length],
+      ["Business claim for the month (GBP)", round2(tc)],
+      [],
+      ["Tax year", taxYearLabel(ty) + " (6 April to 5 April)"],
+      ["Business miles in tax year to date", round1(tyMi)],
+      ["Business claim in tax year to date (GBP)", round2(tyClaim)],
+      [],
+      ["Rates applied", "HMRC approved mileage allowance payments, cars and vans"],
+      ["First 10,000 business miles in the tax year", "45p per mile"],
+      ["Business miles above 10,000", "25p per mile"],
+      [],
+      ["Exported", new Date().toLocaleString("en-GB")]
+    ];
+    return { daily: daily, journeys: journeys, summary: summary, count: list.length };
+  }
+  function round1(n){ return Math.round(n * 10) / 10; }
+  function round2(n){ return Math.round(n * 100) / 100; }
+
+  function buildWorkbook(mk){
+    var tb = monthTables(mk);
+    var wb = XLSX.utils.book_new();
+
+    var wsDaily = XLSX.utils.aoa_to_sheet(tb.daily, { cellDates: true });
+    wsDaily["!cols"] = [{ wch: 13 }, { wch: 7 }, { wch: 17 }, { wch: 17 }, { wch: 14 }, { wch: 21 }];
+    formatDates(wsDaily, 0, tb.daily.length - 2);
+
+    var wsTrips = XLSX.utils.aoa_to_sheet(tb.journeys, { cellDates: true });
+    wsTrips["!cols"] = [{ wch: 13 }, { wch: 8 }, { wch: 10 }, { wch: 18 }, { wch: 18 }, { wch: 34 },
+                        { wch: 16 }, { wch: 16 }, { wch: 9 }, { wch: 12 }];
+    formatDates(wsTrips, 0, tb.journeys.length - 1);
+
+    var wsSum = XLSX.utils.aoa_to_sheet(tb.summary);
+    wsSum["!cols"] = [{ wch: 40 }, { wch: 30 }];
+
+    XLSX.utils.book_append_sheet(wb, wsDaily, "Daily totals");
+    XLSX.utils.book_append_sheet(wb, wsTrips, "Journeys");
+    XLSX.utils.book_append_sheet(wb, wsSum, "Summary");
+    return { wb: wb, count: tb.count };
+  }
+  function formatDates(ws, col, lastRow){
+    for (var r = 1; r <= lastRow; r++) {
+      var ref = XLSX.utils.encode_cell({ c: col, r: r });
+      if (ws[ref] && ws[ref].t === "d") ws[ref].z = "dd/mm/yyyy";
+    }
+  }
+
+  function exportMonth(){
+    if (state.demo) return;
+    if (typeof XLSX === "undefined") { toast("The spreadsheet library did not load. Check your connection and reload.", true); return; }
+    var built;
+    try { built = buildWorkbook(state.selected); }
+    catch (e) { toast("Could not build the workbook.", true); return; }
+    if (!built.count) { toast("Nothing logged in " + monthLabel(state.selected) + " to export.", true); return; }
+
+    var data = XLSX.write(built.wb, { bookType: "xlsx", type: "array", cellDates: true });
+    var filename = "mileage-" + state.selected + ".xlsx";
+
+    if (state.downloads) {
+      state.downloads.save({ filename: filename, data: data }).then(function(){
+        toast(monthLabel(state.selected) + " exported — " + built.count + " journeys.");
+      }).catch(function(err){
+        var code = err && err.code;
+        if (code === "declined") { toast("Export cancelled."); return; }
+        if (code === "rate_limited") { toast("A save is already open. Finish that one first.", true); return; }
+        toast("The file could not be saved here. Use Copy for Excel instead.", true);
+      });
+      return;
+    }
+    try {
+      var blob = new Blob([data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      var url = URL.createObjectURL(blob), a = document.createElement("a");
+      a.href = url; a.download = filename; document.body.appendChild(a); a.click();
+      document.body.removeChild(a);
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 2000);
+      toast(monthLabel(state.selected) + " exported — " + built.count + " journeys.");
+    } catch (e) {
+      toast("Downloads are blocked here. Use Copy for Excel instead.", true);
+    }
+  }
+
+  function copyForExcel(){
+    if (state.demo) return;
+    var tb = monthTables(state.selected), lines = [], i, j, row, cell;
+    for (i = 0; i < tb.daily.length; i++) {
+      row = tb.daily[i]; cell = [];
+      for (j = 0; j < row.length; j++) {
+        var v = row[j];
+        cell.push(v instanceof Date ? pad(v.getDate()) + "/" + pad(v.getMonth() + 1) + "/" + v.getFullYear() : (v == null ? "" : v));
+      }
+      lines.push(cell.join("\t"));
+    }
+    var text = lines.join("\n");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){
+        toast("Daily totals copied. Paste straight into a sheet.");
+      }).catch(function(){ toast("Could not reach the clipboard.", true); });
+    } else {
+      toast("Clipboard is unavailable in this browser.", true);
+    }
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Toast
+   * ------------------------------------------------------------------ */
+  var toastTimer = null;
+  function toast(msg, bad){
+    var el = $("toast");
+    el.textContent = msg;
+    el.className = bad ? "toast bad" : "toast";
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.className = "toast is-hidden"; }, 3600);
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Wiring
+   * ------------------------------------------------------------------ */
+  $("logForm").addEventListener("submit", function(ev){ ev.preventDefault(); logDrive(); });
+  $("startOdo").addEventListener("input", updateReadout);
+  $("endOdo").addEventListener("input", updateReadout);
+
+  $("kindSeg").addEventListener("click", function(ev){
+    var btn = ev.target.closest("button[data-kind]");
+    if (!btn) return;
+    state.kind = btn.getAttribute("data-kind");
+    var all = this.querySelectorAll("button[data-kind]");
+    for (var i = 0; i < all.length; i++) {
+      all[i].setAttribute("aria-pressed", all[i] === btn ? "true" : "false");
+    }
+  });
+
+  $("ledger").addEventListener("click", function(ev){
+    var editBtn = ev.target.closest("button[data-edit]");
+    if (editBtn) { openEdit(editBtn.getAttribute("data-edit")); return; }
+    var head = ev.target.closest(".day-head");
+    if (!head) return;
+    var d = head.getAttribute("data-date");
+    state.expanded[d] = !state.expanded[d];
+    renderMonth();
+  });
+
+  $("prevMonth").addEventListener("click", function(){ stepMonth(-1); });
+  $("nextMonth").addEventListener("click", function(){ stepMonth(1); });
+  function stepMonth(dir){
+    var p = state.selected.split("-"), d = new Date(+p[0], +p[1] - 1 + dir, 1);
+    state.selected = d.getFullYear() + "-" + pad(d.getMonth() + 1);
+    renderMonth();
+  }
+
+  $("exportBtn").addEventListener("click", exportMonth);
+  $("copyBtn").addEventListener("click", copyForExcel);
+  $("saveTrip").addEventListener("click", saveEdit);
+  $("deleteTrip").addEventListener("click", deleteTrip);
+  $("closeModal").addEventListener("click", closeEdit);
+  $("editForm").addEventListener("submit", function(ev){ ev.preventDefault(); saveEdit(); });
+  $("backdrop").addEventListener("click", function(ev){ if (ev.target === this) closeEdit(); });
+  document.addEventListener("keydown", function(ev){
+    if (ev.key === "Escape" && state.editing) closeEdit();
+  });
+
+  initStore();
+})();
+</script>
+<!--A4-->
+</body>
+</html>
