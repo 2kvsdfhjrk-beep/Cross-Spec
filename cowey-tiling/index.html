@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cowey Tiling | Patio, Kitchen, Bathroom and Commercial Tiling</title>
+<meta name="description" content="Cowey Tiling is a family run tiling business. Porcelain patios and outdoor paving, kitchen splashbacks, bathrooms and wet rooms, wall and floor tiling, and commercial tiling. Site visit and written quote.">
+<meta name="theme-color" content="#0d0d0b">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cowey Tiling">
+<meta property="og:description" content="Family run tiling, inside and out. Patios, kitchens, bathrooms, walls and floors, and commercial work.">
+<meta property="og:image" content="img/garden-1440.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d0d0b'/%3E%3Crect x='7' y='7' width='8' height='8' fill='%23d8b47a'/%3E%3Crect x='17' y='7' width='8' height='8' fill='%23f2efe9'/%3E%3Crect x='7' y='17' width='8' height='8' fill='%23f2efe9'/%3E%3Crect x='17' y='17' width='8' height='8' fill='%232f4a3f'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" id="gf" media="print" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62,800;100,400;100,600&display=swap">
+<script>(function(l){function on(){l.media='all'}if(l.sheet)on();else l.addEventListener('load',on)})(document.getElementById('gf'))</script>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62,800;100,400;100,600&display=swap"></noscript>
+<link rel="preload" as="image" type="image/avif" media="(max-aspect-ratio: 4/5)" imagesrcset="img/garden-p-640.avif 640w, img/garden-p-1080.avif 1080w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" type="image/avif" media="(min-aspect-ratio: 4.001/5)" imagesrcset="img/garden-960.avif 960w, img/garden-1440.avif 1440w, img/garden-1920.avif 1920w, img/garden-2400.avif 2400w" imagesizes="100vw" fetchpriority="high">
+<style>@media (max-aspect-ratio: 4/5){.shot[data-shot=garden]{--fx:50%!important;--fy:60%!important}.shot[data-shot=kitchen]{--fx:70%!important;--fy:50%!important}.shot[data-shot=bath]{--fx:50%!important;--fy:50%!important}.shot[data-shot=commercial]{--fx:42%!important;--fy:50%!important}}</style>
+<style>
+/* Layout: one sticky "camera" stage carries the story; four rendered rooms are joined by doorway zooms and a light match. Text scrolls past like captions. Light sections after the story hold the crawlable detail. */
+:root{
+  --night:#0d0d0b;      /* story ground */
+  --stone:#f2efe9;      /* limestone page ground */
+  --ink:#1c1b18;
+  --mute:#6b675f;
+  --brass:#d8b47a;      /* warm accent on dark */
+  --green:#2f4a3f;      /* zellige green accent on light */
+  --line:#dcd6cc;
+  --white:#fbfaf7;
+  --display:'Archivo','Arial Narrow','Helvetica Neue',Arial,sans-serif;
+  --body:'Archivo',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-family:var(--display);font-stretch:62%;font-weight:800;line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:12px 22px;border-radius:999px;font:600 15px var(--body);text-decoration:none;border:0;cursor:pointer;transition:transform .2s,background .2s,color .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn-light{background:var(--white);color:var(--ink)}
+.btn-ghost{background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px rgba(251,250,247,.55)}
+.btn-ghost:hover{background:rgba(251,250,247,.12)}
+.btn-dark{background:var(--ink);color:var(--white)}
+.btn-dark:hover{background:var(--green)}
+
+/* header */
+.site-head{position:fixed;inset:0 0 auto;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:calc(14px + env(safe-area-inset-top,0px)) clamp(16px,4vw,48px) 14px;color:var(--white);transition:background .35s,color .35s,box-shadow .35s}
+.site-head.solid{background:rgba(242,239,233,.94);color:var(--ink);box-shadow:0 1px 0 var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.mark{display:flex;flex-direction:column;line-height:1;text-decoration:none}
+.mark b{font-family:var(--display);font-stretch:100%;font-weight:800;font-size:19px;letter-spacing:.22em}
+.mark span{font-size:10px;letter-spacing:.58em;margin-top:6px;opacity:.75}
+.site-head nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px);font-size:15px;font-weight:600}
+.site-head nav a:not(.btn){text-decoration:none;opacity:.85}
+.site-head nav a:not(.btn):hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
+.site-head .btn{min-height:40px;padding:9px 18px}
+.site-head:not(.solid) .btn{background:var(--white);color:var(--ink)}
+@media (max-width:720px){.site-head nav a:not(.btn){display:none}}
+
+/* story */
+#story{position:relative;height:1000vh;background:var(--night);color:var(--white)}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;background:var(--night)}
+.shot{position:absolute;inset:0;overflow:hidden;margin:0}
+.shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--fx,50%) var(--fy,50%);display:block}
+.cam .shot img{inset:auto;left:0;top:0;transform-origin:0 0;will-change:transform;object-fit:fill;max-width:none}
+.shot.later{display:none}
+.cam .shot{will-change:opacity,clip-path}
+.glow{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 50%,rgba(255,244,226,1) 0,rgba(255,224,178,.95) 22%,rgba(255,190,120,.55) 48%,rgba(255,160,90,.12) 78%,rgba(255,150,80,0) 100%);mix-blend-mode:screen}
+.grain{position:absolute;inset:-50%;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.4 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.beats{position:absolute;inset:0;pointer-events:none}
+.beat{position:absolute;left:clamp(20px,5vw,80px);width:min(600px,calc(100% - 40px));top:calc(var(--at) * 900vh + 50vh);transform:translateY(-50%);pointer-events:auto;text-shadow:0 1px 24px rgba(0,0,0,.45)}
+.beat::before{content:"";position:absolute;inset:-30% -35% -30% -45%;z-index:-1;background:radial-gradient(closest-side,rgba(10,9,7,.5),rgba(10,9,7,0));pointer-events:none}
+.kicker{display:block;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
+.beat h2{font-size:clamp(46px,7.4vw,104px)}
+.beat p{font-size:clamp(17px,1.5vw,20px);max-width:36ch;margin-top:18px;color:rgba(251,250,247,.9)}
+.beat.hero{top:calc(var(--at) * 900vh + 66vh)}
+.hero h1{font-size:clamp(68px,13vw,190px);text-transform:uppercase;line-height:.84}
+.hero p{font-size:clamp(18px,1.7vw,22px)}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.rail{position:fixed;right:clamp(14px,2.2vw,30px);top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:12px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--white);transition:opacity .3s}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;opacity:.45;transition:opacity .3s}
+.rail a i{display:block;width:16px;height:1px;background:currentColor;transition:width .3s}
+.rail a.on{opacity:1}.rail a.on i{width:34px}
+.rail.off{opacity:0;pointer-events:none}
+@media (max-width:900px){.rail{display:none}}
+.cue{position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(251,250,247,.8);display:flex;flex-direction:column;align-items:center;gap:8px;transition:opacity .4s}
+.cue i{width:1px;height:38px;background:linear-gradient(rgba(251,250,247,.9),rgba(251,250,247,0))}
+
+/* light sections */
+.wrap{max-width:1200px;margin:0 auto;padding-inline:clamp(16px,4vw,48px)}
+.sec{padding-block:clamp(84px,13vh,150px)}
+.sec h2{font-size:clamp(44px,6vw,84px)}
+.lead{font-size:clamp(18px,1.6vw,21px);color:#3d3a34;max-width:44ch;margin-top:20px}
+.family{background:var(--night);color:var(--white)}
+.family .lead{color:rgba(251,250,247,.82)}
+.family .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(28px,6vw,96px);align-items:end}
+@media (max-width:820px){.family .wrap{grid-template-columns:1fr}}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(18px,2.4vw,30px);margin-top:clamp(36px,6vh,64px)}
+.svc{display:flex;flex-direction:column;gap:12px;min-width:0}
+.svc picture,.svc img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:3px;background:#d9d3c8}
+.svc h3{font-size:clamp(26px,2.4vw,32px);font-stretch:62%;margin-top:6px}
+.svc p{color:#4a463f;font-size:16px}
+.contact .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(28px,6vw,96px);align-items:start}
+@media (max-width:860px){.contact .wrap{grid-template-columns:1fr}}
+form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:520px){form{grid-template-columns:1fr}}
+form .full{grid-column:1/-1}
+form label{display:flex;flex-direction:column;gap:7px;font-size:14px;font-weight:600;min-width:0}
+form input,form select,form textarea{font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:var(--white);border:1px solid #cbc4b8;border-radius:4px;padding:12px;width:100%;min-width:0}
+form textarea{min-height:120px;resize:vertical}
+form .btn{grid-column:1/-1;min-height:52px}
+.sent{grid-column:1/-1;padding:12px 14px;border-radius:4px;background:#e4ddd0;font-size:15px}
+.site-foot{border-top:1px solid var(--line);padding-block:30px calc(30px + env(safe-area-inset-bottom,0px));font-size:14px;color:var(--mute)}
+.site-foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
+.note{font-size:13px;color:var(--mute);margin-top:14px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.btn:hover{transition:none;transform:none}}
+</style>
+
+</head>
+<body>
+<header class="site-head" id="head">
+  <a class="mark" href="#top"><b>COWEY</b> <span>TILING</span></a>
+  <nav aria-label="Main">
+    <a href="#services">Services</a>
+    <a href="#family">About us</a>
+    <a class="btn" href="#contact">Get a quote</a>
+  </nav>
+</header>
+<nav class="rail" id="rail" aria-label="Story chapters">
+  <a href="#ch-outside" data-ch="0">Outside<i></i></a>
+  <a href="#ch-kitchen" data-ch="1">Kitchens<i></i></a>
+  <a href="#ch-bath" data-ch="2">Bathrooms<i></i></a>
+  <a href="#ch-commercial" data-ch="3">Commercial<i></i></a>
+</nav>
+
+<main id="top">
+<section id="story" aria-label="Inside and out with Cowey Tiling">
+  <div class="stage" id="stage">
+    <figure class="shot" data-shot="garden" style="--fx:50%;--fy:62%">
+      <picture>
+        <source type="image/avif" media="(max-aspect-ratio: 4/5)" srcset="img/garden-p-640.avif 640w, img/garden-p-1080.avif 1080w" sizes="100vw">
+        <source type="image/jpeg" media="(max-aspect-ratio: 4/5)" srcset="img/garden-p-640.jpg 640w, img/garden-p-1080.jpg 1080w" sizes="100vw">
+        <source type="image/avif" srcset="img/garden-960.avif 960w, img/garden-1440.avif 1440w, img/garden-1920.avif 1920w, img/garden-2400.avif 2400w" sizes="100vw">
+        <img src="img/garden-1440.jpg" srcset="img/garden-960.jpg 960w, img/garden-1440.jpg 1440w, img/garden-1920.jpg 1920w, img/garden-2400.jpg 2400w" sizes="100vw" width="2400" height="1350" alt="Porcelain patio at golden hour outside a brick kitchen extension with the bifold doors open" decoding="async" fetchpriority="high">
+      </picture>
+    </figure>
+    <figure class="shot later" data-shot="kitchen" style="--fx:50%;--fy:50%">
+      <picture>
+        <source type="image/avif" media="(max-aspect-ratio: 4/5)" srcset="img/kitchen-p-640.avif 640w, img/kitchen-p-1080.avif 1080w" sizes="100vw">
+        <source type="image/jpeg" media="(max-aspect-ratio: 4/5)" srcset="img/kitchen-p-640.jpg 640w, img/kitchen-p-1080.jpg 1080w" sizes="100vw">
+        <source type="image/avif" srcset="img/kitchen-960.avif 960w, img/kitchen-1440.avif 1440w, img/kitchen-1920.avif 1920w, img/kitchen-2400.avif 2400w" sizes="100vw">
+        <img src="img/kitchen-1440.jpg" srcset="img/kitchen-960.jpg 960w, img/kitchen-1440.jpg 1440w, img/kitchen-1920.jpg 1920w, img/kitchen-2400.jpg 2400w" sizes="100vw" width="2400" height="1350" alt="Kitchen with a green handmade zellige splashback, a marble topped island and globe pendant lights" decoding="async" loading="lazy" fetchpriority="low">
+      </picture>
+    </figure>
+    <figure class="shot later" data-shot="bath" style="--fx:50%;--fy:50%">
+      <picture>
+        <source type="image/avif" media="(max-aspect-ratio: 4/5)" srcset="img/bath-p-640.avif 640w, img/bath-p-1080.avif 1080w" sizes="100vw">
+        <source type="image/jpeg" media="(max-aspect-ratio: 4/5)" srcset="img/bath-p-640.jpg 640w, img/bath-p-1080.jpg 1080w" sizes="100vw">
+        <source type="image/avif" srcset="img/bath-960.avif 960w, img/bath-1440.avif 1440w, img/bath-1920.avif 1920w, img/bath-2400.avif 2400w" sizes="100vw">
+        <img src="img/bath-1440.jpg" srcset="img/bath-960.jpg 960w, img/bath-1440.jpg 1440w, img/bath-1920.jpg 1920w, img/bath-2400.jpg 2400w" sizes="100vw" width="2400" height="1350" alt="Walk-in shower with large format marble effect porcelain walls, a lit niche and a frosted window" decoding="async" loading="lazy" fetchpriority="low">
+      </picture>
+    </figure>
+    <figure class="shot later" data-shot="commercial" style="--fx:50%;--fy:50%">
+      <picture>
+        <source type="image/avif" media="(max-aspect-ratio: 4/5)" srcset="img/commercial-p-640.avif 640w, img/commercial-p-1080.avif 1080w" sizes="100vw">
+        <source type="image/jpeg" media="(max-aspect-ratio: 4/5)" srcset="img/commercial-p-640.jpg 640w, img/commercial-p-1080.jpg 1080w" sizes="100vw">
+        <source type="image/avif" srcset="img/commercial-960.avif 960w, img/commercial-1440.avif 1440w, img/commercial-1920.avif 1920w, img/commercial-2400.avif 2400w" sizes="100vw">
+        <img src="img/commercial-1440.jpg" srcset="img/commercial-960.jpg 960w, img/commercial-1440.jpg 1440w, img/commercial-1920.jpg 1920w, img/commercial-2400.jpg 2400w" sizes="100vw" width="2400" height="1350" alt="Restaurant with a polished large format porcelain floor and a bar clad in glazed terracotta finger tiles" decoding="async" loading="lazy" fetchpriority="low">
+      </picture>
+    </figure>
+    <div class="glow" id="glow"></div>
+    <div class="grain"></div>
+    <div class="cue" id="cue"><i></i>Scroll</div>
+  </div>
+  <div class="beats">
+    <div class="beat hero" style="--at:0">
+      <h1>Cowey<br>Tiling</h1>
+      <p>Family run tiling for homes and businesses, inside and out</p>
+      <div class="ctas"><a class="btn btn-light" href="#contact">Get a quote</a><a class="btn btn-ghost" href="#services">What we do</a></div>
+    </div>
+    <article class="beat" id="ch-outside" style="--at:.095">
+      <span class="kicker">Outside</span>
+      <h2>It starts in the garden</h2>
+      <p>Porcelain patios, paths and steps, laid level on a full mortar bed with falls away from the house, so they sit right through every British winter.</p>
+    </article>
+    <article class="beat" id="ch-kitchen" style="--at:.372">
+      <span class="kicker">Kitchens</span>
+      <h2>Then we come inside</h2>
+      <p>Splashbacks, feature walls and floors. This one is handmade zellige, set tile by tile so the glaze catches the light.</p>
+    </article>
+    <article class="beat" id="ch-bath" style="--at:.638">
+      <span class="kicker">Bathrooms</span>
+      <h2>Through to the shower room</h2>
+      <p>Walk-in showers, wet rooms and full refits. Every wet area is tanked and waterproofed before a single tile goes on.</p>
+    </article>
+    <article class="beat" id="ch-commercial" style="--at:.905">
+      <span class="kicker">Commercial</span>
+      <h2>And on Monday, the high street</h2>
+      <p>Restaurants, shops, offices and communal areas, finished to the same standard as a family home.</p>
+    </article>
+  </div>
+</section>
+
+<section class="sec family" id="family">
+  <div class="wrap">
+    <div>
+      <span class="kicker">About us</span>
+      <h2>Same family on every job</h2>
+    </div>
+    <div>
+      <p class="lead">Cowey Tiling is a family run business. The people who come out to measure up are the people who turn up to tile, and we don't leave until it's grouted, sealed and cleaned down.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="services">
+  <div class="wrap">
+    <span class="kicker" style="color:var(--green)">Services</span>
+    <h2>Tiling, inside and out</h2>
+    <p class="lead">Domestic and commercial wall and floor tiling, priced from a site visit with a written quote.</p>
+    <div class="services">
+      <article class="svc">
+        <picture>
+          <source type="image/avif" srcset="img/garden-960.avif 960w, img/garden-1440.avif 1440w" sizes="(max-width: 700px) 92vw, 380px">
+          <img src="img/garden-960.jpg" width="960" height="540" alt="Porcelain patio at golden hour outside a brick kitchen extension with the bifold doors open" loading="lazy" decoding="async" style="object-position:50% 62%">
+        </picture>
+        <h3>Patios and outdoor</h3>
+        <p>Porcelain paving, natural stone, steps, paths and courtyards, laid on a full mortar bed over a compacted base with falls away from the house.</p>
+      </article>
+      <article class="svc">
+        <picture>
+          <source type="image/avif" srcset="img/kitchen-960.avif 960w, img/kitchen-1440.avif 1440w" sizes="(max-width: 700px) 92vw, 380px">
+          <img src="img/kitchen-960.jpg" width="960" height="540" alt="Kitchen with a green handmade zellige splashback, a marble topped island and globe pendant lights" loading="lazy" decoding="async" style="object-position:50% 50%">
+        </picture>
+        <h3>Kitchens, walls and floors</h3>
+        <p>Splashbacks, feature walls and kitchen floors in zellige, metro, large format porcelain and natural stone, set out from the centre so the cuts are even.</p>
+      </article>
+      <article class="svc">
+        <picture>
+          <source type="image/avif" srcset="img/bath-960.avif 960w, img/bath-1440.avif 1440w" sizes="(max-width: 700px) 92vw, 380px">
+          <img src="img/bath-960.jpg" width="960" height="540" alt="Walk-in shower with large format marble effect porcelain walls, a lit niche and a frosted window" loading="lazy" decoding="async" style="object-position:50% 50%">
+        </picture>
+        <h3>Bathrooms and wet rooms</h3>
+        <p>Full bathroom refits, walk-in showers and level access wet rooms, tanked and waterproofed before any tiling starts.</p>
+      </article>
+      <article class="svc">
+        <picture>
+          <source type="image/avif" srcset="img/commercial-960.avif 960w, img/commercial-1440.avif 1440w" sizes="(max-width: 700px) 92vw, 380px">
+          <img src="img/commercial-960.jpg" width="960" height="540" alt="Restaurant with a polished large format porcelain floor and a bar clad in glazed terracotta finger tiles" loading="lazy" decoding="async" style="object-position:50% 50%">
+        </picture>
+        <h3>Commercial tiling</h3>
+        <p>Restaurants, shops, offices and communal areas, with large format floors and feature walls planned around how the space is used.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec contact" id="contact">
+  <div class="wrap">
+    <div>
+      <span class="kicker" style="color:var(--green)">Get a quote</span>
+      <h2>Tell us about the job</h2>
+      <p class="lead">Send a few details and a photo or two. We'll come out, measure up and give you a written price.</p>
+    </div>
+    <form id="quote" novalidate>
+      <label for="q-name">Name<input id="q-name" name="name" autocomplete="name" required></label>
+      <label for="q-contact">Phone or email<input id="q-contact" name="contact" autocomplete="email" required></label>
+      <label for="q-type">Type of job<select id="q-type" name="type"><option>Patio or outdoor</option><option>Kitchen</option><option>Bathroom or wet room</option><option>Walls and floors</option><option>Commercial</option><option>Something else</option></select></label>
+      <label for="q-postcode">Postcode<input id="q-postcode" name="postcode" autocomplete="postal-code"></label>
+      <label class="full" for="q-msg">About the job<textarea id="q-msg" name="message" placeholder="Back garden patio, roughly 6 m by 4 m, porcelain"></textarea></label>
+      <button class="btn btn-dark" type="submit">Send enquiry</button>
+      <p class="sent" id="sent" hidden></p>
+    </form>
+  </div>
+</section>
+</main>
+<footer class="site-foot"><div class="wrap"><span>Cowey Tiling</span><span>Family run tiling, inside and out</span><a href="#top">Back to top</a></div></footer>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Cowey Tiling","description":"Family run tiling business for homes and businesses: porcelain patios and outdoor paving, kitchen splashbacks, bathrooms and wet rooms, wall and floor tiling, and commercial tiling.","image":"img/garden-1440.jpg","makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Patio and outdoor porcelain paving"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Kitchen tiling and splashbacks"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Bathroom and wet room tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Wall and floor tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Commercial tiling"}}]}</script>
+<script>
+(()=>{
+const CFG={"shots":{"garden":{"L":{"w":2400,"h":1350,"fx":0.5,"fy":0.62,"portal":[0.2651,0.3628,0.651,0.7073]},"P":{"w":1080,"h":1920,"fx":0.5,"fy":0.6,"portal":[0.0642,0.4402,0.7931,0.6461]}},"kitchen":{"L":{"w":2400,"h":1350,"fx":0.5,"fy":0.5,"portal":[0.6966,0.3827,0.7878,0.7853]},"P":{"w":1080,"h":1920,"fx":0.7,"fy":0.5,"portal":[0.7268,0.3403,0.9159,0.5991]}},"bath":{"L":{"w":2400,"h":1350,"fx":0.5,"fy":0.5,"glow":[0.5,0.2418]},"P":{"w":1080,"h":1920,"fx":0.5,"fy":0.5,"glow":[0.5,0.3809]}},"commercial":{"L":{"w":2400,"h":1350,"fx":0.5,"fy":0.5,"glow":[0.1751,0.3261]},"P":{"w":1080,"h":1920,"fx":0.42,"fy":0.5,"glow":[0.1995,0.4]}}},"timeline":[{"type":"hold","shot":"garden","from":0.0,"to":0.165,"k":1.07},{"type":"portal","a":"garden","b":"kitchen","from":0.165,"to":0.305},{"type":"hold","shot":"kitchen","from":0.305,"to":0.44,"k":1.06},{"type":"portal","a":"kitchen","b":"bath","from":0.44,"to":0.575},{"type":"hold","shot":"bath","from":0.575,"to":0.7,"k":1.05},{"type":"glow","a":"bath","b":"commercial","from":0.7,"to":0.83},{"type":"hold","shot":"commercial","from":0.83,"to":1.0,"k":1.06}],"chapters":[0.0,0.29,0.56,0.81]};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const smooth=(a,b,t)=>{t=clamp((t-a)/(b-a),0,1);return t*t*(3-2*t)};
+const story=document.getElementById('story'),stage=document.getElementById('stage'),glow=document.getElementById('glow'),cue=document.getElementById('cue');
+const head=document.getElementById('head'),rail=document.getElementById('rail'),railA=[...rail.querySelectorAll('a')];
+const shots={};
+stage.querySelectorAll('.shot').forEach(el=>{shots[el.dataset.shot]={el,img:el.querySelector('img')}});
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const portrait=matchMedia('(max-aspect-ratio: 4/5)');
+let W=0,H=0,plan=null,lastKey='';
+
+// a camera state is a uniform scale plus translation: screen = a * imagePixel + (x, y)
+function cover(c){const a=Math.max(W/c.w,H/c.h),dw=c.w*a,dh=c.h*a;return{a,x:(W-dw)*c.fx,y:(H-dh)*c.fy}}
+function pt(m,c,u,v){return[m.a*u*c.w+m.x,m.a*v*c.h+m.y]}
+function zoom(m,k,ax,ay){return{a:m.a*k,x:(m.x-ax)*k+ax,y:(m.y-ay)*k+ay}}
+// scale k about point p while sliding p toward the screen centre in step with the zoom
+function dolly(m,k,kMax,p){const g=kMax>1?(k-1)/(kMax-1):0,cx=W/2,cy=H/2;return{a:m.a*k,x:k*m.x+(1-k)*p[0]+g*(cx-p[0]),y:k*m.y+(1-k)*p[1]+g*(cy-p[1])}}
+
+function build(){
+  W=innerWidth;H=innerHeight;
+  const key=portrait.matches?'P':'L';
+  const C=n=>CFG.shots[n][key];
+  const segs=[];
+  let prevEnd=null;
+  CFG.timeline.forEach((s,i)=>{
+    if(s.type==='hold'){
+      const c=C(s.shot);
+      const m0=prevEnd&&prevEnd.shot===s.shot?prevEnd.m:cover(c);
+      const nx=CFG.timeline[i+1];
+      let anchor=[W/2,H/2];
+      if(nx&&nx.type==='portal'){const r=c.portal;anchor=pt(m0,c,(r[0]+r[2])/2,(r[1]+r[3])/2)}
+      if(nx&&nx.type==='glow'){anchor=pt(m0,c,c.glow[0],c.glow[1])}
+      const m1=zoom(m0,s.k||1.06,anchor[0],anchor[1]);
+      segs.push({...s,c,m0,m1,anchor});prevEnd={shot:s.shot,m:m1};
+    }else if(s.type==='portal'){
+      const ca=C(s.a),cb=C(s.b),mA=prevEnd.m,r=ca.portal;
+      const p0=pt(mA,ca,r[0],r[1]),p1=pt(mA,ca,r[2],r[3]);
+      const pw=p1[0]-p0[0],ph=p1[1]-p0[1],pc=[(p0[0]+p1[0])/2,(p0[1]+p1[1])/2];
+      const k=Math.max(W/pw,H/ph)*1.02,mB=cover(cb);
+      segs.push({...s,ca,cb,mA,p0,p1,pc,k,mB});prevEnd={shot:s.b,m:mB};
+    }else if(s.type==='glow'){
+      const ca=C(s.a),cb=C(s.b),mA=prevEnd.m,mB=cover(cb);
+      const gA=pt(mA,ca,ca.glow[0],ca.glow[1]),gB=pt(mB,cb,cb.glow[0],cb.glow[1]);
+      segs.push({...s,ca,cb,mA,mB,gA,gB,kA:7,kB:6});prevEnd={shot:s.b,m:mB};
+    }
+  });
+  plan=segs;
+  Object.entries(shots).forEach(([n,s])=>{const c=C(n);s.img.style.width=c.w+'px';s.img.style.height=c.h+'px'});
+  lastKey='';
+}
+
+function set(n,m,op,clip){
+  const s=shots[n];if(!s)return;
+  s.el.style.display='block';
+  s.el.style.opacity=op;
+  s.el.style.clipPath=clip||'none';
+  s.img.style.transform=`matrix(${m.a},0,0,${m.a},${m.x},${m.y})`;
+}
+function hideAll(except){for(const n in shots)if(!except.includes(n)){shots[n].el.style.opacity=0}}
+
+function frame(){
+  ticking=false;
+  const r=story.getBoundingClientRect(),range=story.offsetHeight-H;
+  const p=clamp(-r.top/range,0,1);
+  const inStory=r.bottom>0&&r.top<H;
+  head.classList.toggle('solid',r.bottom<=64);
+  rail.classList.toggle('off',!inStory||r.bottom<H*.6);
+  cue.style.opacity=p>.01?0:1;
+  let ch=0;CFG.chapters.forEach((v,i)=>{if(p>=v)ch=i});
+  railA.forEach((a,i)=>a.classList.toggle('on',i===ch));
+  if(!inStory||!plan)return;
+  const seg=plan.find(s=>p>=s.from&&p<=s.to)||plan[plan.length-1];
+  const t=clamp((p-seg.from)/(seg.to-seg.from),0,1);
+  let g=0;
+  if(seg.type==='hold'){
+    const e=reduce?0:ease(t),k=1+((seg.k||1.06)-1)*e;
+    set(seg.shot,zoom(seg.m0,k,seg.anchor[0],seg.anchor[1]),1);hideAll([seg.shot]);
+  }else if(seg.type==='portal'){
+    if(reduce){set(seg.a,seg.mA,1-smooth(.4,.6,t));set(seg.b,seg.mB,smooth(.4,.6,t));hideAll([seg.a,seg.b])}
+    else{
+      const e=ease(t),s=Math.pow(seg.k,e),gg=(s-1)/(seg.k-1),cx=W/2,cy=H/2;
+      const mA={a:seg.mA.a*s,x:s*seg.mA.x+(1-s)*seg.pc[0]+gg*(cx-seg.pc[0]),y:s*seg.mA.y+(1-s)*seg.pc[1]+gg*(cy-seg.pc[1])};
+      const T=(x,y)=>[s*x+(1-s)*seg.pc[0]+gg*(cx-seg.pc[0]),s*y+(1-s)*seg.pc[1]+gg*(cy-seg.pc[1])];
+      const q0=T(seg.p0[0],seg.p0[1]),q1=T(seg.p1[0],seg.p1[1]);
+      // the next room covers the visible part of the doorway, settling to a plain full-frame view
+      const v0=[Math.max(0,q0[0]),Math.max(0,q0[1])],v1=[Math.min(W,q1[0]),Math.min(H,q1[1])];
+      const u=Math.max((v1[0]-v0[0])/W,(v1[1]-v0[1])/H),qc=[(v0[0]+v1[0])/2,(v0[1]+v1[1])/2];
+      const mB={a:seg.mB.a*u,x:u*(seg.mB.x-cx)+qc[0],y:u*(seg.mB.y-cy)+qc[1]};
+      set(seg.a,mA,t>=.999?0:1);
+      set(seg.b,mB,smooth(.04,.2,t),`inset(${Math.max(0,q0[1])}px ${Math.max(0,W-q1[0])}px ${Math.max(0,H-q1[1])}px ${Math.max(0,q0[0])}px)`);
+      hideAll([seg.a,seg.b]);
+    }
+  }else if(seg.type==='glow'){
+    if(reduce){set(seg.a,seg.mA,1-smooth(.4,.6,t));set(seg.b,seg.mB,smooth(.4,.6,t));hideAll([seg.a,seg.b])}
+    else{
+      const tA=clamp(t/.62,0,1),sA=Math.pow(seg.kA,ease(tA));
+      const tB=clamp((t-.38)/.62,0,1),sB=Math.pow(seg.kB,1-ease(tB));
+      set(seg.a,dolly(seg.mA,sA,seg.kA,seg.gA),1-smooth(.42,.6,t));
+      set(seg.b,dolly(seg.mB,sB,seg.kB,seg.gB),smooth(.4,.58,t));
+      hideAll([seg.a,seg.b]);
+      g=Math.pow(Math.sin(Math.PI*clamp((t-.1)/.8,0,1)),1.3);
+    }
+  }
+  glow.style.opacity=g;
+}
+let ticking=false;
+const req=()=>{if(!ticking){ticking=true;requestAnimationFrame(frame)}};
+function start(){stage.classList.add('cam');build();frame()}
+addEventListener('scroll',req,{passive:true});
+addEventListener('resize',()=>{build();req()});
+portrait.addEventListener('change',()=>{build();req()});
+const hero=shots[CFG.timeline[0].shot].img;
+if(hero.complete)start();else{hero.addEventListener('load',start,{once:true});setTimeout(()=>{if(!stage.classList.contains('cam'))start()},2500)}
+// fetch the later rooms once the first one is on screen
+addEventListener('load',()=>{setTimeout(()=>{for(const n in shots){const el=shots[n].el;if(el.classList.contains('later')){el.style.opacity=0;el.classList.remove('later')}}req()},400)});
+
+// if a device can't decode an AVIF image, fall back to the JPEG copy instead of showing a broken image
+function jpegFallback(img){if(img.dataset.fb)return;img.dataset.fb=1;const pic=img.parentElement;if(!pic||pic.tagName!=='PICTURE')return;pic.querySelectorAll('source[type="image/avif"]').forEach(s=>s.remove());if(img.srcset)img.srcset=img.srcset;else img.src=img.src}
+document.querySelectorAll('picture img').forEach(img=>{img.addEventListener('error',()=>jpegFallback(img));if(img.complete&&img.currentSrc&&img.naturalWidth===0)jpegFallback(img)});
+
+document.getElementById('quote').addEventListener('submit',e=>{
+  e.preventDefault();const f=e.target.elements,out=document.getElementById('sent');
+  const n=f.name.value.trim(),c=f.contact.value.trim();
+  if(!n||!c){out.textContent='Please add your name and a phone number or email so we can get back to you.';out.hidden=false;(n?f.contact:f.name).focus();return}
+  out.textContent=`Thanks ${n}. This form isn't connected to an inbox yet, so your enquiry hasn't been sent.`;out.hidden=false;
+});
+})();
+</script>
+</body>
+</html>
