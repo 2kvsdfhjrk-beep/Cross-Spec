@@ -155,6 +155,7 @@ def build():
         f.write(prod)
     import shutil
     shutil.copy(os.path.join(ROOT, 'r', 'README-site.txt'), os.path.join(SITE, 'README.txt'))
+    open(os.path.join(SITE, '.nojekyll'), 'w').close()
     with open(os.path.join(SITE, 'robots.txt'), 'w') as f:
         f.write('User-agent: *\nAllow: /\n')
     # cache rules for Netlify or Cloudflare Pages style hosts: images never change, the page revalidates

@@ -402,6 +402,10 @@ if(hero.complete)start();else{hero.addEventListener('load',start,{once:true});se
 // fetch the later rooms once the first one is on screen
 addEventListener('load',()=>{setTimeout(()=>{for(const n in shots){const el=shots[n].el;if(el.classList.contains('later')){el.style.opacity=0;el.classList.remove('later')}}req()},400)});
 
+// if a device can't decode an AVIF image, fall back to the JPEG copy instead of showing a broken image
+function jpegFallback(img){if(img.dataset.fb)return;img.dataset.fb=1;const pic=img.parentElement;if(!pic||pic.tagName!=='PICTURE')return;pic.querySelectorAll('source[type="image/avif"]').forEach(s=>s.remove());if(img.srcset)img.srcset=img.srcset;else img.src=img.src}
+document.querySelectorAll('picture img').forEach(img=>{img.addEventListener('error',()=>jpegFallback(img));if(img.complete&&img.currentSrc&&img.naturalWidth===0)jpegFallback(img)});
+
 document.getElementById('quote').addEventListener('submit',e=>{
   e.preventDefault();const f=e.target.elements,out=document.getElementById('sent');
   const n=f.name.value.trim(),c=f.contact.value.trim();
