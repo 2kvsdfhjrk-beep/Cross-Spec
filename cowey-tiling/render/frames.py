@@ -123,6 +123,14 @@ def encode():
                    '-color_range', 'tv', '-movflags', '+faststart', '-an', out]
             subprocess.run(cmd, check=True)
             sizes[f'{k}-{i}'] = round(os.path.getsize(out) / 1024)
+            # VP9 copy for the few browsers without H.264 (open source Chromium builds)
+            webm = out[:-4] + '.webm'
+            cmd = [FFMPEG, '-y', '-loglevel', 'error', '-framerate', str(FPS), '-start_number', str(start), '-i', os.path.join(ENC, k, '%04d.png'),
+                   '-frames:v', str(n), '-vf', 'scale=out_color_matrix=bt709:out_range=tv,format=yuv420p',
+                   '-c:v', 'libvpx-vp9', '-crf', '33', '-b:v', '0', '-g', str(GOP), '-deadline', 'good', '-cpu-used', '3', '-row-mt', '1',
+                   '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-an', webm]
+            subprocess.run(cmd, check=True)
+            sizes[f'{k}-{i}.webm'] = round(os.path.getsize(webm) / 1024)
     return sizes
 
 

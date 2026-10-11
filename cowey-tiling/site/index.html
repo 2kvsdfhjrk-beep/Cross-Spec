@@ -4,107 +4,121 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Cowey Tiling | Patio, Kitchen, Bathroom and Commercial Tiling</title>
-<meta name="description" content="Cowey Tiling is a family run tiling business. Porcelain patios and outdoor paving, kitchen splashbacks, bathrooms and wet rooms, wall and floor tiling, and commercial tiling. Site visit and written quote.">
+<meta name="description" content="Cowey Tiling is a family run tiling business. Porcelain patios and outdoor paving, kitchen splashbacks, Victorian hallway floors, bathrooms and wet rooms, and commercial tiling. Site visit and written quote.">
 <meta name="theme-color" content="#0d0d0b">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Cowey Tiling">
 <meta property="og:description" content="Family run tiling, inside and out. Patios, kitchens, bathrooms, walls and floors, and commercial work.">
 <meta property="og:image" content="img/hero-1152.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230d0d0b'/%3E%3Crect x='7' y='7' width='8' height='8' fill='%23d8b47a'/%3E%3Crect x='17' y='7' width='8' height='8' fill='%23f2efe9'/%3E%3Crect x='7' y='17' width='8' height='8' fill='%23f2efe9'/%3E%3Crect x='17' y='17' width='8' height='8' fill='%232f4a3f'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='3' fill='%23efe8da'/%3E%3Cpath d='M16.5 6.64A7 7 0 1 0 16.5 17.36' fill='none' stroke='%2321392f' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" id="gf" media="print" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62,800;100,400;100,600&display=swap">
+<link rel="stylesheet" id="gf" media="print" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,400;100,600;125,600&family=Libre+Caslon+Display&display=swap">
 <script>(function(l){function on(){l.media='all'}if(l.sheet)on();else l.addEventListener('load',on)})(document.getElementById('gf'))</script>
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62,800;100,400;100,600&display=swap"></noscript>
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100,400;100,600;125,600&family=Libre+Caslon+Display&display=swap"></noscript>
 <link rel="preload" as="image" type="image/avif" media="(max-aspect-ratio: 1/1)" imagesrcset="img/hero-p-480.avif 480w, img/hero-p-648.avif 648w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" type="image/avif" media="(min-aspect-ratio: 1.001/1)" imagesrcset="img/hero-768.avif 768w, img/hero-1152.avif 1152w" imagesizes="100vw" fetchpriority="high">
 <style>
-/* Layout: one sticky stage carries the story as a single drone flight, garden to shower room, then the high street. Text scrolls past like captions. Light sections after the story hold the crawlable detail. */
+/* One sticky stage plays a single drone flight, garden to coffee shop, as you scroll. It is H.264 video, so phones decode it in hardware.
+   Captions scroll past like a film's lower thirds. The light sections after the story hold the crawlable detail. */
 :root{
-  --night:#0d0d0b;      /* story ground */
-  --stone:#f2efe9;      /* limestone page ground */
+  --night:#0d0d0b;
+  --stone:#f2efe9;
   --ink:#1c1b18;
   --mute:#6b675f;
-  --brass:#d8b47a;      /* warm accent on dark */
-  --green:#2f4a3f;      /* zellige green accent on light */
+  --brass:#d8b47a;
+  --green:#21392f;      /* bottle green glaze */
+  --tile:#efe8da;       /* cream glaze */
   --line:#dcd6cc;
   --white:#fbfaf7;
-  --display:'Archivo','Arial Narrow','Helvetica Neue',Arial,sans-serif;
-  --body:'Archivo',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --serif:'Libre Caslon Display','Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;background:var(--night);overflow-x:hidden;overflow-x:clip}
-body{margin:0;background:var(--night);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
+body{margin:0;background:var(--night);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
 main,.site-foot{background:var(--stone)}
 img{max-width:100%}
 a{color:inherit}
-h1,h2,h3{font-family:var(--display);font-stretch:62%;font-weight:800;line-height:.95;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1,h2,h3{font-family:var(--serif);font-weight:400;line-height:1;letter-spacing:-.005em;margin:0;text-wrap:balance}
 p{margin:0}
 :focus-visible{outline:2px solid var(--brass);outline-offset:3px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:12px 22px;border-radius:999px;font:600 15px var(--body);text-decoration:none;border:0;cursor:pointer;transition:transform .2s,background .2s,color .2s}
-.btn:hover{transform:translateY(-1px)}
-.btn-light{background:var(--white);color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:46px;padding:12px 22px;border-radius:2px;font:600 15px var(--sans);text-decoration:none;border:0;cursor:pointer;transition:background .2s,color .2s}
+.btn-light{background:var(--tile);color:var(--green)}
+.btn-light:hover{background:var(--white)}
 .btn-ghost{background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px rgba(251,250,247,.55)}
 .btn-ghost:hover{background:rgba(251,250,247,.12)}
-.btn-dark{background:var(--ink);color:var(--white)}
-.btn-dark:hover{background:var(--green)}
+.btn-dark{background:var(--green);color:var(--tile)}
+.btn-dark:hover{background:var(--ink)}
+
+/* logo: the name laid in five glazed tiles */
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.tiles{display:block;height:26px;width:auto}
+.tiles rect{fill:var(--t-bg,var(--tile))}
+.tiles rect:nth-child(2){fill-opacity:.94}.tiles rect:nth-child(4){fill-opacity:.9}.tiles rect:nth-child(5){fill-opacity:.96}
+.tiles g{fill:none;stroke:var(--t-fg,var(--green));stroke-width:3;stroke-linejoin:miter;stroke-linecap:butt}
+.logo small{font:600 11px/1 var(--sans);font-stretch:125%;letter-spacing:.42em;text-transform:uppercase;padding-top:2px}
 
 /* header */
 .site-head{position:fixed;inset:0 0 auto;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:calc(14px + env(safe-area-inset-top,0px)) clamp(16px,4vw,48px) 14px;color:var(--white);transition:background .35s,color .35s,box-shadow .35s}
-.site-head.solid{background:rgba(242,239,233,.94);color:var(--ink);box-shadow:0 1px 0 var(--line);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.mark{display:flex;flex-direction:column;line-height:1;text-decoration:none}
-.mark b{font-family:var(--display);font-stretch:100%;font-weight:800;font-size:19px;letter-spacing:.22em}
-.mark span{font-size:10px;letter-spacing:.58em;margin-top:6px;opacity:.75}
+.site-head.solid{background:rgba(242,239,233,.96);color:var(--ink);box-shadow:0 1px 0 var(--line);--t-bg:var(--green);--t-fg:var(--tile)}
 .site-head nav{display:flex;align-items:center;gap:clamp(14px,2.4vw,30px);font-size:15px;font-weight:600}
 .site-head nav a:not(.btn){text-decoration:none;opacity:.85}
 .site-head nav a:not(.btn):hover{opacity:1;text-decoration:underline;text-underline-offset:4px}
-.site-head .btn{min-height:40px;padding:9px 18px}
-.site-head:not(.solid) .btn{background:var(--white);color:var(--ink)}
-@media (max-width:720px){.site-head nav a:not(.btn){display:none}}
+.site-head .btn{min-height:40px;padding:9px 16px}
+.site-head:not(.solid) .btn{background:var(--tile);color:var(--green)}
+.site-head.solid .btn{background:var(--green);color:var(--tile)}
+@media (max-width:720px){.site-head nav a:not(.btn){display:none}.logo small{display:none}}
 
-/* story: one sticky stage plays the drone flight frame by frame as you scroll */
-#story{position:relative;height:900vh;background:var(--night);color:var(--white)}
+/* story */
+#story{position:relative;height:1200vh;background:var(--night);color:var(--white)}
 .stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:var(--night)}
-.poster,.poster img,#film{position:absolute;inset:0;width:100%;height:100%;display:block;margin:0}
-.poster img{object-fit:cover}
-#film{opacity:0;transition:opacity .25s}
-#film.on{opacity:1}
-.grain{position:absolute;inset:-50%;pointer-events:none;opacity:.06;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .5  0 0 0 0 .5  0 0 0 0 .5  0 0 0 1.4 -.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-.beats{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.beat{position:absolute;left:clamp(20px,5vw,80px);width:min(600px,calc(100% - 40px));top:calc(var(--at) * 800vh + 50vh);transform:translateY(-50%);pointer-events:auto;text-shadow:0 1px 24px rgba(0,0,0,.5)}
-.beat{scroll-margin-top:30vh}
-.beat::before{content:"";position:absolute;inset:-25% -12% -25% -20%;z-index:-1;background:radial-gradient(closest-side,rgba(10,9,7,.5),rgba(10,9,7,0));pointer-events:none}
-.kicker{display:block;font-size:13px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
-.beat h2{font-size:clamp(46px,7.4vw,104px)}
-.beat p{font-size:clamp(17px,1.5vw,20px);max-width:36ch;margin-top:18px;color:rgba(251,250,247,.9)}
-.beat.hero{top:62vh;top:62svh}
-.hero h1{font-size:clamp(64px,12.5vw,190px);text-transform:uppercase;line-height:.84}
-.hero p{font-size:clamp(18px,1.7vw,22px)}
-.hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.rail{position:fixed;right:clamp(14px,2.2vw,30px);top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:12px;font-size:11px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--white);transition:opacity .3s}
-.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;opacity:.45;transition:opacity .3s}
-.rail a i{display:block;width:16px;height:1px;background:currentColor;transition:width .3s}
-.rail a.on{opacity:1}.rail a.on i{width:34px}
+.poster,.poster img,.film,.film video{position:absolute;inset:0;width:100%;height:100%;display:block;margin:0}
+.poster img,.film video{object-fit:cover}
+.film video{opacity:0}
+.film video.on{opacity:1}
+.stage::after{content:"";position:absolute;inset:auto 0 0;height:42%;pointer-events:none;background:linear-gradient(rgba(13,13,11,0),rgba(13,13,11,.42))}
+.beats{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}
+.beat{position:absolute;left:clamp(20px,5.5vw,88px);width:min(560px,calc(100% - 40px));top:calc(var(--at) * 1100vh + 62vh);transform:translateY(-50%);pointer-events:auto;text-shadow:0 1px 18px rgba(0,0,0,.45);will-change:opacity;scroll-margin-top:30vh}
+.beat::before{content:"";position:absolute;inset:-22% -10% -22% -16%;z-index:-1;background:radial-gradient(closest-side,rgba(10,9,7,.46),rgba(10,9,7,0));pointer-events:none}
+.label{display:flex;align-items:center;gap:12px;font:600 11px/1 var(--sans);font-stretch:125%;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);margin-bottom:18px}
+.label b{font-weight:600;color:var(--white);opacity:.6;letter-spacing:.1em}
+.label i{width:12px;height:12px;flex:none;background:linear-gradient(currentColor,currentColor) 0 0/5px 5px no-repeat,linear-gradient(currentColor,currentColor) 7px 0/5px 5px no-repeat,linear-gradient(currentColor,currentColor) 0 7px/5px 5px no-repeat,linear-gradient(currentColor,currentColor) 7px 7px/5px 5px no-repeat;opacity:.9}
+.beat h2{font-size:clamp(44px,6.6vw,96px);line-height:.98}
+.beat p{font-size:clamp(17px,1.45vw,19px);max-width:34ch;margin-top:18px;color:rgba(251,250,247,.9);line-height:1.55}
+.beat p.spec{margin-top:22px;padding-top:12px;border-top:1px solid rgba(251,250,247,.3);font:600 11px/1.6 var(--sans);font-stretch:125%;letter-spacing:.16em;text-transform:uppercase;color:rgba(251,250,247,.72);max-width:none;display:inline-block}
+.hero{top:58vh;top:58svh}
+.hero .tiles{height:clamp(54px,11vw,112px);--t-bg:var(--tile);--t-fg:var(--green);filter:drop-shadow(0 6px 22px rgba(0,0,0,.35))}
+.hero h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.hero .word{display:block;font:600 clamp(11px,1.1vw,13px)/1 var(--sans);font-stretch:125%;letter-spacing:.62em;text-transform:uppercase;margin-top:16px;opacity:.9}
+.hero p{font-family:var(--serif);font-size:clamp(24px,3.2vw,42px);line-height:1.1;max-width:22ch;margin-top:24px;color:var(--white)}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+.rail{position:fixed;right:clamp(14px,2.2vw,30px);top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:4px;font:600 10px/1 var(--sans);font-stretch:125%;letter-spacing:.2em;text-transform:uppercase;color:var(--white);transition:opacity .3s}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:24px;min-width:24px;padding:4px 0;text-decoration:none;opacity:.45;transition:opacity .3s}
+.rail a i{display:block;width:8px;height:8px;border:1px solid currentColor;transition:background .3s}
+.rail a.on{opacity:1}.rail a.on i{background:currentColor}
 .rail.off{opacity:0;pointer-events:none}
 @media (max-width:900px){.rail{display:none}}
-.cue{position:absolute;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));bottom:calc(100lvh - 100svh + 20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:rgba(251,250,247,.8);display:flex;flex-direction:column;align-items:center;gap:8px;transition:opacity .4s}
+.cue{position:absolute;z-index:3;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));bottom:calc(100lvh - 100svh + 20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);font:600 10px/1 var(--sans);font-stretch:125%;letter-spacing:.3em;text-transform:uppercase;color:rgba(251,250,247,.8);display:flex;flex-direction:column;align-items:center;gap:8px;transition:opacity .4s}
 .cue i{width:1px;height:38px;background:linear-gradient(rgba(251,250,247,.9),rgba(251,250,247,0))}
 
 /* light sections */
 .wrap{max-width:1200px;margin:0 auto;padding-inline:clamp(16px,4vw,48px)}
 .sec{padding-block:clamp(84px,13vh,150px)}
 .sec h2{font-size:clamp(44px,6vw,84px)}
+.kicker{display:flex;align-items:center;gap:12px;font:600 11px/1 var(--sans);font-stretch:125%;letter-spacing:.24em;text-transform:uppercase;color:var(--green);margin-bottom:20px}
 .lead{font-size:clamp(18px,1.6vw,21px);color:#3d3a34;max-width:44ch;margin-top:20px}
-.family{background:var(--night);color:var(--white)}
-.family .lead{color:rgba(251,250,247,.82)}
+.family{background:var(--green);color:var(--tile)}
+.family .kicker{color:var(--brass)}
+.family .lead{color:rgba(239,232,218,.85)}
 .family .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(28px,6vw,96px);align-items:end}
 @media (max-width:820px){.family .wrap{grid-template-columns:1fr}}
 .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(18px,2.4vw,30px);margin-top:clamp(36px,6vh,64px)}
 .svc{display:flex;flex-direction:column;gap:12px;min-width:0}
-.svc picture,.svc img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:3px;background:#d9d3c8}
-.svc h3{font-size:clamp(26px,2.4vw,32px);font-stretch:62%;margin-top:6px}
+.svc picture,.svc img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:2px;background:#d9d3c8}
+.svc h3{font-size:clamp(28px,2.4vw,34px);margin-top:8px}
 .svc p{color:#4a463f;font-size:16px}
 .contact .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:clamp(28px,6vw,96px);align-items:start}
 @media (max-width:860px){.contact .wrap{grid-template-columns:1fr}}
@@ -112,20 +126,20 @@ form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media (max-width:520px){form{grid-template-columns:1fr}}
 form .full{grid-column:1/-1}
 form label{display:flex;flex-direction:column;gap:7px;font-size:14px;font-weight:600;min-width:0}
-form input,form select,form textarea{font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:var(--white);border:1px solid #cbc4b8;border-radius:4px;padding:12px;width:100%;min-width:0}
+form input,form select,form textarea{font:inherit;font-weight:400;font-size:16px;color:var(--ink);background:var(--white);border:1px solid #cbc4b8;border-radius:2px;padding:12px;width:100%;min-width:0}
 form textarea{min-height:120px;resize:vertical}
 form .btn{grid-column:1/-1;min-height:52px}
-.sent{grid-column:1/-1;padding:12px 14px;border-radius:4px;background:#e4ddd0;font-size:15px}
+.sent{grid-column:1/-1;padding:12px 14px;border-radius:2px;background:#e4ddd0;font-size:15px}
 .site-foot{border-top:1px solid var(--line);padding-block:30px calc(30px + env(safe-area-inset-bottom,0px));font-size:14px;color:var(--mute)}
-.site-foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
-.note{font-size:13px;color:var(--mute);margin-top:14px}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.btn:hover{transition:none;transform:none}}
+.site-foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+.site-foot .tiles{height:18px;--t-bg:var(--green);--t-fg:var(--tile)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
 </style>
 
 </head>
 <body>
 <header class="site-head" id="head">
-  <a class="mark" href="#top"><b>COWEY</b> <span>TILING</span></a>
+  <a class="logo" href="#top" aria-label="Cowey Tiling, back to the top"><svg class="tiles" width="128" height="24" viewBox="0 0 128 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="1.4"/><rect x="26" width="24" height="24" rx="1.4"/><rect x="52" width="24" height="24" rx="1.4"/><rect x="78" width="24" height="24" rx="1.4"/><rect x="104" width="24" height="24" rx="1.4"/><g><path d="M16.5 6.64A7 7 0 1 0 16.5 17.36"/><circle cx="38" cy="12" r="7"/><path d="M55 6.5L58.5 17.5L64 9.5L69.5 17.5L73 6.5"/><path d="M96 6.5H84v11h12M84 12h9"/><path d="M110 6.5l6 6.5 6-6.5M116 13v4.5"/></g></svg><small>Tiling</small></a>
   <nav aria-label="Main">
     <a href="#services">Services</a>
     <a href="#family">About us</a>
@@ -133,10 +147,11 @@ form .btn{grid-column:1/-1;min-height:52px}
   </nav>
 </header>
 <nav class="rail" id="rail" aria-label="Story chapters">
-  <a href="#ch-outside" data-ch="0">Outside<i></i></a>
-  <a href="#ch-kitchen" data-ch="1">Kitchens<i></i></a>
-  <a href="#ch-bath" data-ch="2">Bathrooms<i></i></a>
-  <a href="#ch-commercial" data-ch="3">Commercial<i></i></a>
+  <a href="#ch-outside">Outside<i></i></a>
+  <a href="#ch-kitchen">Kitchens<i></i></a>
+  <a href="#ch-hall">Hallways<i></i></a>
+  <a href="#ch-bath">Bathrooms<i></i></a>
+  <a href="#ch-commercial">Commercial<i></i></a>
 </nav>
 
 <main id="top">
@@ -146,37 +161,48 @@ form .btn{grid-column:1/-1;min-height:52px}
       <source type="image/avif" media="(max-aspect-ratio: 1/1)" srcset="img/hero-p-480.avif 480w, img/hero-p-648.avif 648w" sizes="100vw">
       <source type="image/jpeg" media="(max-aspect-ratio: 1/1)" srcset="img/hero-p-480.jpg 480w, img/hero-p-648.jpg 648w" sizes="100vw">
       <source type="image/avif" srcset="img/hero-768.avif 768w, img/hero-1152.avif 1152w" sizes="100vw">
-      <img src="img/hero-1152.jpg" srcset="img/hero-768.jpg 768w, img/hero-1152.jpg 1152w" sizes="100vw" width="1152" height="648" alt="Back garden at golden hour with a porcelain patio, an outdoor sofa and a brick kitchen extension with its bifold doors open" fetchpriority="high">
+      <img src="img/hero-1152.jpg" srcset="img/hero-768.jpg 768w, img/hero-1152.jpg 1152w" sizes="100vw" width="1152" height="648" alt="Back garden at golden hour with a mortar bed ready for a porcelain patio and a brick kitchen extension with its bifold doors open" fetchpriority="high">
     </picture>
-    <canvas id="film" aria-hidden="true"></canvas>
-    <div class="grain"></div>
+    <div class="film" id="film"></div>
     <div class="cue" id="cue"><i></i>Scroll</div>
   </div>
   <div class="beats">
-    <div class="beat hero" style="--at:0">
-      <h1>Cowey<br>Tiling</h1>
-      <p>Family run tiling for homes and businesses, inside and out</p>
+    <div class="beat hero">
+      <h1>Cowey Tiling</h1>
+      <svg class="tiles" width="128" height="24" viewBox="0 0 128 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="1.4"/><rect x="26" width="24" height="24" rx="1.4"/><rect x="52" width="24" height="24" rx="1.4"/><rect x="78" width="24" height="24" rx="1.4"/><rect x="104" width="24" height="24" rx="1.4"/><g><path d="M16.5 6.64A7 7 0 1 0 16.5 17.36"/><circle cx="38" cy="12" r="7"/><path d="M55 6.5L58.5 17.5L64 9.5L69.5 17.5L73 6.5"/><path d="M96 6.5H84v11h12M84 12h9"/><path d="M110 6.5l6 6.5 6-6.5M116 13v4.5"/></g></svg>
+      <span class="word">Tiling</span>
+      <p>Family run tiling, inside and out</p>
       <div class="ctas"><a class="btn btn-light" href="#contact">Get a quote</a><a class="btn btn-ghost" href="#services">What we do</a></div>
     </div>
-    <article class="beat" id="ch-outside" style="--at:0.13">
-      <span class="kicker">Outside</span>
+    <article class="beat" id="ch-outside" style="--at:0.085">
+      <p class="label"><i></i><b>01</b>Outside</p>
       <h2>It starts in the garden</h2>
-      <p>Porcelain patios, paths and steps, laid level on a full mortar bed with falls away from the house, so they sit right through every British winter.</p>
+      <p>Porcelain patios, paths and steps, laid level on a full mortar bed with falls away from the house, so they sit right through every winter.</p>
+      <p class="spec">900 × 600 porcelain · 20 mm · full mortar bed</p>
     </article>
-    <article class="beat" id="ch-kitchen" style="--at:0.38">
-      <span class="kicker">Kitchens</span>
+    <article class="beat" id="ch-kitchen" style="--at:0.27">
+      <p class="label"><i></i><b>02</b>Kitchens</p>
       <h2>Then we come inside</h2>
       <p>Splashbacks, feature walls and floors. This one is handmade zellige, set tile by tile so the glaze catches the light.</p>
+      <p class="spec">100 × 100 zellige · hand glazed · worktop to ceiling</p>
     </article>
-    <article class="beat" id="ch-bath" style="--at:0.615">
-      <span class="kicker">Bathrooms</span>
-      <h2>Through to the shower room</h2>
-      <p>Walk-in showers, wet rooms and full refits. Every wet area is tanked and waterproofed before a single tile goes on.</p>
+    <article class="beat" id="ch-hall" style="--at:0.405">
+      <p class="label"><i></i><b>03</b>Hallways</p>
+      <h2>Down the hall</h2>
+      <p>Victorian geometric floors, restored or laid new, set out from the centre line so the border runs true from the door.</p>
+      <p class="spec">Octagon and dot · terracotta border · 12 mm</p>
+    </article>
+    <article class="beat" id="ch-bath" style="--at:0.52">
+      <p class="label"><i></i><b>04</b>Bathrooms</p>
+      <h2>Through to the bathroom</h2>
+      <p>Walk-in showers, level access wet rooms and full refits. Every wet area is tanked before a single tile goes on.</p>
+      <p class="spec">1200 × 600 porcelain · tanked · linear drain</p>
     </article>
     <article class="beat" id="ch-commercial" style="--at:0.84">
-      <span class="kicker">Commercial</span>
-      <h2>And on Monday, the high street</h2>
-      <p>Restaurants, shops, offices and communal areas, finished to the same standard as a family home.</p>
+      <p class="label"><i></i><b>05</b>Commercial</p>
+      <h2>And over the road</h2>
+      <p>Coffee shops, restaurants, offices and shops, fitted out around opening hours and finished like a family home.</p>
+      <p class="spec">300 × 300 marble effect · zellige counter</p>
     </article>
   </div>
 </section>
@@ -195,14 +221,14 @@ form .btn{grid-column:1/-1;min-height:52px}
 
 <section class="sec" id="services">
   <div class="wrap">
-    <span class="kicker" style="color:var(--green)">Services</span>
+    <span class="kicker">Services</span>
     <h2>Tiling, inside and out</h2>
     <p class="lead">Domestic and commercial wall and floor tiling, priced from a site visit with a written quote.</p>
     <div class="services">
       <article class="svc">
         <picture>
           <source type="image/avif" srcset="img/garden-640.avif 640w, img/garden-1152.avif 1152w" sizes="(max-width: 700px) 92vw, 380px">
-          <img src="img/garden-640.jpg" srcset="img/garden-640.jpg 640w, img/garden-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Porcelain patio at golden hour with sunlight falling through a slatted cedar screen" loading="lazy" decoding="async">
+          <img src="img/garden-640.jpg" srcset="img/garden-640.jpg 640w, img/garden-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Freshly laid porcelain patio at golden hour outside a brick kitchen extension with its bifold doors open" loading="lazy" decoding="async">
         </picture>
         <h3>Patios and outdoor</h3>
         <p>Porcelain paving, natural stone, steps, paths and courtyards, laid on a full mortar bed over a compacted base with falls away from the house.</p>
@@ -217,8 +243,16 @@ form .btn{grid-column:1/-1;min-height:52px}
       </article>
       <article class="svc">
         <picture>
+          <source type="image/avif" srcset="img/hall-640.avif 640w, img/hall-1152.avif 1152w" sizes="(max-width: 700px) 92vw, 380px">
+          <img src="img/hall-640.jpg" srcset="img/hall-640.jpg 640w, img/hall-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Hallway with a Victorian octagon and dot tiled floor, a terracotta border and a deep green painted dado" loading="lazy" decoding="async">
+        </picture>
+        <h3>Hallways and period floors</h3>
+        <p>Victorian and Edwardian geometric floors restored or laid new, with matching borders, thresholds and tiled front paths.</p>
+      </article>
+      <article class="svc">
+        <picture>
           <source type="image/avif" srcset="img/bath-640.avif 640w, img/bath-1152.avif 1152w" sizes="(max-width: 700px) 92vw, 380px">
-          <img src="img/bath-640.jpg" srcset="img/bath-640.jpg 640w, img/bath-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Walk-in shower with large format marble effect porcelain walls, a lit niche and a teak stool" loading="lazy" decoding="async">
+          <img src="img/bath-640.jpg" srcset="img/bath-640.jpg 640w, img/bath-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Walk-in wet room in large format marble effect porcelain with a lit niche and an open window onto the street" loading="lazy" decoding="async">
         </picture>
         <h3>Bathrooms and wet rooms</h3>
         <p>Full bathroom refits, walk-in showers and level access wet rooms, tanked and waterproofed before any tiling starts.</p>
@@ -226,10 +260,10 @@ form .btn{grid-column:1/-1;min-height:52px}
       <article class="svc">
         <picture>
           <source type="image/avif" srcset="img/commercial-640.avif 640w, img/commercial-1152.avif 1152w" sizes="(max-width: 700px) 92vw, 380px">
-          <img src="img/commercial-640.jpg" srcset="img/commercial-640.jpg 640w, img/commercial-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Restaurant bar clad in glazed terracotta finger tiles above a polished large format porcelain floor" loading="lazy" decoding="async">
+          <img src="img/commercial-640.jpg" srcset="img/commercial-640.jpg 640w, img/commercial-1152.jpg 1152w" sizes="(max-width: 700px) 92vw, 380px" width="640" height="360" alt="Coffee shop counter clad in green zellige above a black and white chequerboard marble effect floor" loading="lazy" decoding="async">
         </picture>
         <h3>Commercial tiling</h3>
-        <p>Restaurants, shops, offices and communal areas, with large format floors and feature walls planned around how the space is used.</p>
+        <p>Coffee shops, restaurants, shops and offices, with large format floors and feature counters planned around how the space is used.</p>
       </article>
     </div>
   </div>
@@ -238,14 +272,14 @@ form .btn{grid-column:1/-1;min-height:52px}
 <section class="sec contact" id="contact">
   <div class="wrap">
     <div>
-      <span class="kicker" style="color:var(--green)">Get a quote</span>
+      <span class="kicker">Get a quote</span>
       <h2>Tell us about the job</h2>
       <p class="lead">Send a few details and a photo or two. We'll come out, measure up and give you a written price.</p>
     </div>
     <form id="quote" novalidate>
       <label for="q-name">Name<input id="q-name" name="name" autocomplete="name" required></label>
       <label for="q-contact">Phone or email<input id="q-contact" name="contact" autocomplete="email" required></label>
-      <label for="q-type">Type of job<select id="q-type" name="type"><option>Patio or outdoor</option><option>Kitchen</option><option>Bathroom or wet room</option><option>Walls and floors</option><option>Commercial</option><option>Something else</option></select></label>
+      <label for="q-type">Type of job<select id="q-type" name="type"><option>Patio or outdoor</option><option>Kitchen</option><option>Hallway or period floor</option><option>Bathroom or wet room</option><option>Walls and floors</option><option>Commercial</option><option>Something else</option></select></label>
       <label for="q-postcode">Postcode<input id="q-postcode" name="postcode" autocomplete="postal-code"></label>
       <label class="full" for="q-msg">About the job<textarea id="q-msg" name="message" placeholder="Back garden patio, roughly 6 m by 4 m, porcelain"></textarea></label>
       <button class="btn btn-dark" type="submit">Send enquiry</button>
@@ -254,110 +288,109 @@ form .btn{grid-column:1/-1;min-height:52px}
   </div>
 </section>
 </main>
-<footer class="site-foot"><div class="wrap"><span>Cowey Tiling</span><span>Family run tiling, inside and out</span><a href="#top">Back to top</a></div></footer>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Cowey Tiling","description":"Family run tiling business for homes and businesses: porcelain patios and outdoor paving, kitchen splashbacks, bathrooms and wet rooms, wall and floor tiling, and commercial tiling.","image":"img/hero-1152.jpg","makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Patio and outdoor porcelain paving"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Kitchen tiling and splashbacks"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Bathroom and wet room tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Wall and floor tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Commercial tiling"}}]}</script>
+<footer class="site-foot"><div class="wrap"><svg class="tiles" width="128" height="24" viewBox="0 0 128 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="1.4"/><rect x="26" width="24" height="24" rx="1.4"/><rect x="52" width="24" height="24" rx="1.4"/><rect x="78" width="24" height="24" rx="1.4"/><rect x="104" width="24" height="24" rx="1.4"/><g><path d="M16.5 6.64A7 7 0 1 0 16.5 17.36"/><circle cx="38" cy="12" r="7"/><path d="M55 6.5L58.5 17.5L64 9.5L69.5 17.5L73 6.5"/><path d="M96 6.5H84v11h12M84 12h9"/><path d="M110 6.5l6 6.5 6-6.5M116 13v4.5"/></g></svg><span>Family run tiling, inside and out</span><a href="#top">Back to top</a></div></footer>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"HomeAndConstructionBusiness","name":"Cowey Tiling","description":"Family run tiling business for homes and businesses: porcelain patios and outdoor paving, kitchen splashbacks, Victorian hallway floors, bathrooms and wet rooms, and commercial tiling.","image":"img/hero-1152.jpg","makesOffer":[{"@type":"Offer","itemOffered":{"@type":"Service","name":"Patio and outdoor porcelain paving"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Kitchen tiling and splashbacks"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Bathroom and wet room tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Hallway and period floor tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Wall and floor tiling"}},{"@type":"Offer","itemOffered":{"@type":"Service","name":"Commercial tiling"}}]}</script>
 <script>
 (()=>{
-const CFG={"n":220,"cuts":[150],"map":[[0,0],[0.03,0],[0.3,60],[0.52,104],[0.62,130],[0.67,149],[0.7,149],[0.735,150],[0.97,219],[1,219]],"ch":[0.0,0.29,0.56,0.71],"L":{"w":1152,"h":648},"P":{"w":648,"h":1152},"fmts":["avif","webp"]};
+const CFG={"n":290,"fps":30,"chunks":[{"start":0,"n":118},{"start":118,"n":60},{"start":178,"n":112}],"map":[[0,0],[0.025,0],[0.2,62],[0.36,118],[0.47,146],[0.58,178],[0.75,238],[0.97,289],[1,289]],"ch":[0.0,0.2,0.36,0.47,0.58]};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const story=document.getElementById('story'),stage=document.getElementById('stage'),film=document.getElementById('film'),cue=document.getElementById('cue');
 const head=document.getElementById('head'),rail=document.getElementById('rail'),railA=[...rail.querySelectorAll('a')];
-const poster=stage.querySelector('.poster img');
-const ctx=film.getContext('2d',{alpha:false});
+const beats=[...document.querySelectorAll('.beat')];
 const portrait=matchMedia('(max-aspect-ratio: 1/1)');
 const coarse=matchMedia('(pointer: coarse)').matches;
-const N=CFG.n;
-let key=portrait.matches?'P':'L',fmt=null;
-const blobs={L:new Array(N),P:new Array(N)},asked={L:new Set(),P:new Set()};
-const bmp=new Map(),decoding=new Set();
-let target=0,pos=0,running=false,drawn=null,cw=0,ch=0,sx=0,sy=0,inflight=0;
+let key=null,vids=[],target=0,pos=0,running=false,active=-1,inStory=true;
+// H.264 everywhere it plays (all phones and nearly every desktop), VP9 for the rest
+const EXT=document.createElement('video').canPlayType('video/mp4; codecs="avc1.640028"')?'mp4':'webm';
 
-// scroll position (0..1 through the story) to a frame number, piecewise linear between keys
+// scroll position through the story (0..1) to a frame of the flight, piecewise linear between keys
 function frameAt(p){const m=CFG.map;for(let i=1;i<m.length;i++){if(p<=m[i][0]){const a=m[i-1],b=m[i];return a[1]+(b[1]-a[1])*((p-a[0])/((b[0]-a[0])||1))}}return m[m.length-1][1]}
 
-// the canvas holds exactly the part of the frame that covers the screen, the browser scales it up
-function size(){
-  const W=stage.clientWidth,H=stage.clientHeight,c=CFG[key];if(!W||!H)return;
-  const a=W/H;let rw,rh;if(a>c.w/c.h){rw=c.w;rh=c.w/a}else{rh=c.h;rw=c.h*a}
-  cw=Math.round(rw);ch=Math.round(rh);sx=(c.w-cw)/2;sy=(c.h-ch)/2;
-  if(film.width!==cw||film.height!==ch){film.width=cw;film.height=ch}
-  drawn=null;
+// one muted video per chunk of the flight, scrubbed by seeking, which phones do in hardware.
+// The files download as soon as the page has loaded; they are only handed to video decoders on the first scroll,
+// touch or key press (or after six quiet seconds), because starting a decoder is the costly part on a slow phone.
+let armed=false;
+function setup(k){
+  if(k===key)return;key=k;film.textContent='';active=-1;
+  vids=CFG.chunks.map((c,i)=>{
+    const v=document.createElement('video');
+    v.muted=true;v.playsInline=true;v.preload='auto';v.disablePictureInPicture=true;
+    v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('aria-hidden','true');
+    film.appendChild(v);
+    const o={v,i,start:c.start,n:c.n,ready:false,busy:false,at:-1,want:-1,blob:null};
+    v.addEventListener('loadeddata',()=>{o.ready=true;kick()});
+    v.addEventListener('seeked',()=>{o.busy=false;o.at=o.want;show();step(o)});
+    return o;
+  });
+  load(k);
 }
-const seg=i=>CFG.cuts.filter(c=>i>=c).length;
-function nearest(i){if(bmp.has(i))return i;const g=seg(i);for(let d=1;d<16;d++){if(bmp.has(i-d)&&seg(i-d)===g)return i-d;if(bmp.has(i+d)&&seg(i+d)===g)return i+d}return -1}
-function draw(){
-  const i=Math.floor(pos),f=pos-i,a=nearest(i);if(a<0)return;
-  const mix=a===i&&f>.02&&bmp.has(i+1);
-  const sig=mix?i+Math.round(f*64)/64:a;
-  if(sig===drawn)return;
-  ctx.globalAlpha=1;ctx.drawImage(bmp.get(a),sx,sy,cw,ch,0,0,cw,ch);
-  // between two frames, blend them so the flight never steps
-  if(mix){ctx.globalAlpha=f;ctx.drawImage(bmp.get(i+1),sx,sy,cw,ch,0,0,cw,ch);ctx.globalAlpha=1}
-  drawn=sig;film.classList.add('on');
+function attach(o){
+  if(!armed||!o.blob||o.v.src)return;
+  o.v.src=URL.createObjectURL(o.blob);
+  // iOS only paints a paused muted video once it has started playing, so start and stop it straight away
+  const p=o.v.play();if(p)p.then(()=>{o.v.pause();kick()},()=>{});
 }
-const decodeBlob=window.createImageBitmap?b=>createImageBitmap(b):b=>new Promise((res,rej)=>{const im=new Image();im.onload=()=>res(im);im.onerror=rej;im.src=URL.createObjectURL(b)});
-function want(i){
-  if(i<0||i>=N||bmp.has(i)||decoding.has(i))return;
-  const b=blobs[key][i];if(!b)return;
-  const k=key;decoding.add(i);
-  decodeBlob(b).then(im=>{decoding.delete(i);if(k!==key){im.close&&im.close();return}bmp.set(i,im);trim();kick()},()=>{decoding.delete(i);if(fmt==='avif'&&i===0)fallback()});
+async function load(k){
+  for(const o of vids){
+    if(k!==key)return;
+    try{const r=await fetch(`v/${k}-${o.i}.${EXT}`);if(!r.ok)continue;o.blob=await r.blob();if(k!==key)return;attach(o)}catch(e){}
+  }
 }
-function trim(){const c=Math.round(pos);if(bmp.size<26)return;for(const [i,im] of bmp){if(Math.abs(i-c)>12){im.close&&im.close();bmp.delete(i)}}}
+function arm(){if(armed)return;armed=true;vids.forEach(attach)}
+['scroll','touchstart','pointerdown','keydown','wheel'].forEach(t=>addEventListener(t,arm,{once:true,passive:true}));
+const chunkOf=f=>{for(let i=vids.length-1;i>=0;i--)if(f>=vids[i].start)return i;return 0};
+function seek(o,f){
+  const local=clamp(f-o.start,0,o.n-1);
+  if(o.want===local&&(o.busy||o.at===local))return;
+  o.want=local;
+  if(o.busy)return;
+  o.busy=true;o.v.currentTime=(local+.5)/CFG.fps;
+}
+function step(o){if(!o.ready)return;const f=Math.round(pos),c=chunkOf(f);if(o.i===c)seek(o,f)}
+function show(){
+  const f=Math.round(pos),c=chunkOf(f),o=vids[c];
+  if(!o||!o.ready||o.at<0)return;
+  if(active!==c){vids.forEach(x=>x.v.classList.toggle('on',x.i===c));active=c}
+}
 function loop(){
   running=false;
-  const d=target-pos;pos=Math.abs(d)<.003?target:pos+d*(coarse?.3:.14);
-  const c=Math.round(pos),dir=d<0?-1:1;
-  want(Math.floor(pos));want(Math.floor(pos)+1);
-  for(let j=1;j<=6;j++)want(c+j*dir);
-  for(let j=1;j<=2;j++)want(c-j*dir);
-  draw();pump();
+  const d=target-pos;pos=Math.abs(d)<.02?target:pos+d*(coarse?.42:.18);
+  const f=Math.round(pos),c=chunkOf(f),o=vids[c];
+  if(o&&o.ready)seek(o,f);
+  // keep the neighbouring chunk parked on its first or last frame so crossing between chunks never waits
+  const nx=vids[c+1],pv=vids[c-1];
+  if(nx&&nx.ready&&!nx.busy&&f>nx.start-8)seek(nx,nx.start);
+  if(pv&&pv.ready&&!pv.busy&&f<o.start+8)seek(pv,pv.start+pv.n-1);
+  show();
   if(pos!==target)kick();
 }
 function kick(){if(!running){running=true;requestAnimationFrame(loop)}}
 
-// download order: frames near the camera first, then every 8th, 4th, 2nd frame, then the rest
-const order=[];[8,4,2,1].forEach(s=>{for(let i=0;i<N;i+=s)if(!order.includes(i))order.push(i)});
-function nextFrame(){
-  const k=key,c=Math.round(target);
-  for(let d=0;d<10;d++){for(const i of [c+d,c-d])if(i>=0&&i<N&&!asked[k].has(i))return i}
-  for(const i of order)if(!asked[k].has(i))return i;
-  return -1;
-}
-function pump(){
-  if(!fmt)return;
-  while(inflight<6){
-    const i=nextFrame();if(i<0)return;
-    const k=key,f=fmt;asked[k].add(i);inflight++;
-    fetch(`f/${k}/${String(i).padStart(3,'0')}.${f}`).then(r=>{if(!r.ok)throw 0;return r.blob()}).then(b=>{if(f===fmt)blobs[k][i]=b;inflight--;kick()},()=>{inflight--;pump()});
-  }
-}
-function fallback(){if(fmt!=='webp'&&CFG.fmts.includes('webp')){fmt='webp';blobs.L=new Array(N);blobs.P=new Array(N);asked.L.clear();asked.P.clear();pump()}}
-
 function onScroll(){
-  const r=story.getBoundingClientRect(),range=story.offsetHeight-stage.offsetHeight;
-  const p=clamp(-r.top/range,0,1),inStory=r.bottom>0&&r.top<innerHeight;
+  const H=innerHeight,r=story.getBoundingClientRect(),range=story.offsetHeight-stage.offsetHeight;
+  const rects=beats.map(b=>b.getBoundingClientRect());
+  const p=clamp(-r.top/range,0,1);
+  inStory=r.bottom>0&&r.top<H;
   head.classList.toggle('solid',r.bottom<=64);
-  rail.classList.toggle('off',!inStory||r.bottom<innerHeight*.6);
+  rail.classList.toggle('off',!inStory||r.bottom<H*.6);
   cue.style.opacity=p>.01?0:1;
   let chp=0;CFG.ch.forEach((v,i)=>{if(p>=v)chp=i});
   railA.forEach((a,i)=>a.classList.toggle('on',i===chp));
   target=frameAt(p);
-  if(inStory){kick();fade()}
-}
-const beats=[...document.querySelectorAll('.beat')];
-function fade(){const H=innerHeight;beats.forEach(b=>{const r=b.getBoundingClientRect();if(r.bottom<-50||r.top>H+50)return;const o=clamp((r.top-H*.1)/(H*.14),0,1);b.style.opacity=o.toFixed(3);b.style.visibility=o<.01?'hidden':''})}
-function setKey(){
-  const k=portrait.matches?'P':'L';
-  if(k!==key){key=k;for(const im of bmp.values())im.close&&im.close();bmp.clear();decoding.clear()}
-  size();kick();
+  if(!inStory)return;
+  kick();
+  // captions fade out before they reach the logo at the top of the screen
+  rects.forEach((rc,i)=>{if(rc.bottom<-50||rc.top>H+50)return;const o=clamp((rc.top-H*.1)/(H*.14),0,1),b=beats[i];b.style.opacity=o.toFixed(3);b.style.visibility=o<.01?'hidden':''});
 }
 addEventListener('scroll',onScroll,{passive:true});
-addEventListener('resize',()=>{setKey();onScroll()});
-portrait.addEventListener('change',()=>{setKey();onScroll()});
-size();onScroll();pos=target;
-// start fetching the flight once the page itself has finished loading; the browser already chose AVIF or JPEG for the poster
-function begin(){fmt=/\.avif($|\?)/.test(poster.currentSrc||'')?'avif':(CFG.fmts.includes('webp')?'webp':'avif');pump();kick()}
-if(document.readyState==='complete')setTimeout(begin,150);else addEventListener('load',()=>setTimeout(begin,150),{once:true});
+addEventListener('resize',onScroll);
+portrait.addEventListener('change',()=>{if(key)setup(portrait.matches?'P':'L');onScroll()});
+onScroll();pos=target;
+// a tap or click also counts as permission to play, which unlocks the videos on iPhones in Low Power Mode
+addEventListener('touchend',()=>vids.forEach(o=>{if(o.v.src&&o.v.paused){const p=o.v.play();if(p)p.then(()=>{o.v.pause();o.at=-1;o.want=-1;kick()},()=>{})}}),{once:true,passive:true});
+// fetch the flight once the page itself has loaded, so it never slows the first view
+function begin(){if(navigator.connection&&navigator.connection.saveData)return;setup(portrait.matches?'P':'L');setTimeout(arm,6000);kick()}
+if(document.readyState==='complete')setTimeout(begin,120);else addEventListener('load',()=>setTimeout(begin,120),{once:true});
 
 // if a device can't decode an AVIF image, fall back to the JPEG copy instead of showing a broken image
 function jpegFallback(img){if(img.dataset.fb)return;img.dataset.fb=1;const pic=img.parentElement;if(!pic||pic.tagName!=='PICTURE')return;pic.querySelectorAll('source[type="image/avif"]').forEach(s=>s.remove());if(img.srcset)img.srcset=img.srcset;else img.src=img.src}

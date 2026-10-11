@@ -80,8 +80,8 @@ p{margin:0}
 .hero .word{display:block;font:600 clamp(11px,1.1vw,13px)/1 var(--sans);font-stretch:125%;letter-spacing:.62em;text-transform:uppercase;margin-top:16px;opacity:.9}
 .hero p{font-family:var(--serif);font-size:clamp(24px,3.2vw,42px);line-height:1.1;max-width:22ch;margin-top:24px;color:var(--white)}
 .hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-.rail{position:fixed;right:clamp(14px,2.2vw,30px);top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:12px;font:600 10px/1 var(--sans);font-stretch:125%;letter-spacing:.2em;text-transform:uppercase;color:var(--white);transition:opacity .3s}
-.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;text-decoration:none;opacity:.45;transition:opacity .3s}
+.rail{position:fixed;right:clamp(14px,2.2vw,30px);top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;gap:4px;font:600 10px/1 var(--sans);font-stretch:125%;letter-spacing:.2em;text-transform:uppercase;color:var(--white);transition:opacity .3s}
+.rail a{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-height:24px;min-width:24px;padding:4px 0;text-decoration:none;opacity:.45;transition:opacity .3s}
 .rail a i{display:block;width:8px;height:8px;border:1px solid currentColor;transition:background .3s}
 .rail a.on{opacity:1}.rail a.on i{background:currentColor}
 .rail.off{opacity:0;pointer-events:none}
@@ -239,11 +239,16 @@ const beats=[...document.querySelectorAll('.beat')];
 const portrait=matchMedia('(max-aspect-ratio: 1/1)');
 const coarse=matchMedia('(pointer: coarse)').matches;
 let key=null,vids=[],target=0,pos=0,running=false,active=-1,inStory=true;
+// H.264 everywhere it plays (all phones and nearly every desktop), VP9 for the rest
+const EXT=document.createElement('video').canPlayType('video/mp4; codecs="avc1.640028"')?'mp4':'webm';
 
 // scroll position through the story (0..1) to a frame of the flight, piecewise linear between keys
 function frameAt(p){const m=CFG.map;for(let i=1;i<m.length;i++){if(p<=m[i][0]){const a=m[i-1],b=m[i];return a[1]+(b[1]-a[1])*((p-a[0])/((b[0]-a[0])||1))}}return m[m.length-1][1]}
 
-// one muted video per chunk of the flight; each is fetched whole, then scrubbed by seeking, which phones do in hardware
+// one muted video per chunk of the flight, scrubbed by seeking, which phones do in hardware.
+// The files download as soon as the page has loaded; they are only handed to video decoders on the first scroll,
+// touch or key press (or after six quiet seconds), because starting a decoder is the costly part on a slow phone.
+let armed=false;
 function setup(k){
   if(k===key)return;key=k;film.textContent='';active=-1;
   vids=CFG.chunks.map((c,i)=>{
@@ -251,25 +256,27 @@ function setup(k){
     v.muted=true;v.playsInline=true;v.preload='auto';v.disablePictureInPicture=true;
     v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('aria-hidden','true');
     film.appendChild(v);
-    const o={v,i,start:c.start,n:c.n,ready:false,busy:false,at:-1,want:-1};
+    const o={v,i,start:c.start,n:c.n,ready:false,busy:false,at:-1,want:-1,blob:null};
     v.addEventListener('loadeddata',()=>{o.ready=true;kick()});
     v.addEventListener('seeked',()=>{o.busy=false;o.at=o.want;show();step(o)});
     return o;
   });
   load(k);
 }
+function attach(o){
+  if(!armed||!o.blob||o.v.src)return;
+  o.v.src=URL.createObjectURL(o.blob);
+  // iOS only paints a paused muted video once it has started playing, so start and stop it straight away
+  const p=o.v.play();if(p)p.then(()=>{o.v.pause();kick()},()=>{});
+}
 async function load(k){
   for(const o of vids){
     if(k!==key)return;
-    try{
-      const r=await fetch(`v/${k}-${o.i}.mp4`);if(!r.ok)continue;
-      const b=await r.blob();if(k!==key)return;
-      o.v.src=URL.createObjectURL(b);
-      // iOS only paints a paused muted video once it has started playing, so start and stop it straight away
-      const p=o.v.play();if(p)p.then(()=>{o.v.pause();kick()},()=>{});
-    }catch(e){}
+    try{const r=await fetch(`v/${k}-${o.i}.${EXT}`);if(!r.ok)continue;o.blob=await r.blob();if(k!==key)return;attach(o)}catch(e){}
   }
 }
+function arm(){if(armed)return;armed=true;vids.forEach(attach)}
+['scroll','touchstart','pointerdown','keydown','wheel'].forEach(t=>addEventListener(t,arm,{once:true,passive:true}));
 const chunkOf=f=>{for(let i=vids.length-1;i>=0;i--)if(f>=vids[i].start)return i;return 0};
 function seek(o,f){
   const local=clamp(f-o.start,0,o.n-1);
@@ -298,18 +305,21 @@ function loop(){
 }
 function kick(){if(!running){running=true;requestAnimationFrame(loop)}}
 
-function fade(){const H=innerHeight;beats.forEach(b=>{const r=b.getBoundingClientRect();if(r.bottom<-50||r.top>H+50)return;const o=clamp((r.top-H*.1)/(H*.14),0,1);b.style.opacity=o.toFixed(3);b.style.visibility=o<.01?'hidden':''})}
 function onScroll(){
-  const r=story.getBoundingClientRect(),range=story.offsetHeight-stage.offsetHeight;
+  const H=innerHeight,r=story.getBoundingClientRect(),range=story.offsetHeight-stage.offsetHeight;
+  const rects=beats.map(b=>b.getBoundingClientRect());
   const p=clamp(-r.top/range,0,1);
-  inStory=r.bottom>0&&r.top<innerHeight;
+  inStory=r.bottom>0&&r.top<H;
   head.classList.toggle('solid',r.bottom<=64);
-  rail.classList.toggle('off',!inStory||r.bottom<innerHeight*.6);
+  rail.classList.toggle('off',!inStory||r.bottom<H*.6);
   cue.style.opacity=p>.01?0:1;
   let chp=0;CFG.ch.forEach((v,i)=>{if(p>=v)chp=i});
   railA.forEach((a,i)=>a.classList.toggle('on',i===chp));
   target=frameAt(p);
-  if(inStory){kick();fade()}
+  if(!inStory)return;
+  kick();
+  // captions fade out before they reach the logo at the top of the screen
+  rects.forEach((rc,i)=>{if(rc.bottom<-50||rc.top>H+50)return;const o=clamp((rc.top-H*.1)/(H*.14),0,1),b=beats[i];b.style.opacity=o.toFixed(3);b.style.visibility=o<.01?'hidden':''});
 }
 addEventListener('scroll',onScroll,{passive:true});
 addEventListener('resize',onScroll);
@@ -318,7 +328,7 @@ onScroll();pos=target;
 // a tap or click also counts as permission to play, which unlocks the videos on iPhones in Low Power Mode
 addEventListener('touchend',()=>vids.forEach(o=>{if(o.v.src&&o.v.paused){const p=o.v.play();if(p)p.then(()=>{o.v.pause();o.at=-1;o.want=-1;kick()},()=>{})}}),{once:true,passive:true});
 // fetch the flight once the page itself has loaded, so it never slows the first view
-function begin(){if(navigator.connection&&navigator.connection.saveData)return;setup(portrait.matches?'P':'L');kick()}
+function begin(){if(navigator.connection&&navigator.connection.saveData)return;setup(portrait.matches?'P':'L');setTimeout(arm,6000);kick()}
 if(document.readyState==='complete')setTimeout(begin,120);else addEventListener('load',()=>setTimeout(begin,120),{once:true});
 
 // if a device can't decode an AVIF image, fall back to the JPEG copy instead of showing a broken image
