@@ -109,11 +109,11 @@ OF = 27.6                        # face of the terrace opposite
 X0, X1 = -48.0, 48.0
 ROADZ = -0.12
 
-box('pavement_ours', (X1 - X0, PAV1 - PAV0 + 0.15, 0.1), (0, (PAV0 + PAV1 + 0.15) / 2, -0.05), S['flags'], coll=STREET)
+box('pavement_ours', (X1 - X0, PAV1 - PAV0, 0.1), (0, (PAV0 + PAV1) / 2, -0.05), S['flags'], coll=STREET)
 box('kerb_ours', (X1 - X0, 0.15, 0.25), (0, KERB1 - 0.075, -0.125 + 0.0), S['kerb'], bevel=0.01, coll=STREET)
 box('road', (X1 - X0, ROAD1 - KERB1, 0.1), (0, (KERB1 + ROAD1) / 2, ROADZ - 0.05), S['asphalt'], coll=STREET)
 box('kerb_opp', (X1 - X0, 0.15, 0.25), (0, ROAD1 + 0.075, -0.125), S['kerb'], bevel=0.01, coll=STREET)
-box('pavement_opp', (X1 - X0, OPAV1 - OPAV0 + 0.15, 0.1), (0, (OPAV0 + OPAV1 - 0.15) / 2, -0.05), S['flags'], coll=STREET)
+box('pavement_opp', (X1 - X0, OPAV1 - OPAV0, 0.1), (0, (OPAV0 + OPAV1) / 2, -0.05), S['flags'], coll=STREET)
 # gullies along the kerbs
 for gx in (-14.0, 9.0, 31.0):
     for gy in (KERB1 + 0.25, ROAD1 - 0.25):
@@ -189,7 +189,7 @@ for (a, b, i) in OPP:
     opp_doors.append(a + 0.95 if i % 2 == 1 else b - 0.95)
 gaps = sorted([(d - 0.55, d + 0.55) for d in opp_doors] + [(CAFE_X0 - 0.1, CAFE_X1 + 0.1)])
 garden_wall('fw_opp', X0, X1, OPAV1 + 0.11, gaps)
-box('cafe_forecourt', (CAFE_X1 - CAFE_X0 + 0.2, OF - OPAV1, 0.1), ((CAFE_X0 + CAFE_X1) / 2, (OPAV1 + OF) / 2, -0.05), S['flags'], coll=STREET)
+box('cafe_forecourt', (CAFE_X1 - CAFE_X0 + 0.2, OF - OPAV1, 0.1), ((CAFE_X0 + CAFE_X1) / 2, (OPAV1 + OF) / 2, -0.046), S['flags'], coll=STREET)
 H.terrace_roof('opp_row', -42.0, 42.0, OF, OF + 6.3, STREET, chimneys=[a for (a, b, i) in OPP[1:]][::2])
 box('opp_rear', (84.0, 0.3, H.EAVE), (0, OF + 6.45, H.EAVE / 2), M['brick'], coll=STREET)
 # Victorian street lamps (not yet lit)

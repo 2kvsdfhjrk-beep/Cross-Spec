@@ -3,10 +3,10 @@ Cowey Tiling website, production files
 What is here
   index.html   The whole page. Styles and the scroll script are inline, so there is nothing else to load.
   img/         The opening frame and the service photos in AVIF (modern browsers) with a JPEG fallback.
-  f/           The drone flight, one image per frame. L is the landscape cut, P the portrait cut for phones.
-               Each frame is AVIF with a WebP copy for older browsers. They load after the page has appeared.
+  v/           The drone flight as short H.264 videos in three chunks. L is the landscape cut, P the portrait cut for phones.
+               They load after the page has appeared and are scrubbed as you scroll, which phones decode in hardware.
   robots.txt   Lets search engines crawl the site.
-  _headers     Cache rules for Netlify or Cloudflare Pages. Images and frames are cached for a year, the page is always checked for updates.
+  _headers     Cache rules for Netlify or Cloudflare Pages. Images and videos are cached for a year, the page is always checked for updates.
 
 To put it live
   1. Upload this folder as it is to any static host (Netlify, Cloudflare Pages, Vercel, or your current web host).

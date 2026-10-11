@@ -97,6 +97,8 @@ def grade_all():
     os.makedirs(os.path.join(SITE, 'img'), exist_ok=True)
     for f in range(N):
         src = os.path.join(SRC, f'{f:04d}.png')
+        if not os.path.exists(src):
+            src = src[:-4] + '.jpg'          # frames rendered on the helper machines arrive as JPEG
         g = grade_for(f)
         a = develop(src, **g)
         for k, c in crops(a).items():
