@@ -261,7 +261,7 @@ html:not(.motion) .flavours li{ background:none; border-color:var(--wine-a35); }
 .menu-head{ display:grid; justify-items:center; gap:10px; margin-bottom:clamp(24px,4vw,44px); }
 .menu-head .lockup{ width:min(88%,460px); }
 .menu-loc{ margin:0; font:700 12px/1 var(--f-sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); }
-.chips{ position:sticky; top:calc(env(safe-area-inset-top,0px) + 66px); z-index:3; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:0 calc(-1 * clamp(18px,4.5vw,64px)) clamp(26px,4vw,40px); padding:10px clamp(18px,4.5vw,64px); background:rgba(235,224,220,.94); }
+.chips{ position:sticky; top:var(--nav-h, calc(env(safe-area-inset-top,0px) + 62px)); z-index:3; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; margin:0 calc(-1 * clamp(18px,4.5vw,64px)) clamp(26px,4vw,40px); padding:10px clamp(18px,4.5vw,64px); background:#F1E8E1; box-shadow:0 -14px 0 #F1E8E1, 0 1px 0 var(--wine-a18); }
 .chips::-webkit-scrollbar{ display:none; }
 .chips a{ flex:none; text-decoration:none; font:600 12px/1 var(--f-sans); letter-spacing:.16em; text-transform:uppercase; padding:11px 15px 10px; border:2px solid var(--wine); border-radius:999px; transition:background-color .25s, color .25s; }
 .chips a.on{ background:var(--wine); color:var(--paper); }
@@ -270,12 +270,13 @@ html:not(.motion) .flavours li{ background:none; border-color:var(--wine-a35); }
 .mblock{ scroll-margin-top:150px; }
 .mblock + .mblock{ margin-top:clamp(44px,5vw,60px); }
 .msec{ display:flex; align-items:center; gap:16px; margin:0 0 22px; font:700 clamp(32px,4.2vw,46px)/1 var(--f-cond); text-transform:uppercase; letter-spacing:.02em; }
-.msec::before,.msec::after{ content:""; flex:1; min-width:24px; height:9px; background:radial-gradient(circle at 4.5px 50%, currentColor 3.6px, transparent 4.2px) no-repeat, linear-gradient(currentColor,currentColor) 0 50%/100% 2px no-repeat; }
-.msec::after{ transform:scaleX(-1); }
-.motion .rv .msec::before{ transform:scaleX(0); transform-origin:100% 50%; transition:transform 1.1s .25s cubic-bezier(.2,.8,.2,1); }
-.motion .rv .msec::after{ transform:scaleX(0); transform-origin:0 50%; transition:transform 1.1s .25s cubic-bezier(.2,.8,.2,1); }
-.motion .rv.in .msec::before{ transform:none; }
-.motion .rv.in .msec::after{ transform:scaleX(-1); }
+.msec::before,.msec::after{ content:""; flex:1; min-width:24px; height:9px; }
+/* each rule carries its dot on the outer end; they draw outwards from the heading */
+.msec::before{ background:radial-gradient(circle at 4.5px 50%, currentColor 3.6px, transparent 4.2px) no-repeat, linear-gradient(currentColor,currentColor) 0 50%/100% 2px no-repeat; }
+.msec::after{ background:radial-gradient(circle at calc(100% - 4.5px) 50%, currentColor 3.6px, transparent 4.2px) no-repeat, linear-gradient(currentColor,currentColor) 0 50%/100% 2px no-repeat; }
+.motion .rv .msec::before{ -webkit-clip-path:inset(0 0 0 100%); clip-path:inset(0 0 0 100%); transition:clip-path 1.1s .25s cubic-bezier(.2,.8,.2,1), -webkit-clip-path 1.1s .25s cubic-bezier(.2,.8,.2,1); }
+.motion .rv .msec::after{ -webkit-clip-path:inset(0 100% 0 0); clip-path:inset(0 100% 0 0); transition:clip-path 1.1s .25s cubic-bezier(.2,.8,.2,1), -webkit-clip-path 1.1s .25s cubic-bezier(.2,.8,.2,1); }
+.motion .rv.in .msec::before,.motion .rv.in .msec::after{ -webkit-clip-path:inset(0 0 0 0); clip-path:inset(0 0 0 0); }
 .items{ list-style:none; margin:0; padding:0; display:grid; gap:18px; }
 .it-row{ display:flex; align-items:baseline; gap:10px; }
 .item h4,.price{ margin:0; font:700 clamp(21px,2.2vw,25px)/1.1 var(--f-cond); text-transform:uppercase; letter-spacing:.012em; }
@@ -1039,6 +1040,8 @@ html:not(.motion) .card-shadow{ display:none; }
 
   var nav = $('#nav'), heroContent = $('.hero-content'), navPz = $('.nav-pz'), eatenShown = -1;
   var S = null, L = 0, G = 0;
+  /* the menu's category bar sticks flush under the top bar */
+  function setNavH() { doc.style.setProperty('--nav-h', nav.offsetHeight + 'px'); }
   function navState() {
     var y = window.scrollY, line = y + 40;
     doc.classList.toggle('scrolled', y > heroH * 0.7);
@@ -1060,7 +1063,7 @@ html:not(.motion) .card-shadow{ display:none; }
       menuTop = menu.getBoundingClientRect().top + window.scrollY; menuBottom = menuTop + menu.offsetHeight;
       loyalTop = loyal.getBoundingClientRect().top + window.scrollY; loyalH = loyal.offsetHeight;
       docH = document.documentElement.scrollHeight;
-      measureBlocks(); navState();
+      setNavH(); measureBlocks(); navState();
     };
     measureStatic();
     window.addEventListener('scroll', navState, { passive: true });
@@ -1285,7 +1288,7 @@ html:not(.motion) .card-shadow{ display:none; }
     loyalTop = loyal.getBoundingClientRect().top + window.scrollY; loyalH = loyal.offsetHeight;
     galTop = gal.getBoundingClientRect().top + window.scrollY; galH = gal.offsetHeight;
     ctaTop = cta.getBoundingClientRect().top + window.scrollY; ctaH = cta.offsetHeight;
-    measureBlocks();
+    setNavH(); measureBlocks();
     drip.setAttribute('viewBox', '0 0 ' + winW + ' ' + winH);
     makeDrips(winW);
     layoutSprites();
