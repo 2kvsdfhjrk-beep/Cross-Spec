@@ -58,6 +58,7 @@ M = dict(
     nero=m_marble('calacatta_porcelain', base=(0.80, 0.79, 0.765), vein=(0.50, 0.48, 0.45), rough=0.1, coat=0.45, scale=0.65, calm=True),
     bath_floor=m_porcelain_stone('bath_floor', tone=(0.16, 0.155, 0.148), rough=0.5, bump=0.15),
     slate=m_slate('slate_roof'),
+    mortar=m_plaster('mortar_bed', (0.25, 0.24, 0.22), rough=0.95, bump=0.4),
     white_frame=m_paint('white_frame', (0.80, 0.80, 0.78), 0.4),
     bulb=m_emission('bulb', (1.0, 0.72, 0.42), 30.0),
     led=m_emission('led_strip', (1.0, 0.78, 0.52), 18.0),
@@ -255,8 +256,8 @@ def make_clumps(prefix, count, **kw):
 
 # =============================================================== GARDEN
 PX0, PX1, PY0, PY1 = -3.72, 4.3, -4.2, 0.0
-tile_floor('patio', PX0, PX1, PY0, PY1, 0.9, 0.6, 0.005, FFL, M['stone'], GARDEN)
-box('patio_bed', (PX1 - PX0, PY1 - PY0, FFL - 0.006), ((PX0 + PX1) / 2, (PY0 + PY1) / 2, (FFL - 0.006) / 2), M['joint'], coll=GARDEN)
+PATIO = tile_floor('patio', PX0, PX1, PY0, PY1, 0.9, 0.6, 0.005, FFL, M['stone'], GARDEN)
+box('patio_bed', (PX1 - PX0, PY1 - PY0, FFL - 0.02), ((PX0 + PX1) / 2, (PY0 + PY1) / 2, (FFL - 0.02) / 2), M['mortar'], coll=GARDEN)
 # porcelain riser along the patio edge where it steps down to the lawn
 x = PX0
 while x < PX1 - 0.01:
@@ -361,44 +362,32 @@ for i, (px, py) in enumerate([(-2.95, -0.55), (3.55, -0.6)]):
     top = disc(f'planter_soil_{i}', 0.27, (px, py, FFL + 0.58), M['soil'], GARDEN)
     scatter(f'pl_scatter_{i}', top, stipa, density=30.0, seed=20 + i, scale=(0.9, 1.25), tilt=0.1)
 
-# outdoor lounge: teak sofa with deep cushions, coffee table, lantern
-SX, SY = -3.12, -2.45
-fab = M['fabric']
-for (lx, ly) in [(-0.36, -1.08), (0.36, -1.08), (-0.36, 1.08), (0.36, 1.08)]:
-    box(f'sofa_foot_{lx}_{ly}', (0.07, 0.07, 0.06), (SX + lx, SY + ly, FFL + 0.03), M['teak'], bevel=0.005, coll=GARDEN)
-box('sofa_base', (0.86, 2.3, 0.22), (SX, SY, FFL + 0.06 + 0.11), M['teak'], bevel=0.012, segments=3, coll=GARDEN)
-for s_ in (-1, 1):
-    box(f'sofa_arm_{s_}', (0.86, 0.12, 0.40), (SX, SY + s_ * 1.21, FFL + 0.06 + 0.2), M['teak'], bevel=0.014, segments=3, coll=GARDEN)
+# the patio is being laid: a pallet of slabs on the lawn, a bucket of mortar, a spirit level and a rubber mallet
+PINE = m_oak('pallet_pine', tone=(0.50, 0.38, 0.24), rough=0.78, along='X', oiled=False)
+RUBBER = m_paint('rubber', (0.022, 0.022, 0.022), 0.7)
+PALX, PALY = -2.35, -5.45
 for k in range(3):
-    yy = SY - 0.74 + k * 0.74
-    box(f'seat_cushion_{k}', (0.74, 0.73, 0.15), (SX + 0.05, yy, FFL + 0.28 + 0.075), fab, bevel=0.05, segments=6, coll=GARDEN)
-    box(f'back_cushion_{k}', (0.2, 0.73, 0.5), (SX - 0.3, yy, FFL + 0.62), fab, rot=(0, -0.16, RNG.uniform(-0.02, 0.02)), bevel=0.06, segments=6, coll=GARDEN)
-box('scatter_cushion_a', (0.13, 0.45, 0.45), (SX - 0.13, SY - 0.86, FFL + 0.62), M['fabric_rust'], rot=(0.15, -0.32, 0.28), bevel=0.05, segments=6, coll=GARDEN)
-box('scatter_cushion_b', (0.13, 0.42, 0.42), (SX - 0.14, SY + 0.9, FFL + 0.6), M['fabric_olive'], rot=(-0.1, -0.3, -0.22), bevel=0.05, segments=6, coll=GARDEN)
-CTX, CTY = SX + 1.2, SY
-for k in range(5):
-    box(f'ct_slat{k}', (0.11, 1.1, 0.03), (CTX - 0.25 + k * 0.125, CTY, FFL + 0.385), M['teak'], bevel=0.004, coll=GARDEN)
-for (lx, ly) in [(-0.27, -0.5), (0.27, -0.5), (-0.27, 0.5), (0.27, 0.5)]:
-    box(f'ct_leg_{lx}_{ly}', (0.05, 0.05, 0.37), (CTX + lx, CTY + ly, FFL + 0.185), M['teak'], bevel=0.005, coll=GARDEN)
-# lantern with a lit candle
-LNX, LNY, LZ = CTX + 0.05, CTY - 0.25, FFL + 0.4
-for (bx, by) in [(-0.08, -0.08), (0.08, -0.08), (-0.08, 0.08), (0.08, 0.08)]:
-    box(f'lan_bar_{bx}_{by}', (0.012, 0.012, 0.3), (LNX + bx, LNY + by, LZ + 0.15), M['black'], coll=GARDEN)
-box('lan_base', (0.18, 0.18, 0.02), (LNX, LNY, LZ + 0.01), M['black'], bevel=0.003, coll=GARDEN)
-box('lan_top', (0.19, 0.19, 0.03), (LNX, LNY, LZ + 0.31), M['black'], bevel=0.004, coll=GARDEN)
-for (gx, gy, sx_, sy_) in [(0, -0.081, 0.15, 0.004), (0, 0.081, 0.15, 0.004), (-0.081, 0, 0.004, 0.15), (0.081, 0, 0.004, 0.15)]:
-    box(f'lan_glass_{gx}_{gy}', (sx_, sy_, 0.27), (LNX + gx, LNY + gy, LZ + 0.155), M['glass'], coll=GARDEN)
-cylinder('candle', 0.035, 0.1, (LNX, LNY, LZ + 0.07), M['wax'], coll=GARDEN)
-sphere('flame', 0.006, (LNX, LNY, LZ + 0.132), m_emission('flame', (1.0, 0.55, 0.2), 60.0), coll=GARDEN, scale=(1, 1, 2.2))
-add_light('POINT', (LNX, LNY, LZ + 0.135), 0.8, (1, 0.6, 0.3), size=0.008, name='candle_light')
-lathe('jug', [(0, 0), (0.06, 0), (0.075, 0.05), (0.07, 0.15), (0.05, 0.21), (0.055, 0.24), (0.05, 0.245), (0.045, 0.21), (0.0, 0.21)],
-      M['ceramic'], loc=(CTX - 0.12, CTY + 0.22, FFL + 0.4), coll=GARDEN)
-TUMB = m_glass('tumbler', tint=(0.98, 0.98, 0.98))
-for k, (gx, gy) in enumerate([(CTX + 0.1, CTY + 0.3), (CTX + 0.16, CTY + 0.12)]):
-    lathe(f'tumbler{k}', [(0, 0), (0.035, 0), (0.04, 0.1), (0.037, 0.1), (0.032, 0.006), (0.0, 0.006)], TUMB, loc=(gx, gy, FFL + 0.4), coll=GARDEN)
-lathe('bowl_out', [(0, 0), (0.05, 0), (0.12, 0.045), (0.14, 0.07), (0.135, 0.072), (0.115, 0.05), (0.0, 0.01)],
-      M['terracotta'], loc=(CTX - 0.05, CTY - 0.02 + 0.3, FFL + 0.4), coll=GARDEN)
-
+    box(f'pal_bearer{k}', (1.2, 0.09, 0.1), (PALX, PALY - 0.42 + k * 0.42, 0.05), PINE, bevel=0.004, coll=GARDEN)
+for k in range(7):
+    box(f'pal_deck{k}', (0.1, 0.98, 0.022), (PALX - 0.54 + k * 0.18, PALY, 0.111), PINE, bevel=0.002, coll=GARDEN)
+stack_me = bevel_box_mesh(0.895, 0.595, 0.02, bevel=0.0016, segments=2, name='stack_slab', key=('stack_slab',))
+if not stack_me.materials:
+    stack_me.materials.append(M['stone'])
+for k in range(8):
+    instance(f'stack_slab{k}', stack_me, (PALX + RNG.uniform(-0.012, 0.012), PALY + RNG.uniform(-0.012, 0.012), 0.132 + k * 0.0205),
+             rot=(0, 0, RNG.uniform(-0.012, 0.012)), coll=GARDEN)
+STACK_TOP = 0.122 + 8 * 0.0205
+box('spirit_level', (1.0, 0.03, 0.06), (PALX + 0.02, PALY + 0.14, STACK_TOP + 0.03), m_paint('level_yellow', (0.62, 0.40, 0.02), 0.35),
+    rot=(0, 0, 0.16), bevel=0.004, coll=GARDEN)
+mallet = empty('mallet', (PALX - 0.22, PALY - 0.12, STACK_TOP), (0, 0, 0.55), GARDEN)
+child(cylinder('mallet_head', 0.045, 0.13, (0, 0, 0.045), RUBBER, rot=(0, math.pi / 2, 0), coll=GARDEN, bevel=0.01), mallet)
+child(cylinder('mallet_handle', 0.013, 0.3, (0, -0.17, 0.045), PINE, rot=(math.pi / 2, 0, 0), coll=GARDEN), mallet)
+BKX, BKY = -1.15, -4.72
+lathe('bucket', [(0, 0), (0.13, 0), (0.165, 0.29), (0.172, 0.295), (0.172, 0.305), (0.16, 0.305), (0.125, 0.012), (0.0, 0.012)],
+      RUBBER, loc=(BKX, BKY, 0.0), coll=GARDEN)
+disc('bucket_mortar', 0.152, (BKX, BKY, 0.215), M['mortar'], GARDEN)
+tube('bucket_handle', [(BKX + 0.17 * math.cos(a), BKY + 0.05 * math.sin(a) - 0.02, 0.29 + 0.03 * math.sin(a)) for a in [i * math.pi / 8 for i in range(9)]],
+     0.004, M['steel'], coll=GARDEN)
 
 # =============================================================== EXTENSION
 WALL_T = 0.35
@@ -442,36 +431,175 @@ for k in range(6):
     child(box(f'pg{k}', (PW - 0.1, 0.024, ph - 0.15), (-PW / 2, 0, ph / 2 + 0.02), M['glass'], coll=HOUSE), e)
     child(box(f'ph{k}', (0.02, 0.03, 0.22), (-PW + 0.07, 0.04, 1.0), M['black'], bevel=0.003, coll=HOUSE), e)
 
-# main house beyond the extension: brick rear wall, sash windows, slate roof, chimney
+# main house beyond the extension: brick rear and front walls with painted timber sashes, slate terrace roof, rear dormer
 MY = 6.2 + 0.25
-wall_with_holes('main_rear', -4.6, 4.6, 0.0, 6.3, 0.3, [(-2.8, -1.6, 3.5, 4.95), (1.4, 2.6, 3.5, 4.95), (-3.65, 3.65, 0.0, 2.95)], M['brick'], y=MY - 0.3, coll=HOUSE)
-for i, (a0, a1) in enumerate([(-2.8, -1.6), (1.4, 2.6)]):
-    cx = (a0 + a1) / 2
-    for (sx_, sz_, x_, z_) in [((a1 - a0), 0.06, cx, 4.92), ((a1 - a0), 0.08, cx, 3.53), (0.06, 1.45, a0 + 0.03, 4.225), (0.06, 1.45, a1 - 0.03, 4.225), ((a1 - a0), 0.05, cx, 4.24)]:
-        box(f'sash_{i}_{x_}_{z_}', (sx_, 0.06, sz_), (x_, MY - 0.25, z_), M['white_frame'], bevel=0.003, coll=HOUSE)
-    box(f'win_glass_{i}', (a1 - a0 - 0.1, 0.01, 1.35), (cx, MY - 0.24, 4.225), M['glass'], coll=HOUSE)
-    box(f'win_dark_{i}', (a1 - a0, 0.02, 1.45), (cx, MY - 0.02, 4.225), m_paint(f'room_dark_{i}', (0.03, 0.028, 0.025), 0.9), coll=HOUSE)
-    box(f'sill_{i}', (a1 - a0 + 0.12, 0.12, 0.06), (cx, MY - 0.33, 3.47), M['coping'], bevel=0.003, coll=HOUSE)
-    box(f'lintel_{i}', (a1 - a0 + 0.1, 0.02, 0.075), (cx, MY - 0.31, 5.0), M['coping'], coll=HOUSE)
-# roof: two pitches, ridge along X
-roof_w, eave_z, ridge_z, ridge_y = 9.6, 6.3, 8.9, MY + 3.0
+HF = 12.45                      # outside face of the front wall, the street side
+EAVE, RIDGE = 6.3, 8.9
+RIDGE_Y = (MY - 0.3 + HF) / 2
+ROOMDARK = m_paint('room_dark', (0.05, 0.045, 0.04), 0.9)
+ROOMLIT = m_emission('room_lit', (1.0, 0.72, 0.46), 0.9)
+CURTAIN = m_fabric('curtain', (0.60, 0.56, 0.48), sheen=0.3, rough=0.9)
+CURTAIN2 = m_fabric('curtain2', (0.30, 0.33, 0.34), sheen=0.3, rough=0.9)
+BRICK_RED = m_brick2('brick_red', 'XZ', palette='red')
+
+
+def sash(name, cx, face, z0, z1, w, out, coll=None, lit=False, bars=1, sill=True, curtain=None):
+    """Painted timber sliding sash in a wall opening. face: y of the outside wall face; out: -1 faces -y, +1 faces +y."""
+    coll = coll or HOUSE
+    fy = face - out * 0.1
+    hz = (z0 + z1) / 2
+    parts = [('hd', (w, 0.08, 0.06), (cx, fy, z1 - 0.03)), ('sb', (w, 0.08, 0.08), (cx, fy, z0 + 0.04)),
+             ('jl', (0.065, 0.08, z1 - z0), (cx - w / 2 + 0.0325, fy, hz)), ('jr', (0.065, 0.08, z1 - z0), (cx + w / 2 - 0.0325, fy, hz)),
+             ('mr', (w - 0.12, 0.05, 0.05), (cx, fy + out * 0.01, hz))]
+    for k in range(bars):
+        parts.append((f'gb{k}', (0.028, 0.035, z1 - z0 - 0.12), (cx - (w - 0.13) / 2 + (k + 1) * (w - 0.13) / (bars + 1), fy, hz)))
+    for tag, size, loc in parts:
+        box(f'{name}_{tag}', size, loc, M['white_frame'], bevel=0.003, coll=coll)
+    box(f'{name}_gl', (w - 0.12, 0.008, z1 - z0 - 0.13), (cx, fy, hz + 0.005), M['glass'], coll=coll)
+    if sill:
+        box(f'{name}_sill', (w + 0.16, 0.15, 0.07), (cx, face - out * 0.025, z0 - 0.035), M['coping'], bevel=0.004, coll=coll)
+        box(f'{name}_lint', (w + 0.14, 0.03, 0.17), (cx, face + out * 0.012, z1 + 0.085), M['coping'], bevel=0.003, coll=coll)
+    box(f'{name}_room', (w + 0.9, 0.02, z1 - z0 + 0.9), (cx, fy - out * 1.4, hz), ROOMLIT if lit else ROOMDARK, coll=coll)
+    cur = curtain or CURTAIN
+    for sgn in (-1, 1):
+        box(f'{name}_cur{sgn}', (w * 0.2, 0.06, z1 - z0 + 0.1), (cx + sgn * (w / 2 - w * 0.07), fy - out * 0.18, hz - 0.03), cur, bevel=0.025, segments=3, coll=coll)
+
+
+def front_door(name, x0, x1, face, out, col, coll=None, z0=0.15):
+    """Panelled front door with a glazed fanlight, set back in its opening (x0..x1, z0..z0+2.6)."""
+    coll = coll or HOUSE
+    cx, w = (x0 + x1) / 2, x1 - x0
+    fy = face - out * 0.12
+    paint = m_paint(f'{name}_paint', col, 0.3)
+    box(f'{name}_leaf', (w - 0.1, 0.05, 2.05), (cx, fy, z0 + 1.03), paint, bevel=0.004, coll=coll)
+    for (px, pz, ph) in [(-0.22, 1.42, 0.78), (0.22, 1.42, 0.78), (-0.22, 0.45, 0.6), (0.22, 0.45, 0.6)]:
+        box(f'{name}_pan_{px}_{pz}', (w * 0.3, 0.012, ph), (cx + px * w / 0.92, fy + out * 0.03, z0 + pz), paint, bevel=0.012, segments=3, coll=coll)
+    for (sx_, sz_, x_, z_) in [(w, 0.07, cx, z0 + 2.1), (0.05, 2.6, x0 + 0.025, z0 + 1.3), (0.05, 2.6, x1 - 0.025, z0 + 1.3), (w, 0.05, cx, z0 + 2.575)]:
+        box(f'{name}_fr_{x_:.2f}_{z_:.2f}', (sx_, 0.09, sz_), (x_, fy, z_), M['white_frame'], bevel=0.003, coll=coll)
+    box(f'{name}_fan', (w - 0.1, 0.008, 0.38), (cx, fy, z0 + 2.33), M['glass'], coll=coll)
+    box(f'{name}_fanroom', (w + 0.3, 0.02, 0.8), (cx, fy - out * 1.2, z0 + 2.2), ROOMDARK, coll=coll)
+    sphere(f'{name}_knob', 0.03, (cx, fy + out * 0.05, z0 + 1.12), M['brass'], coll=coll)
+    box(f'{name}_letter', (0.26, 0.015, 0.06), (cx, fy + out * 0.03, z0 + 0.88), M['brass'], bevel=0.003, coll=coll)
+    box(f'{name}_step', (w + 0.2, 0.3, z0), (cx, face + out * 0.12, z0 / 2), M['coping'], bevel=0.004, coll=coll)
+
+
+def house_front(tag, x0, x1, face, out, mat, coll, door_left=True, door_col=(0.03, 0.06, 0.12), lit=(), curtain=None, wide=False):
+    """Front facade of a terraced house: door and ground floor window, first floor sashes."""
+    w = x1 - x0
+    if wide:
+        ups = [x0 + w * 0.2, x0 + w * 0.5, x0 + w * 0.8]
+        dx = x0 + w * 0.5
+        gws = [(x0 + w * 0.2, 1.7), (x0 + w * 0.8, 1.7)]
+    else:
+        ups = [x0 + w * 0.27, x0 + w * 0.73]
+        dx = x0 + 0.95 if door_left else x1 - 0.95
+        gws = [(x1 - w * 0.33 if door_left else x0 + w * 0.33, min(2.2, w * 0.42))]
+    holes = [(dx - 0.5, dx + 0.5, 0.0, 2.75)] + [(c - g / 2, c + g / 2, 0.9, 2.45) for c, g in gws] + [(c - 0.6, c + 0.6, 3.5, 4.95) for c in ups]
+    wall_with_holes(f'{tag}_front', x0, x1, 0.0, EAVE, 0.3, holes, mat, y=face if out < 0 else face - 0.3, coll=coll)
+    front_door(f'{tag}_door', dx - 0.5, dx + 0.5, face, out, door_col, coll=coll)
+    for i, (c, g) in enumerate(gws):
+        sash(f'{tag}_gw{i}', c, face, 0.9, 2.45, g, out, coll=coll, lit=(f'g{i}' in lit), bars=2 if g > 1.5 else 1, curtain=curtain)
+    for i, c in enumerate(ups):
+        sash(f'{tag}_uw{i}', c, face, 3.5, 4.95, 1.2, out, coll=coll, lit=(f'u{i}' in lit), curtain=curtain)
+    box(f'{tag}_band', (w, 0.04, 0.075), ((x0 + x1) / 2, face + out * 0.02, 3.05), M['coping'], coll=coll)
+
+
+def terrace_roof(tag, x0, x1, y_rear, y_front, coll, chimneys=()):
+    """Two slate pitches over a row of houses, ridge along X, with chimney stacks on the party walls."""
+    ry = (y_rear + y_front) / 2
+    for side, (ya, yb) in ((-1, (y_rear - 0.35, ry)), (1, (y_front + 0.35, ry))):
+        me = bpy.data.meshes.new(f'{tag}_roofpl')
+        bm = bmesh.new()
+        vs = [bm.verts.new((x0, ya, EAVE)), bm.verts.new((x1, ya, EAVE)), bm.verts.new((x1, yb, RIDGE)), bm.verts.new((x0, yb, RIDGE))]
+        bm.faces.new(vs if side < 0 else vs[::-1])
+        bm.to_mesh(me)
+        bm.free()
+        box_uv(me)
+        o = mesh_obj(f'{tag}_roof_{side}', me, M['slate'], coll=coll)
+        o.modifiers.new('sol', 'SOLIDIFY').thickness = 0.06
+        box(f'{tag}_fascia_{side}', (x1 - x0, 0.03, 0.22), ((x0 + x1) / 2, ya + side * 0.01, EAVE - 0.08), M['white_frame'], coll=coll)
+        tube(f'{tag}_gutter_{side}', [(x0, ya + side * 0.07, EAVE - 0.08), (x1, ya + side * 0.07, EAVE - 0.08)], 0.055, M['alu'], coll=coll)
+    box(f'{tag}_ridge', (x1 - x0, 0.2, 0.08), ((x0 + x1) / 2, ry, RIDGE + 0.02), M['terracotta'], coll=coll)
+    for i, cxp in enumerate(chimneys):
+        box(f'{tag}_chim{i}', (0.9, 0.6, 1.6), (cxp, ry, RIDGE + 0.55), BRICK_RED if i % 3 == 1 else M['brick'], coll=coll)
+        box(f'{tag}_chimcap{i}', (1.0, 0.7, 0.08), (cxp, ry, RIDGE + 1.38), M['coping'], coll=coll)
+        for k in range(2):
+            cylinder(f'{tag}_pot{i}{k}', 0.1, 0.36, (cxp - 0.2 + k * 0.4, ry, RIDGE + 1.6), M['terracotta'], coll=coll)
+
+
+# our house: three first floor sashes at the back, the middle one smaller
+REAR_WIN = [(-2.7, 1.15, 4.95, True), (0.0, 0.75, 4.7, False), (2.7, 1.15, 4.95, False)]
+wall_with_holes('main_rear', -4.6, 4.6, 0.0, EAVE, 0.3, [(cx - w / 2, cx + w / 2, 3.5, top) for cx, w, top, _ in REAR_WIN] + [(-3.65, 3.65, 0.0, 2.95)],
+                M['brick'], y=MY - 0.3, coll=HOUSE)
+for i, (cx, w, top, lit) in enumerate(REAR_WIN):
+    sash(f'mrw{i}', cx, MY - 0.3, 3.5, top, w, -1, lit=lit, bars=0 if w < 1 else 1)
+# rear dormer (loft conversion) in dark zinc with a wide window
+ZINC = m_paint('zinc', (0.075, 0.08, 0.085), 0.42)
+DY0 = 7.1
+dz0 = EAVE + (DY0 - (MY - 0.65)) * (RIDGE - EAVE) / (RIDGE_Y - (MY - 0.65))
+box('dormer', (3.4, RIDGE_Y - DY0, 8.75 - (dz0 - 0.4)), (0, (DY0 + RIDGE_Y) / 2, (8.75 + dz0 - 0.4) / 2), ZINC, bevel=0.01, coll=HOUSE)
+box('dormer_trim', (3.5, 0.1, 0.1), (0, DY0 - 0.02, 8.74), ZINC, bevel=0.005, coll=HOUSE)
+box('dormer_room', (2.6, 0.01, 1.25), (0, DY0 - 0.004, dz0 + 0.95), ROOMDARK, coll=HOUSE)
+box('dormer_glass', (2.5, 0.008, 1.15), (0, DY0 - 0.025, dz0 + 0.95), M['glass'], coll=HOUSE)
+for (sx_, sz_, x_, z_) in [(2.62, 0.06, 0, dz0 + 1.55), (2.62, 0.07, 0, dz0 + 0.35), (0.06, 1.25, -1.28, dz0 + 0.95), (0.06, 1.25, 1.28, dz0 + 0.95), (0.05, 1.2, -0.42, dz0 + 0.95), (0.05, 1.2, 0.42, dz0 + 0.95)]:
+    box(f'dormer_fr_{x_}_{z_:.2f}', (sx_, 0.06, sz_), (x_, DY0 - 0.04, z_), M['alu'], bevel=0.002, coll=HOUSE)
+# front wall: bathroom casement (open), front door, front room sash, three sashes above
+CX0, CX1, CZ0, CZ1 = 2.0, 3.1, FFL + 0.95, FFL + 2.15
+wall_with_holes('main_front', -4.6, 4.6, 0.0, EAVE, 0.3,
+                [(CX0, CX1, CZ0, CZ1), (-0.55, 0.45, 0.0, 2.75), (-3.5, -1.6, 0.9, 2.45), (-3.2, -2.0, 3.5, 4.95), (-0.6, 0.6, 3.5, 4.95), (2.0, 3.2, 3.5, 4.95),
+                 (1.15, 1.75, FFL + 1.2, FFL + 1.5)], M['brick'], y=HF - 0.3, coll=HOUSE)
+box('niche_patch', (0.62, 0.12, 0.32), (1.45, HF - 0.06, FFL + 1.35), M['brick'], coll=HOUSE)
+front_door('mfdoor', -0.55, 0.45, HF, 1, (0.035, 0.075, 0.055))
+sash('mfw_gf', -2.55, HF, 0.9, 2.45, 1.9, 1, bars=2)
+for i, cx in enumerate((-2.6, 0.0, 2.6)):
+    sash(f'mfw{i}', cx, HF, 3.5, 4.95, 1.2, 1, lit=(i == 0))
+box('mf_band', (9.2, 0.04, 0.075), (0, HF + 0.02, 3.05), M['coping'], coll=HOUSE)
+# the bathroom casement, hinged on its left jamb and swung out over the front garden
+cfy = HF - 0.08
+for (sx_, sz_, x_, z_) in [(CX1 - CX0, 0.06, (CX0 + CX1) / 2, CZ1 - 0.03), (CX1 - CX0, 0.07, (CX0 + CX1) / 2, CZ0 + 0.035),
+                           (0.06, CZ1 - CZ0, CX0 + 0.03, (CZ0 + CZ1) / 2), (0.06, CZ1 - CZ0, CX1 - 0.03, (CZ0 + CZ1) / 2)]:
+    box(f'cas_fr_{x_:.2f}_{z_:.2f}', (sx_, 0.07, sz_), (x_, cfy, z_), M['white_frame'], bevel=0.003, coll=HOUSE)
+box('cas_sill', (CX1 - CX0 + 0.16, 0.15, 0.07), ((CX0 + CX1) / 2, HF + 0.025, CZ0 - 0.035), M['coping'], bevel=0.004, coll=HOUSE)
+box('cas_lint', (CX1 - CX0 + 0.14, 0.03, 0.17), ((CX0 + CX1) / 2, HF + 0.012, CZ1 + 0.085), M['coping'], bevel=0.003, coll=HOUSE)
+hinge = empty('cas_hinge', (CX0 + 0.06, cfy + 0.035, CZ0 + 0.07), (0, 0, math.radians(78)), HOUSE)
+SW, SH = CX1 - CX0 - 0.12, CZ1 - CZ0 - 0.13
+FROST_B = m_glass('frosted_bath', tint=(0.96, 0.96, 0.95), rough=0.35)
+for (sx_, sz_, x_, z_) in [(SW, 0.05, SW / 2, SH - 0.025), (SW, 0.06, SW / 2, 0.03), (0.05, SH, 0.025, SH / 2), (0.05, SH, SW - 0.025, SH / 2)]:
+    child(box(f'cas_s_{x_:.2f}_{z_:.2f}', (sx_, 0.05, sz_), (x_, 0.03, z_), M['white_frame'], bevel=0.003, coll=HOUSE), hinge)
+child(box('cas_glass', (SW - 0.08, 0.008, SH - 0.09), (SW / 2, 0.03, SH / 2), FROST_B, coll=HOUSE), hinge)
+child(box('cas_stay', (0.012, 0.3, 0.012), (0.25, -0.15, 0.02), M['brass'], coll=HOUSE), hinge)
+
+# the rest of the terrace on this side: next door either side (double fronted), then narrower houses along the street
+NEIGH = [(-13.8, -4.6, True), (4.6, 13.8, True)]
+x = 13.8
+while x < 44:
+    NEIGH.append((x, x + 5.6, False))
+    NEIGH.append((-x - 5.6, -x, False))
+    x += 5.6
+DOORS = [(0.03, 0.06, 0.12), (0.30, 0.04, 0.035), (0.02, 0.02, 0.02), (0.06, 0.1, 0.07), (0.32, 0.30, 0.26)]
+for i, (a, b, wide) in enumerate(NEIGH):
+    mat = BRICK_RED if i % 4 == 2 else M['brick']
+    house_front(f'nf{i}', a, b, HF, 1, mat, HOUSE, door_left=(i % 2 == 0), door_col=DOORS[i % len(DOORS)], wide=wide,
+                lit=('u1',) if i % 3 == 0 else (('g0',) if i % 4 == 1 else ()), curtain=CURTAIN2 if i % 2 else CURTAIN)
+    if wide:
+        rw = [(a + b) / 2 - 2.4, (a + b) / 2 + 2.4]
+        wall_with_holes(f'nb_rear{i}', a, b, 0.0, EAVE, 0.3, [(c - 0.58, c + 0.58, 3.5, 4.95) for c in rw], mat, y=MY - 0.3, coll=HOUSE)
+        for k, c in enumerate(rw):
+            sash(f'nb_rw{i}{k}', c, MY - 0.3, 3.5, 4.95, 1.16, -1, lit=(k == 1 and i == 1))
+    else:
+        box(f'nb_rearplain{i}', (b - a, 0.3, EAVE), ((a + b) / 2, MY - 0.15, EAVE / 2), mat, coll=HOUSE)
+terrace_roof('our_row', -47.0, 47.0, MY - 0.3, HF, HOUSE, chimneys=[-13.8, -4.6, 4.6, 13.8, 19.4, 25.0, 30.6, -19.4, -25.0, -30.6, -36.2, 36.2])
+# next door's single storey extensions, with glazed doors to their gardens
 for side in (-1, 1):
-    yy0 = MY - 0.35 if side < 0 else ridge_y + 3.35
-    me = bpy.data.meshes.new('roofpl')
-    bm = bmesh.new()
-    vs = [bm.verts.new((-roof_w / 2, yy0, eave_z)), bm.verts.new((roof_w / 2, yy0, eave_z)),
-          bm.verts.new((roof_w / 2, ridge_y, ridge_z)), bm.verts.new((-roof_w / 2, ridge_y, ridge_z))]
-    bm.faces.new(vs)
-    bm.to_mesh(me)
-    bm.free()
-    box_uv(me)
-    o = mesh_obj(f'roof_{side}', me, M['slate'], coll=HOUSE)
-    o.modifiers.new('sol', 'SOLIDIFY').thickness = 0.06
-box('fascia', (roof_w, 0.03, 0.22), (0, MY - 0.36, eave_z - 0.08), M['white_frame'], coll=HOUSE)
-tube('gutter', [(-roof_w / 2, MY - 0.42, eave_z - 0.08), (0, MY - 0.42, eave_z - 0.08), (roof_w / 2, MY - 0.42, eave_z - 0.08)], 0.055, M['alu'], coll=HOUSE)
-box('chimney', (0.8, 0.6, 2.0), (-3.4, ridge_y, ridge_z + 0.4), M['brick'], coll=HOUSE)
-for k in range(2):
-    cylinder(f'pot{k}', 0.11, 0.38, (-3.6 + k * 0.4, ridge_y, ridge_z + 1.59), M['terracotta'], coll=HOUSE)
+    ex = side * 6.9
+    box(f'nb_ext_{side}', (4.2, 4.0, 2.9), (ex, MY - 2.0, 1.45), M['brick'], coll=HOUSE)
+    box(f'nb_ext_cope_{side}', (4.3, 4.1, 0.06), (ex, MY - 2.0, 2.93), M['alu'], coll=HOUSE)
+    box(f'nb_ext_dark_{side}', (3.0, 0.01, 2.2), (ex, MY - 4.006, 1.25), ROOMDARK, coll=HOUSE)
+    box(f'nb_ext_glass_{side}', (3.0, 0.008, 2.2), (ex, MY - 4.03, 1.25), M['glass'], coll=HOUSE)
+    for k in range(5):
+        box(f'nb_ext_mul_{side}_{k}', (0.06, 0.05, 2.25), (ex - 1.5 + k * 0.75, MY - 4.04, 1.25), M['alu'], coll=HOUSE)
+    for z_ in (0.17, 2.35):
+        box(f'nb_ext_tr_{side}_{z_}', (3.06, 0.05, 0.06), (ex, MY - 4.04, z_), M['alu'], coll=HOUSE)
 
 # =============================================================== KITCHEN
 FAR = 6.2   # face of the old rear wall inside the kitchen
@@ -590,14 +718,209 @@ for k, sx in enumerate((-0.75, -0.25)):
     child(box(f'stool_ring{k}', (0.24, 0.24, 0.015), (0, 0, 0.25), M['black'], coll=KITCHEN), e)
 # interior bounce light from the opening (sky), keeps the interior readable from outside
 
-# =============================================================== SHOWER ROOM
-BX0, BX1, BY0, BY1 = 1.6, 4.0, FAR + 0.25, FAR + 2.75
-BTOP = 2.6
+# =============================================================== HALLWAY
+HALL = collection('hall')
+HX0, HX1, HY0, HY1 = 1.9, 3.2, MY, 9.75
+HTOP = 2.8
+
+
+def fill_light(name, loc, energy, size, color=(1.0, 0.86, 0.72)):
+    o = add_light('AREA', loc, energy, color, size=size, name=name)
+    o.visible_camera = False
+    o.visible_glossy = False
+    return o
+
+
+def clip_poly(pts, x0, x1, y0, y1):
+    def clip(pts, inside, inter):
+        out = []
+        for i in range(len(pts)):
+            a, b = pts[i - 1], pts[i]
+            if inside(b):
+                if not inside(a):
+                    out.append(inter(a, b))
+                out.append(b)
+            elif inside(a):
+                out.append(inter(a, b))
+        return out
+
+    def ix(a, b, x):
+        t = (x - a[0]) / (b[0] - a[0])
+        return (x, a[1] + t * (b[1] - a[1]))
+
+    def iy(a, b, y):
+        t = (y - a[1]) / (b[1] - a[1])
+        return (a[0] + t * (b[0] - a[0]), y)
+    for inside, inter in [(lambda p: p[0] >= x0, lambda a, b: ix(a, b, x0)), (lambda p: p[0] <= x1, lambda a, b: ix(a, b, x1)),
+                          (lambda p: p[1] >= y0, lambda a, b: iy(a, b, y0)), (lambda p: p[1] <= y1, lambda a, b: iy(a, b, y1))]:
+        if not pts:
+            break
+        pts = clip(pts, inside, inter)
+    return pts
+
+
+def shrink(pts, d):
+    cx = sum(p[0] for p in pts) / len(pts)
+    cy = sum(p[1] for p in pts) / len(pts)
+    out = []
+    for (x, y) in pts:
+        dx, dy = x - cx, y - cy
+        L = math.hypot(dx, dy) or 1.0
+        out.append((x - dx / L * d, y - dy / L * d))
+    return out
+
+
+def tile_polys(name, polys, top, thick, mat, coll, joint=0.0012):
+    """Extrude 2D tile shapes into one mesh, each pulled in a little to leave a grout joint."""
+    bm = bmesh.new()
+    for pts in polys:
+        if len(pts) < 3:
+            continue
+        area = sum(pts[i - 1][0] * pts[i][1] - pts[i][0] * pts[i - 1][1] for i in range(len(pts))) / 2
+        if abs(area) < 3e-5:
+            continue
+        if area < 0:
+            pts = pts[::-1]
+        pts = shrink(pts, joint)
+        lip = RNG.uniform(-0.0003, 0.0003)
+        t_ = [bm.verts.new((x, y, top + lip)) for x, y in pts]
+        b_ = [bm.verts.new((x, y, top - thick)) for x, y in pts]
+        bm.faces.new(t_)
+        n = len(pts)
+        for i in range(n):
+            j = (i + 1) % n
+            bm.faces.new((b_[i], b_[j], t_[j], t_[i]))
+    me = bpy.data.meshes.new(name)
+    bm.to_mesh(me)
+    bm.free()
+    box_uv(me)
+    o = mesh_obj(name, me, mat, coll=coll)
+    bv = o.modifiers.new('bev', 'BEVEL')
+    bv.width = 0.0009
+    bv.segments = 2
+    bv.limit_method = 'ANGLE'
+    return o
+
+
+def strip_polys(x0, x1, y0, y1, piece):
+    """Cut a band into pieces of the given length along its long side."""
+    out = []
+    if x1 - x0 >= y1 - y0:
+        a = x0
+        while a < x1 - 0.005:
+            out.append([(a, y0), (min(a + piece, x1), y0), (min(a + piece, x1), y1), (a, y1)])
+            a += piece
+    else:
+        a = y0
+        while a < y1 - 0.005:
+            out.append([(x0, a), (x1, a), (x1, min(a + piece, y1)), (x0, min(a + piece, y1))])
+            a += piece
+    return out
+
+
+# Victorian geometric floor: octagon and dot field inside a black, terracotta and black border
+GEO = dict(cream=m_ceramic('geo_cream', (0.70, 0.65, 0.55), rough=0.3, speckle=False),
+           black=m_ceramic('geo_black', (0.022, 0.022, 0.024), rough=0.26, speckle=False),
+           red=m_ceramic('geo_red', (0.40, 0.13, 0.06), rough=0.32, speckle=False),
+           blue=m_ceramic('geo_blue', (0.07, 0.11, 0.16), rough=0.3, speckle=False))
+box('h_floor_bed', (HX1 - HX0, HY1 - HY0, 0.1), ((HX0 + HX1) / 2, (HY0 + HY1) / 2, FFL - 0.06), M['grout'], coll=HALL)
+polys = {k: [] for k in GEO}
+b1, b2, b3 = 0.035, 0.075, 0.035          # black line, terracotta squares, black line
+X0, X1, Y0, Y1 = HX0, HX1, HY0, HY1
+for (ax0, ax1, ay0, ay1) in [(X0, X1, Y0, Y0 + b1), (X0, X1, Y1 - b1, Y1), (X0, X0 + b1, Y0 + b1, Y1 - b1), (X1 - b1, X1, Y0 + b1, Y1 - b1)]:
+    polys['black'] += strip_polys(ax0, ax1, ay0, ay1, 0.3)
+i0, i1, j0, j1 = X0 + b1, X1 - b1, Y0 + b1, Y1 - b1
+for (ax0, ax1, ay0, ay1, along) in [(i0 + b2, i1 - b2, j0, j0 + b2, 'x'), (i0 + b2, i1 - b2, j1 - b2, j1, 'x'), (i0, i0 + b2, j0 + b2, j1 - b2, 'y'), (i1 - b2, i1, j0 + b2, j1 - b2, 'y')]:
+    L = (ax1 - ax0) if along == 'x' else (ay1 - ay0)
+    n = max(1, round(L / b2))
+    step = L / n
+    for k in range(n):
+        if along == 'x':
+            polys['red'].append([(ax0 + k * step, ay0), (ax0 + (k + 1) * step, ay0), (ax0 + (k + 1) * step, ay1), (ax0 + k * step, ay1)])
+        else:
+            polys['red'].append([(ax0, ay0 + k * step), (ax1, ay0 + k * step), (ax1, ay0 + (k + 1) * step), (ax0, ay0 + (k + 1) * step)])
+for (cx_, cy_) in [(i0 + b2 / 2, j0 + b2 / 2), (i1 - b2 / 2, j0 + b2 / 2), (i0 + b2 / 2, j1 - b2 / 2), (i1 - b2 / 2, j1 - b2 / 2)]:
+    polys['blue'].append([(cx_ - b2 / 2, cy_ - b2 / 2), (cx_ + b2 / 2, cy_ - b2 / 2), (cx_ + b2 / 2, cy_ + b2 / 2), (cx_ - b2 / 2, cy_ + b2 / 2)])
+k0, k1, l0, l1 = i0 + b2, i1 - b2, j0 + b2, j1 - b2
+for (ax0, ax1, ay0, ay1) in [(k0, k1, l0, l0 + b3), (k0, k1, l1 - b3, l1), (k0, k0 + b3, l0 + b3, l1 - b3), (k1 - b3, k1, l0 + b3, l1 - b3)]:
+    polys['black'] += strip_polys(ax0, ax1, ay0, ay1, 0.3)
+F0, F1, G0, G1 = k0 + b3 + 0.004, k1 - b3 - 0.004, l0 + b3 + 0.004, l1 - b3 - 0.004
+P = 0.12                                   # octagon width, set out from the centre of the hall
+R_ = P / (2 * math.cos(math.pi / 8))
+H_ = P * (1 - math.tan(math.pi / 8)) / 2   # half diagonal of the dots
+ccx, ccy = (F0 + F1) / 2, (G0 + G1) / 2
+ni, nj = int((F1 - F0) / P / 2) + 2, int((G1 - G0) / P / 2) + 2
+for a in range(-ni, ni + 1):
+    for b in range(-nj, nj + 1):
+        ox, oy = ccx + a * P, ccy + b * P
+        octo = [(ox + R_ * math.cos(math.pi / 8 + k * math.pi / 4), oy + R_ * math.sin(math.pi / 8 + k * math.pi / 4)) for k in range(8)]
+        polys['cream'].append(clip_poly(octo, F0, F1, G0, G1))
+        dx_, dy_ = ox + P / 2, oy + P / 2
+        dot = [(dx_ + H_, dy_), (dx_, dy_ + H_), (dx_ - H_, dy_), (dx_, dy_ - H_)]
+        polys['black'].append(clip_poly(dot, F0, F1, G0, G1))
+for k, mat in GEO.items():
+    tile_polys(f'hall_geo_{k}', polys[k], FFL, 0.012, mat, HALL)
+
+# walls: lower half painted deep green under a dado rail, warm white above, white skirting and cornice
+HGREEN = m_paint('hall_green', (0.04, 0.072, 0.058), 0.45)
+SKIRT = M['white_frame']
+LDOOR = (7.35, 8.2)
+wall_with_holes('hw_l', HY0, HY1, FFL, HTOP, 0.1, [(LDOOR[0], LDOOR[1], FFL, 2.25)], M['plaster'], y=HX0 - 0.1, coll=HALL, axis='Y')
+wall_with_holes('hw_r', HY0, HY1, FFL, HTOP, 0.1, [], M['plaster'], y=HX1, coll=HALL, axis='Y')
+wall_with_holes('hwp_l', HY0, HY1, FFL, FFL + 0.92, 0.003, [(LDOOR[0], LDOOR[1], FFL, FFL + 0.92)], HGREEN, y=HX0 + 0.0005, coll=HALL, axis='Y')
+wall_with_holes('hwp_r', HY0, HY1, FFL, FFL + 0.92, 0.003, [], HGREEN, y=HX1 - 0.0035, coll=HALL, axis='Y')
+for side, xf, sgn in (('l', HX0, 1), ('r', HX1, -1)):
+    runs = [(HY0, LDOOR[0] - 0.05), (LDOOR[1] + 0.05, HY1)] if side == 'l' else [(HY0, HY1)]
+    for (ra, rb) in runs:
+        box(f'dado_{side}_{ra:.2f}', (0.025, rb - ra, 0.045), (xf + sgn * 0.0125, (ra + rb) / 2, FFL + 0.92), SKIRT, bevel=0.006, segments=3, coll=HALL)
+        box(f'skirt_{side}_{ra:.2f}', (0.02, rb - ra, 0.18), (xf + sgn * 0.01, (ra + rb) / 2, FFL + 0.09), SKIRT, bevel=0.003, coll=HALL)
+    box(f'cornice_{side}', (0.08, HY1 - HY0, 0.08), (xf + sgn * 0.04, (HY0 + HY1) / 2, HTOP - 0.04), SKIRT, bevel=0.02, segments=3, coll=HALL)
+box('h_ceiling', (HX1 - HX0 + 0.2, HY1 - HY0, 0.02), ((HX0 + HX1) / 2, (HY0 + HY1) / 2, HTOP + 0.01), M['ceiling'], coll=HALL)
+box('h_rose', (0.24, 0.24, 0.02), ((HX0 + HX1) / 2, 8.1, HTOP - 0.01), SKIRT, bevel=0.01, segments=3, coll=HALL)
+# panelled door to the front room, closed
+DOORW = m_paint('door_white', (0.78, 0.77, 0.74), 0.35)
+box('hdoor', (0.045, LDOOR[1] - LDOOR[0] - 0.02, 2.08), (HX0 - 0.05, (LDOOR[0] + LDOOR[1]) / 2, FFL + 1.04), DOORW, bevel=0.003, coll=HALL)
+for (py, pz, ph) in [(-0.19, 1.45, 0.8), (0.19, 1.45, 0.8), (-0.19, 0.45, 0.62), (0.19, 0.45, 0.62)]:
+    box(f'hdoor_pan_{py}_{pz}', (0.012, 0.3, ph), (HX0 - 0.024, (LDOOR[0] + LDOOR[1]) / 2 + py, FFL + pz), DOORW, bevel=0.012, segments=3, coll=HALL)
+sphere('hdoor_knob', 0.028, (HX0 - 0.0, LDOOR[1] - 0.09, FFL + 1.0), M['brass'], coll=HALL)
+for (sy_, sz_, y_, z_) in [(0.06, 2.12, LDOOR[0] - 0.03, FFL + 1.06), (0.06, 2.12, LDOOR[1] + 0.03, FFL + 1.06), (LDOOR[1] - LDOOR[0] + 0.12, 0.07, (LDOOR[0] + LDOOR[1]) / 2, 2.285)]:
+    box(f'harch_{y_:.2f}_{z_:.2f}', (0.018, sy_, sz_), (HX0 + 0.009, y_, z_), SKIRT, bevel=0.004, coll=HALL)
+# column radiator and a round brass mirror on the right wall, a framed print on the left
+for k in range(20):
+    box(f'rad_col{k}', (0.09, 0.024, 0.6), (HX1 - 0.065, 7.35 + k * 0.046, FFL + 0.47), SKIRT, bevel=0.008, segments=3, coll=HALL)
+for z_ in (FFL + 0.2, FFL + 0.74):
+    cylinder(f'rad_hdr{z_:.2f}', 0.016, 0.9, (HX1 - 0.065, 7.79, z_), SKIRT, rot=(math.pi / 2, 0, 0), coll=HALL)
+MIRROR = m_metal('mirror', (0.92, 0.92, 0.92), 0.02)
+cylinder('h_mirror', 0.3, 0.006, (HX1 - 0.025, 7.8, 1.72), MIRROR, rot=(0, math.pi / 2, 0), coll=HALL)
+cylinder('h_mirror_rim', 0.32, 0.02, (HX1 - 0.012, 7.8, 1.72), M['brass'], rot=(0, math.pi / 2, 0), coll=HALL, bevel=0.006)
+box('h_print_frame', (0.025, 0.52, 0.68), (HX0 + 0.0125, 9.0, 1.78), M['oak'], bevel=0.004, coll=HALL)
+box('h_print', (0.004, 0.42, 0.58), (HX0 + 0.027, 9.0, 1.78), m_paint('print', (0.42, 0.36, 0.28), 0.8), coll=HALL)
+# pendant
+sphere('h_pendant', 0.12, ((HX0 + HX1) / 2, 8.1, HTOP - 0.55), FROST, coll=HALL)
+sphere('h_bulb', 0.02, ((HX0 + HX1) / 2, 8.1, HTOP - 0.55), m_emission('h_filament', (1.0, 0.62, 0.3), 28.0), coll=HALL)
+tube('h_flex', [((HX0 + HX1) / 2, 8.1, HTOP - 0.43), ((HX0 + HX1) / 2, 8.1, HTOP - 0.2), ((HX0 + HX1) / 2, 8.1, HTOP)], 0.003, M['black'], coll=HALL)
+add_light('POINT', ((HX0 + HX1) / 2, 8.1, HTOP - 0.55), 16.0, (1, 0.72, 0.44), size=0.03, name='h_pendant_light')
+fill_light('h_fill', ((HX0 + HX1) / 2, 8.1, HTOP - 0.05), 22.0, (0.9, 2.6))
+# end wall with the open door into the bathroom
+BDX0, BDX1 = 2.15, 2.95
+wall_with_holes('h_end', 0.9, 4.4, FFL, HTOP, 0.1, [(BDX0, BDX1, FFL, 2.25)], M['plaster'], y=HY1, coll=HALL)
+for (sx_, sz_, x_, z_) in [(0.06, 2.12, BDX0 - 0.03, FFL + 1.06), (0.06, 2.12, BDX1 + 0.03, FFL + 1.06), (BDX1 - BDX0 + 0.12, 0.07, (BDX0 + BDX1) / 2, 2.285)]:
+    box(f'barch_{x_:.2f}_{z_:.2f}', (sx_, 0.018, sz_), (x_, HY1 - 0.009, z_), SKIRT, bevel=0.004, coll=HALL)
+bdoor = empty('bdoor_hinge', (BDX1 - 0.01, HY1 + 0.12, FFL + 0.005), (0, 0, math.radians(-100)), HALL)
+child(box('bdoor_leaf', (BDX1 - BDX0 - 0.02, 0.04, 2.07), (-(BDX1 - BDX0) / 2, 0.0, 1.035), DOORW, bevel=0.003, coll=HALL), bdoor)
+child(box('bdoor_pan1', (0.28, 0.012, 0.8), (-0.21, 0.025, 1.45), DOORW, bevel=0.012, segments=3, coll=HALL), bdoor)
+child(box('bdoor_pan2', (0.28, 0.012, 0.8), (-0.59, 0.025, 1.45), DOORW, bevel=0.012, segments=3, coll=HALL), bdoor)
+child(sphere('bdoor_knob', 0.026, (-(BDX1 - BDX0) + 0.08, 0.04, 1.0), M['brass'], coll=HALL), bdoor)
+
+# =============================================================== BATHROOM (front of the house, level access wet room)
+BX0, BX1, BY0, BY1 = 1.0, 4.3, HY1 + 0.1, HF - 0.3
+BTOP = 2.8
 box('b_floor_bed', (BX1 - BX0, BY1 - BY0, 0.1), ((BX0 + BX1) / 2, (BY0 + BY1) / 2, FFL - 0.06), M['grout'], coll=BATH)
 tile_floor('bfloor', BX0, BX1, BY0, BY1, 0.6, 0.6, 0.002, FFL, M['bath_floor'], BATH, offset_frac=0.0, lippage=0.0001, origin=(BX0, BY0))
 box('b_ceiling', (BX1 - BX0, BY1 - BY0, 0.02), ((BX0 + BX1) / 2, (BY0 + BY1) / 2, BTOP + 0.01), M['ceiling'], coll=BATH)
-# black marble wall slabs 600 x 1200, vertical, with a niche cut on the joint
-NX0, NX1, NZ0, NZ1 = 2.2, 2.8, FFL + 1.2, FFL + 1.5
+box('b_wall_l', (0.1, BY1 - BY0, BTOP), (BX0 - 0.05, (BY0 + BY1) / 2, BTOP / 2), M['plaster'], coll=BATH)
+box('b_wall_r', (0.3, BY1 - BY0, BTOP), (BX1 + 0.15, (BY0 + BY1) / 2, BTOP / 2), M['plaster'], coll=BATH)
+NX0, NX1, NZ0, NZ1 = 1.15, 1.75, FFL + 1.2, FFL + 1.5
 
 
 def wall_slabs(prefix, a0, a1, z0, z1, place, holes=(), cols=None):
@@ -622,32 +945,43 @@ def wall_slabs(prefix, a0, a1, z0, z1, place, holes=(), cols=None):
             z += h
 
 
-def place_back(prefix, ca, cz, w, h):
-    me = bevel_box_mesh(round(w, 4), 0.012, round(h, 4), bevel=0.001, segments=2, name='nero_slab', key=('nb', round(w, 4), round(h, 4)))
+def slab_me(axis, w, h):
+    key = ('nb' if axis == 'x' else 'ns', round(w, 4), round(h, 4))
+    me = bevel_box_mesh(round(w, 4), 0.012, round(h, 4), bevel=0.001, segments=2, name='nero_slab', key=key) if axis == 'x' else \
+        bevel_box_mesh(0.012, round(w, 4), round(h, 4), bevel=0.001, segments=2, name='nero_slab_side', key=key)
     if not me.materials:
         me.materials.append(M['nero'])
-    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', me, (ca, BY1 - 0.006, cz), coll=BATH)
+    return me
+
+
+def place_front(prefix, ca, cz, w, h):
+    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', slab_me('x', w, h), (ca, BY1 - 0.006, cz), coll=BATH)
+
+
+def place_back(prefix, ca, cz, w, h):
+    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', slab_me('x', w, h), (ca, BY0 + 0.006, cz), coll=BATH)
 
 
 def place_left(prefix, ca, cz, w, h):
-    me = bevel_box_mesh(0.012, round(w, 4), round(h, 4), bevel=0.001, segments=2, name='nero_slab_side', key=('ns', round(w, 4), round(h, 4)))
-    if not me.materials:
-        me.materials.append(M['nero'])
-    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', me, (BX0 + 0.006, ca, cz), coll=BATH)
+    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', slab_me('y', w, h), (BX0 + 0.006, ca, cz), coll=BATH)
 
 
 def place_right(prefix, ca, cz, w, h):
-    me = bevel_box_mesh(0.012, round(w, 4), round(h, 4), bevel=0.001, segments=2, name='nero_slab_side', key=('ns', round(w, 4), round(h, 4)))
-    if not me.materials:
-        me.materials.append(M['nero'])
-    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', me, (BX1 - 0.006, ca, cz), coll=BATH)
+    instance(f'{prefix}_{ca:.2f}_{cz:.2f}', slab_me('y', w, h), (BX1 - 0.006, ca, cz), coll=BATH)
 
 
-WZ0, WZ1, WY0, WY1 = FFL + 1.24, FFL + 1.96, BY0 + 0.6, BY0 + 1.8
-wall_slabs('bk', BX0 + 0.012, BX1 - 0.012, FFL, BTOP, place_back, holes=[(NX0, NX1, NZ0, NZ1)], cols=[(BX0 + 0.012, 2.2), (2.2, 2.8), (2.8, 3.4), (3.4, BX1 - 0.012)])
+wall_slabs('bf', BX0 + 0.012, BX1 - 0.012, FFL, BTOP, place_front, holes=[(CX0, CX1, CZ0, CZ1), (NX0, NX1, NZ0, NZ1)],
+           cols=[(BX0 + 0.012, NX0), (NX0, NX1), (NX1, CX0), (CX0, 2.55), (2.55, CX1), (CX1, 3.7), (3.7, BX1 - 0.012)])
+wall_slabs('bb', BX0 + 0.012, BX1 - 0.012, FFL, BTOP, place_back, holes=[(BDX0 - 0.02, BDX1 + 0.02, FFL, 2.27)],
+           cols=[(BX0 + 0.012, 1.55), (1.55, BDX0 - 0.02), (BDX0 - 0.02, BDX1 + 0.02), (BDX1 + 0.02, 3.6), (3.6, BX1 - 0.012)])
 wall_slabs('bl', BY0, BY1, FFL, BTOP, place_left)
-wall_slabs('br', BY0, BY1, FFL, BTOP, place_right, holes=[(WY0, WY1, WZ0 - 0.04, WZ1 + 0.04)])
-# the niche box, lined in the same marble, LED strip under its head
+wall_slabs('br', BY0, BY1, FFL, BTOP, place_right)
+# window reveal lined in the same porcelain, marble sill
+for (sx_, sy_, sz_, x_, z_) in [(0.012, 0.21, CZ1 - CZ0, CX0 + 0.006, (CZ0 + CZ1) / 2), (0.012, 0.21, CZ1 - CZ0, CX1 - 0.006, (CZ0 + CZ1) / 2),
+                                (CX1 - CX0, 0.21, 0.012, (CX0 + CX1) / 2, CZ1 - 0.006)]:
+    box(f'brev_{x_:.2f}_{z_:.2f}', (sx_, 0.197, sz_), (x_, BY1 + 0.0865, z_), M['nero'], bevel=0.001, coll=BATH)
+box('b_winsill', (CX1 - CX0 + 0.06, 0.225, 0.025), ((CX0 + CX1) / 2, BY1 + 0.0725, CZ0 - 0.0125), M['marble'], bevel=0.003, coll=BATH)
+# niche lined in the same porcelain, LED strip under its head
 for (sx_, sy_, sz_, x_, y_, z_) in [(NX1 - NX0, 0.1, 0.012, (NX0 + NX1) / 2, BY1 + 0.05 - 0.012, NZ0 + 0.006),
                                      (NX1 - NX0, 0.1, 0.012, (NX0 + NX1) / 2, BY1 + 0.05 - 0.012, NZ1 - 0.006),
                                      (0.012, 0.1, NZ1 - NZ0, NX0 + 0.006, BY1 + 0.05 - 0.012, (NZ0 + NZ1) / 2),
@@ -657,107 +991,32 @@ for (sx_, sy_, sz_, x_, y_, z_) in [(NX1 - NX0, 0.1, 0.012, (NX0 + NX1) / 2, BY1
 box('niche_led', (NX1 - NX0 - 0.03, 0.006, 0.003), ((NX0 + NX1) / 2, BY1 - 0.006, NZ1 - 0.0135), M['led'], coll=BATH)
 add_light('AREA', ((NX0 + NX1) / 2, BY1 - 0.01, NZ1 - 0.016), 3.0, (1, 0.8, 0.58), size=(NX1 - NX0 - 0.04, 0.01), name='niche_light')
 amber = m_glass('amber_glass', tint=(0.55, 0.25, 0.06), shadow_pass=True)
-cylinder('bottle1', 0.032, 0.17, (2.48, BY1 + 0.04, NZ0 + 0.012 + 0.085), amber, coll=BATH, bevel=0.004)
-cylinder('bottle1_cap', 0.012, 0.035, (2.48, BY1 + 0.04, NZ0 + 0.012 + 0.19), M['black'], coll=BATH)
-cylinder('bottle2', 0.03, 0.14, (2.6, BY1 + 0.035, NZ0 + 0.012 + 0.07), m_ceramic('bottle_white', (0.80, 0.79, 0.76), 0.5, False), coll=BATH, bevel=0.004)
-cylinder('bottle2_cap', 0.011, 0.03, (2.6, BY1 + 0.035, NZ0 + 0.012 + 0.155), M['black'], coll=BATH)
-lathe('soap_dish', [(0, 0), (0.05, 0), (0.06, 0.012), (0.0, 0.012)], m_ceramic('dish', (0.12, 0.11, 0.1), 0.6, False), loc=(2.75, BY1 + 0.035, NZ0 + 0.012), coll=BATH)
-# shower fittings: matt black ceiling rose, rain head, valve; linear drain; glass screen
-SHX = 2.5
-cylinder('rain_arm', 0.012, 0.15, (SHX, BY1 - 0.35, BTOP - 0.075), M['black'], coll=BATH)
-cylinder('rain_head', 0.15, 0.012, (SHX, BY1 - 0.35, BTOP - 0.155), M['black'], coll=BATH, bevel=0.003)
-cylinder('valve', 0.065, 0.014, (SHX, BY1 - 0.012 - 0.007, FFL + 1.0), M['black'], rot=(math.pi / 2, 0, 0), coll=BATH, bevel=0.003)
-box('valve_lever', (0.012, 0.03, 0.12), (SHX, BY1 - 0.04, FFL + 1.0), M['black'], bevel=0.003, coll=BATH)
-box('drain', (BX1 - BX0 - 0.2, 0.05, 0.003), ((BX0 + BX1) / 2, BY1 - 0.12, FFL + 0.0005), M['steel'], coll=BATH)
-# fixed glass panel across the front of the shower, walk in past its open edge
-SGX = 2.45
-box('screen', ((SGX - BX0 - 0.012), 0.008, 2.0), ((BX0 + 0.012 + SGX) / 2, BY1 - 1.1, FFL + 1.0), M['glass'], coll=BATH)
-box('screen_bar', ((SGX - BX0 - 0.012), 0.016, 0.016), ((BX0 + 0.012 + SGX) / 2, BY1 - 1.1, FFL + 2.008), M['black'], coll=BATH)
-box('screen_channel', ((SGX - BX0 - 0.012), 0.024, 0.012), ((BX0 + 0.012 + SGX) / 2, BY1 - 1.1, FFL + 0.006), M['black'], coll=BATH)
-box('towel_rail', (0.6, 0.02, 0.02), (BX1 - 0.04, BY1 - 1.4, FFL + 1.2), M['black'], rot=(0, 0, math.pi / 2), coll=BATH)
-box('towel', (0.06, 0.45, 0.6), (BX1 - 0.06, BY1 - 1.4, FFL + 0.96), m_paint('towel', (0.66, 0.63, 0.58), 0.95), bevel=0.02, segments=4, coll=BATH)
-for (dx, dy) in [(SHX, BY1 - 0.45), (2.0, BY0 + 0.6)]:
+cylinder('bottle1', 0.032, 0.17, (1.38, BY1 + 0.04, NZ0 + 0.012 + 0.085), amber, coll=BATH, bevel=0.004)
+cylinder('bottle1_cap', 0.012, 0.035, (1.38, BY1 + 0.04, NZ0 + 0.012 + 0.19), M['black'], coll=BATH)
+cylinder('bottle2', 0.03, 0.14, (1.5, BY1 + 0.035, NZ0 + 0.012 + 0.07), m_ceramic('bottle_white', (0.80, 0.79, 0.76), 0.5, False), coll=BATH, bevel=0.004)
+cylinder('bottle2_cap', 0.011, 0.03, (1.5, BY1 + 0.035, NZ0 + 0.012 + 0.155), M['black'], coll=BATH)
+lathe('soap_dish', [(0, 0), (0.05, 0), (0.06, 0.012), (0.0, 0.012)], m_ceramic('dish', (0.12, 0.11, 0.1), 0.6, False), loc=(1.64, BY1 + 0.035, NZ0 + 0.012), coll=BATH)
+# shower: matt black ceiling rain head, valve on the side wall, linear drain along the front wall
+SHX, SHY = 1.45, BY1 - 0.5
+cylinder('rain_arm', 0.012, 0.15, (SHX, SHY, BTOP - 0.075), M['black'], coll=BATH)
+cylinder('rain_head', 0.15, 0.012, (SHX, SHY, BTOP - 0.155), M['black'], coll=BATH, bevel=0.003)
+cylinder('valve', 0.065, 0.014, (BX0 + 0.019, SHY - 0.1, FFL + 1.05), M['black'], rot=(0, math.pi / 2, 0), coll=BATH, bevel=0.003)
+box('valve_lever', (0.03, 0.012, 0.12), (BX0 + 0.04, SHY - 0.1, FFL + 1.05), M['black'], bevel=0.003, coll=BATH)
+box('drain', (0.95, 0.05, 0.003), (BX0 + 0.5, BY1 - 0.1, FFL + 0.0005), M['steel'], coll=BATH)
+# vanity: wall hung oak unit with a stone basin, wall tap and a round mirror
+VX = BX1 - 0.012 - 0.23
+VY = 10.95
+box('vanity', (0.46, 0.9, 0.4), (VX, VY, FFL + 0.62), M['oak'], bevel=0.004, coll=BATH)
+lathe('basin', [(0, 0), (0.15, 0), (0.19, 0.12), (0.185, 0.125), (0.14, 0.018), (0.0, 0.018)], M['ceramic'], loc=(VX - 0.02, VY, FFL + 0.82), coll=BATH)
+box('tap_spout', (0.17, 0.02, 0.02), (BX1 - 0.012 - 0.085, VY, FFL + 1.1), M['black'], bevel=0.004, coll=BATH)
+for dy in (-0.12, 0.12):
+    cylinder(f'tap_h{dy}', 0.018, 0.04, (BX1 - 0.03, VY + dy, FFL + 1.1), M['black'], rot=(0, math.pi / 2, 0), coll=BATH, bevel=0.003)
+cylinder('b_mirror', 0.3, 0.006, (BX1 - 0.03, VY, 1.68), MIRROR, rot=(0, math.pi / 2, 0), coll=BATH)
+cylinder('b_mirror_rim', 0.315, 0.016, (BX1 - 0.02, VY, 1.68), M['black'], rot=(0, math.pi / 2, 0), coll=BATH, bevel=0.004)
+for (dx, dy) in [(2.55, 10.45), (3.55, 11.4), (1.5, 10.5)]:
     cylinder(f'bdl_{dx}_{dy}', 0.035, 0.004, (dx, dy, BTOP - 0.003), M['downlight'], coll=BATH)
-    s = add_light('SPOT', (dx, dy, BTOP - 0.02), 28.0, (1.0, 0.86, 0.7), size=0.025, spot=60, blend=0.75, name=f'b_spot_{dx}')
-    s.rotation_euler = Euler((math.radians(-14) if dy > BY1 - 1 else 0, 0, 0))
-
-add_light('AREA', (2.5, FAR + 0.3, 2.45), 25.0, (1.0, 0.9, 0.78), size=(1.6, 0.6), name='bath_ceiling_bounce')
-# frosted window high on the right wall, lit by evening daylight
-box('bwin_glass', (0.01, WY1 - WY0, WZ1 - WZ0), (BX1 - 0.002, (WY0 + WY1) / 2, (WZ0 + WZ1) / 2), m_emission('frosted_day', (1.0, 0.93, 0.84), 2.2), coll=BATH)
-for (sy_, sz_, y_, z_) in [((WY1 - WY0 + 0.08), 0.04, (WY0 + WY1) / 2, WZ1 + 0.02), ((WY1 - WY0 + 0.08), 0.04, (WY0 + WY1) / 2, WZ0 - 0.02), (0.04, (WZ1 - WZ0), WY0 - 0.02, (WZ0 + WZ1) / 2), (0.04, (WZ1 - WZ0), WY1 + 0.02, (WZ0 + WZ1) / 2)]:
-    box(f'bwin_frame_{y_:.2f}_{z_:.2f}', (0.05, sy_, sz_), (BX1 - 0.02, y_, z_), M['white_frame'], bevel=0.003, coll=BATH)
-l = add_light('AREA', (BX1 - 0.03, (WY0 + WY1) / 2, (WZ0 + WZ1) / 2), 55.0, (1.0, 0.9, 0.78), size=(WY1 - WY0, WZ1 - WZ0), name='bwin_light')
-l.rotation_euler = Euler((0, math.radians(-90), 0))
-for (dx, dy) in [(3.5, BY0 + 1.2), (1.95, BY1 - 1.5)]:
-    cylinder(f'bdl2_{dx}_{dy}', 0.035, 0.004, (dx, dy, BTOP - 0.003), M['downlight'], coll=BATH)
-    add_light('SPOT', (dx, dy, BTOP - 0.02), 18.0, (1.0, 0.86, 0.7), size=0.025, spot=70, blend=0.8, name=f'b_spot2_{dx}')
-
-# neighbouring houses either side, so the boundary isn't an empty horizon
-for side in (-1, 1):
-    nx = side * 9.4
-    box(f'nb_house_{side}', (9.0, 9.0, 6.3), (nx, MY + 4.5, 3.15), M['brick'], coll=HOUSE)
-    box(f'nb_ext_{side}', (4.2, 4.0, 2.9), (side * 6.9, MY - 2.0, 1.45), M['brick'], coll=HOUSE)
-    box(f'nb_ext_cope_{side}', (4.3, 4.1, 0.06), (side * 6.9, MY - 2.0, 2.93), M['alu'], coll=HOUSE)
-    for k in range(2):
-        wx = nx + (-2.2 + k * 4.4)
-        box(f'nb_win_{side}_{k}', (1.2, 0.02, 1.4), (wx, MY - 0.01, 4.2), M['glass'], coll=HOUSE)
-        box(f'nb_wind_{side}_{k}', (1.2, 0.02, 1.4), (wx, MY + 0.02, 4.2), m_paint(f'nbdark{side}{k}', (0.02, 0.02, 0.02), 0.9), coll=HOUSE)
-        box(f'nb_sill_{side}_{k}', (1.32, 0.12, 0.06), (wx, MY - 0.06, 3.47), M['coping'], coll=HOUSE)
-    for sgn in (-1, 1):
-        me = bpy.data.meshes.new('nbroof')
-        bm = bmesh.new()
-        y0 = MY - 0.35 if sgn < 0 else MY + 9.35
-        vs = [bm.verts.new((nx - 4.6, y0, 6.3)), bm.verts.new((nx + 4.6, y0, 6.3)), bm.verts.new((nx + 4.6, MY + 4.5, 8.8)), bm.verts.new((nx - 4.6, MY + 4.5, 8.8))]
-        bm.faces.new(vs)
-        bm.to_mesh(me)
-        bm.free()
-        box_uv(me)
-        o = mesh_obj(f'nb_roof_{side}_{sgn}', me, M['slate'], coll=HOUSE)
-        o.modifiers.new('sol', 'SOLIDIFY').thickness = 0.06
-
-# teak shower stool with a rolled towel, inside the shower to the right of the rain head, turned so all four legs read
-TOWEL = m_fabric('towel_white', (0.78, 0.76, 0.72), sheen=0.8, rough=0.95)
-stool = empty('bstool', (3.25, BY1 - 0.4, FFL), (0, 0, math.radians(28)), BATH)
-for (lx, ly) in [(-0.14, -0.1), (0.14, -0.1), (-0.14, 0.1), (0.14, 0.1)]:
-    child(box(f'bstool_leg_{lx}_{ly}', (0.035, 0.035, 0.42), (lx, ly, 0.21), M['teak'], bevel=0.004, coll=BATH), stool)
-for k in range(5):
-    child(box(f'bstool_slat{k}', (0.38, 0.05, 0.025), (0, -0.12 + k * 0.06, 0.43), M['teak'], bevel=0.004, coll=BATH), stool)
-child(cylinder('rolled_towel', 0.07, 0.3, (0, 0, 0.512), TOWEL, rot=(0, math.pi / 2, 0.15), coll=BATH, bevel=0.03), stool)
+    add_light('SPOT', (dx, dy, BTOP - 0.02), 22.0, (1.0, 0.86, 0.7), size=0.025, spot=65, blend=0.8, name=f'b_spot_{dx}')
+fill_light('b_fill', (2.6, 11.0, BTOP - 0.05), 30.0, (1.6, 1.4))
 
 # =============================================================== CAMERAS
-CAMS = {
-    'garden':  dict(loc=(0.35, -7.9, 1.0), yaw=-1.0, lens=24, shift=(0.0, 0.045), fstop=7.1, focus=7.0),
-    'kitchen': dict(loc=(0.1, 0.6, 1.36), yaw=-2.0, lens=22, shift=(0.0, 0.03), fstop=5.6, focus=5.2),
-    'bath':    dict(loc=(2.5, FAR + 0.42, 1.3), yaw=0.0, lens=19, shift=(0.0, -0.07), fstop=4.0, focus=2.2),
-}
-CAMS['garden_p'] = dict(loc=(0.3, -7.9, 1.0), yaw=-1.0, lens=17, shift=(0.0, 0.07), fstop=7.1, focus=7.0, fit='VERTICAL')
-CAMS['kitchen_p'] = dict(loc=(1.2, 0.75, 1.36), yaw=1.25, lens=16, shift=(0.0, -0.05), fstop=5.6, focus=5.2, fit='VERTICAL')
-CAMS['bath_p'] = dict(loc=(2.5, FAR + 0.42, 1.3), yaw=0.0, lens=15, shift=(0.0, -0.03), fstop=4.0, focus=2.2, fit='VERTICAL')
-cams = {}
-for k, c in CAMS.items():
-    cams[k] = camera(f'cam_{k}', c['loc'], lens=c['lens'], pitch=90, yaw=c['yaw'], shift=c['shift'], fstop=c['fstop'], focus=c['focus'], fit=c.get('fit', 'HORIZONTAL'))
-
-
-def portal_rect(cam_obj, corners):
-    bpy.context.view_layer.update()
-    pts = [world_to_camera_view(sc, cam_obj, Vector(p)) for p in corners]
-    xs = [p.x for p in pts]
-    ys = [1 - p.y for p in pts]
-    return [round(min(xs), 4), round(min(ys), 4), round(max(xs), 4), round(max(ys), 4)]
-
-
-if __name__ == '__main__':
-    which, W, H, S, out = sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
-    EXPOS = {'garden': -0.85, 'kitchen': -0.3, 'bath': 0.0}
-    render_settings(W, H, samples=S, exposure=float(os.environ.get('EXPO', EXPOS.get(which.split('_')[0], -1.0))), look=os.environ.get('LOOK', 'AgX - Medium High Contrast'))
-    sc.render.resolution_x, sc.render.resolution_y = W, H
-    cam = cams[which]
-    if which == 'garden':
-        # interior lighting stays on, visible through the open doors
-        pass
-    info = {'_dims': [W, H]}
-    info['garden_door'] = portal_rect(cam, [(OX0, 0.06, FFL), (OX1, 0.06, FFL), (OX0, 0.06, OPEN_TOP), (OX1, 0.06, OPEN_TOP)])
-    info['kitchen_door'] = portal_rect(cam, [(DX0, FAR, FFL), (DX1, FAR, FFL), (DX0, FAR, DTOP), (DX1, FAR, DTOP)])
-    info['bath_niche'] = portal_rect(cam, [(NX0, BY1, NZ0), (NX1, BY1, NZ0), (NX0, BY1, NZ1), (NX1, BY1, NZ1)])
-    json.dump(info, open(out.replace('.png', '.json'), 'w'))
-    render(out, cam)
+# the drone camera and its path live in fly.py, which imports this scene
