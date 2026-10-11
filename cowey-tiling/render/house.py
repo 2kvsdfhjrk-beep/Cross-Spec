@@ -669,8 +669,11 @@ cylinder('rain_head', 0.15, 0.012, (SHX, BY1 - 0.35, BTOP - 0.155), M['black'], 
 cylinder('valve', 0.065, 0.014, (SHX, BY1 - 0.012 - 0.007, FFL + 1.0), M['black'], rot=(math.pi / 2, 0, 0), coll=BATH, bevel=0.003)
 box('valve_lever', (0.012, 0.03, 0.12), (SHX, BY1 - 0.04, FFL + 1.0), M['black'], bevel=0.003, coll=BATH)
 box('drain', (BX1 - BX0 - 0.2, 0.05, 0.003), ((BX0 + BX1) / 2, BY1 - 0.12, FFL + 0.0005), M['steel'], coll=BATH)
-box('screen', (0.008, 1.1, 2.0), (BX0 + 0.55, BY1 - 0.55 - 0.012, FFL + 1.0), M['glass'], coll=BATH)
-box('screen_bar', (0.016, 1.1, 0.016), (BX0 + 0.55, BY1 - 0.55, FFL + 2.0), M['black'], coll=BATH)
+# fixed glass panel across the front of the shower, walk in past its open edge
+SGX = 2.45
+box('screen', ((SGX - BX0 - 0.012), 0.008, 2.0), ((BX0 + 0.012 + SGX) / 2, BY1 - 1.1, FFL + 1.0), M['glass'], coll=BATH)
+box('screen_bar', ((SGX - BX0 - 0.012), 0.016, 0.016), ((BX0 + 0.012 + SGX) / 2, BY1 - 1.1, FFL + 2.008), M['black'], coll=BATH)
+box('screen_channel', ((SGX - BX0 - 0.012), 0.024, 0.012), ((BX0 + 0.012 + SGX) / 2, BY1 - 1.1, FFL + 0.006), M['black'], coll=BATH)
 box('towel_rail', (0.6, 0.02, 0.02), (BX1 - 0.04, BY1 - 1.4, FFL + 1.2), M['black'], rot=(0, 0, math.pi / 2), coll=BATH)
 box('towel', (0.06, 0.45, 0.6), (BX1 - 0.06, BY1 - 1.4, FFL + 0.96), m_paint('towel', (0.66, 0.63, 0.58), 0.95), bevel=0.02, segments=4, coll=BATH)
 for (dx, dy) in [(SHX, BY1 - 0.45), (2.0, BY0 + 0.6)]:
@@ -693,7 +696,7 @@ for (dx, dy) in [(3.5, BY0 + 1.2), (1.95, BY1 - 1.5)]:
 for side in (-1, 1):
     nx = side * 9.4
     box(f'nb_house_{side}', (9.0, 9.0, 6.3), (nx, MY + 4.5, 3.15), M['brick'], coll=HOUSE)
-    box(f'nb_ext_{side}', (4.2, 4.0, 2.9), (side * 6.9, MY - 2.0, 1.45), m_plaster(f'render_{side}', (0.72, 0.69, 0.63), bump=0.08), coll=HOUSE)
+    box(f'nb_ext_{side}', (4.2, 4.0, 2.9), (side * 6.9, MY - 2.0, 1.45), M['brick'], coll=HOUSE)
     box(f'nb_ext_cope_{side}', (4.3, 4.1, 0.06), (side * 6.9, MY - 2.0, 2.93), M['alu'], coll=HOUSE)
     for k in range(2):
         wx = nx + (-2.2 + k * 4.4)
@@ -712,13 +715,14 @@ for side in (-1, 1):
         o = mesh_obj(f'nb_roof_{side}_{sgn}', me, M['slate'], coll=HOUSE)
         o.modifiers.new('sol', 'SOLIDIFY').thickness = 0.06
 
-# teak shower stool with a rolled towel
-for (lx, ly) in [(-0.14, -0.1), (0.14, -0.1), (-0.14, 0.1), (0.14, 0.1)]:
-    box(f'bstool_leg_{lx}_{ly}', (0.035, 0.035, 0.42), (1.98 + lx, BY1 - 0.32 + ly, FFL + 0.21), M['teak'], bevel=0.004, coll=BATH)
-for k in range(5):
-    box(f'bstool_slat{k}', (0.38, 0.05, 0.025), (1.98, BY1 - 0.32 - 0.12 + k * 0.06, FFL + 0.43), M['teak'], bevel=0.004, coll=BATH)
+# teak shower stool with a rolled towel, inside the shower to the right of the rain head, turned so all four legs read
 TOWEL = m_fabric('towel_white', (0.78, 0.76, 0.72), sheen=0.8, rough=0.95)
-cylinder('rolled_towel', 0.07, 0.3, (1.98, BY1 - 0.32, FFL + 0.512), TOWEL, rot=(0, math.pi / 2, 0.15), coll=BATH, bevel=0.03)
+stool = empty('bstool', (3.25, BY1 - 0.4, FFL), (0, 0, math.radians(28)), BATH)
+for (lx, ly) in [(-0.14, -0.1), (0.14, -0.1), (-0.14, 0.1), (0.14, 0.1)]:
+    child(box(f'bstool_leg_{lx}_{ly}', (0.035, 0.035, 0.42), (lx, ly, 0.21), M['teak'], bevel=0.004, coll=BATH), stool)
+for k in range(5):
+    child(box(f'bstool_slat{k}', (0.38, 0.05, 0.025), (0, -0.12 + k * 0.06, 0.43), M['teak'], bevel=0.004, coll=BATH), stool)
+child(cylinder('rolled_towel', 0.07, 0.3, (0, 0, 0.512), TOWEL, rot=(0, math.pi / 2, 0.15), coll=BATH, bevel=0.03), stool)
 
 # =============================================================== CAMERAS
 CAMS = {
