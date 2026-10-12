@@ -75,8 +75,6 @@ h1,h2,h3,h4{ text-wrap:balance; }
 .kicker{ margin:0; font:600 12px/1 var(--f-sans); letter-spacing:.2em; text-transform:uppercase; }
 .kicker b{ font-weight:800; margin-right:.6em; }
 
-/* ---------- grain ---------- */
-.grain::after{ content:""; position:absolute; inset:0; z-index:30; pointer-events:none; background-image:var(--grain-film,none); }
 
 /* ---------- loader ---------- */
 .loader{ display:none; }
@@ -144,10 +142,10 @@ h1,h2,h3,h4{ text-wrap:balance; }
 .badge{ position:absolute; right:var(--gut); top:calc(env(safe-area-inset-top,0px) + 76px); width:clamp(84px,9vw,120px); aspect-ratio:1; display:grid; place-items:center; color:var(--cream); text-decoration:none; }
 .badge svg{ position:absolute; inset:0; width:100%; height:100%; fill:currentColor; font:700 10.5px var(--f-sans); letter-spacing:.2em; }
 .badge img{ width:52%; border-radius:50%; filter:drop-shadow(0 6px 14px rgba(0,0,0,.45)); }
-.motion .badge svg{ animation:spin 16s linear infinite; }
+.badge-spin{ position:absolute; inset:0; }
+.motion .badge-spin{ animation:spin 16s linear infinite; will-change:transform; }
 .motion .badge img{ animation:spin 9s linear infinite reverse; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
-#ambient{ display:none; }
 
 /* ---------- story: static layout (reduced motion / no script) ---------- */
 .story{ position:relative; z-index:1; background:var(--bun); color:var(--red); padding-block:72px 96px; }
@@ -183,7 +181,7 @@ html:not(.motion) .flavours li{ background:none; border-color:var(--wine-a35); }
 
 /* ---------- story: the film ---------- */
 .motion .story{ height:calc(720 * var(--lvh)); padding:0; background:none; color:var(--red); }
-.motion .stage{ position:sticky; top:0; display:block; height:calc(100 * var(--lvh)); overflow:hidden; padding:0; }
+.motion .stage{ position:sticky; top:0; display:block; height:calc(100 * var(--lvh)); overflow:hidden; padding:0; contain:paint; }
 .motion .stage > *{ position:absolute; }
 .motion .st-bg{ display:block; inset:0; z-index:0; background:var(--bun); will-change:opacity; }
 .dome{ display:none; }
@@ -203,7 +201,8 @@ html:not(.motion) .flavours li{ background:none; border-color:var(--wine-a35); }
 .motion .pz-move{ perspective:1500px; will-change:transform; }
 .motion .pz-tilt,.motion .pz-spin{ will-change:transform; }
 .motion .pz-shadow{ display:block; position:absolute; inset:-4%; border-radius:50%; background:radial-gradient(closest-side, rgba(70,20,10,.42), rgba(70,20,10,.16) 70%, transparent); transform:translate(3%,7%); }
-.motion .ring{ display:none; position:absolute; left:-13%; top:-13%; width:126%; height:126%; max-width:none; fill:var(--red); font:600 27px var(--f-sans); letter-spacing:.26em; opacity:0; will-change:transform,opacity; }
+.motion .ring{ display:none; position:absolute; left:-13%; top:-13%; width:126%; height:126%; opacity:0; will-change:transform,opacity; }
+.ring svg{ display:block; width:100%; height:100%; max-width:none; overflow:visible; fill:var(--red); font:600 27px var(--f-sans); letter-spacing:.26em; }
 .motion .sprites{ display:block; inset:0; z-index:4; pointer-events:none; perspective:900px; }
 .spr{ position:absolute; left:0; top:0; will-change:transform,opacity; opacity:0; }
 .spr img{ width:100%; height:100%; filter:drop-shadow(0 8px 10px rgba(60,15,5,.35)); }
@@ -228,8 +227,8 @@ html:not(.motion) .flavours li{ background:none; border-color:var(--wine-a35); }
 .motion .copy-k .ln,.motion .copy-d .ln,.motion .copy-side{ opacity:0; }
 
 @media (min-width:900px) and (min-aspect-ratio:1/1){
-  #ambient{ display:block; position:fixed; z-index:-1; left:-8vw; top:-8vh; width:116vw; height:116vh; opacity:.42; }
-  .hero{ background:none; }
+  .hero{ background:radial-gradient(70% 85% at 74% 50%, #4a1219 0%, var(--wine-2) 48%, var(--ink) 100%); }
+  .motion .stage{ background:radial-gradient(55% 62% at 50% 50%, #4a1219 0%, var(--wine-2) 50%, var(--ink) 100%); }
   .hero-shade{ z-index:-2; background:radial-gradient(75% 95% at 28% 50%, rgba(28,4,6,.9), rgba(43,7,10,.66) 58%, rgba(60,10,16,.5)); }
   .hero-media{ z-index:-1; inset:auto; right:max(var(--gut), 6vw); top:50%; width:var(--aw); height:var(--ah); margin-top:calc(var(--ah) / -2); border-radius:calc(var(--aw) / 2) calc(var(--aw) / 2) 22px 22px; overflow:hidden; box-shadow:0 40px 120px rgba(0,0,0,.5), 0 0 0 1px rgba(248,240,236,.08); }
   .hero-content{ right:auto; top:50%; bottom:auto; width:min(54vw, calc(100vw - var(--aw) - max(var(--gut), 6vw) - 3 * var(--gut))); transform:translateY(-50%); gap:16px; }
@@ -326,9 +325,9 @@ html:not(.motion) .flavours li{ background:none; border-color:var(--wine-a35); }
 .slot{ position:relative; width:11.4cqw; height:11.4cqw; border-radius:50%; background:var(--card-ink); color:var(--card-red); display:grid; place-items:center; font:700 5.4cqw/1 var(--f-cond); }
 .slot .n{ position:relative; z-index:1; }
 .free .n{ font:800 2.3cqw/1.05 var(--f-sans); text-transform:uppercase; text-align:center; letter-spacing:.02em; }
-.burst{ position:absolute; inset:-28%; z-index:0; pointer-events:none; }
+.burst{ position:absolute; inset:-28%; z-index:0; pointer-events:none; will-change:transform; }
 .burst line{ stroke:var(--card-ink); stroke-width:3.2; stroke-linecap:round; }
-.stamp{ position:absolute; left:50%; top:50%; z-index:2; width:92%; height:92%; opacity:0; transform:translate(-50%,-50%) scale(1.8); pointer-events:none; }
+.stamp{ position:absolute; left:50%; top:50%; z-index:2; width:92%; height:92%; opacity:0; transform:translate(-50%,-50%) scale(1.8); pointer-events:none; will-change:transform,opacity; }
 .stamp svg{ width:100%; height:100%; }
 .free.won{ background:#FFF6E8; box-shadow:0 0 0 .6cqw rgba(255,236,200,.35), 0 0 5cqw rgba(255,214,150,.55); }
 .back-wave{ position:absolute; left:2.5%; bottom:4%; width:17%; }
@@ -375,7 +374,7 @@ html:not(.motion) .card-shadow{ display:none; }
 .tile figcaption span{ font:600 11px/1 var(--f-sans); letter-spacing:.18em; color:var(--cream-a70); }
 .tile .tag-video{ position:absolute; left:14px; top:14px; z-index:2; padding:7px 10px 6px; border-radius:999px; background:rgba(28,4,6,.6); font:700 10px/1 var(--f-sans); letter-spacing:.18em; text-transform:uppercase; }
 .gal-end{ flex:none; width:clamp(40px,10vw,160px); height:1px; }
-.motion .gal-stage{ position:sticky; top:0; height:calc(100 * var(--lvh)); box-sizing:border-box; padding-block:calc(env(safe-area-inset-top,0px) + 80px) calc(var(--tb) + 24px); display:flex; align-items:center; }
+.motion .gal-stage{ contain:paint; position:sticky; top:0; height:calc(100 * var(--lvh)); box-sizing:border-box; padding-block:calc(env(safe-area-inset-top,0px) + 80px) calc(var(--tb) + 24px); display:flex; align-items:center; }
 .motion .gal-track{ overflow:visible; scroll-snap-type:none; will-change:transform; }
 @media (min-width:900px){ .tile{ width:min(25vw,420px); } .gal-head{ width:min(30vw,460px); } }
 
@@ -500,6 +499,8 @@ html:not(.motion) .card-shadow{ display:none; }
   .tile-btn{ cursor:none; }
 }
 
+.anim-off *,.anim-off *::before,.anim-off *::after{ animation-play-state:paused !important; }
+
 @media (prefers-reduced-motion:reduce){ *,*::before,*::after{ animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; } }
 </style>
 </head>
@@ -522,7 +523,6 @@ html:not(.motion) .card-shadow{ display:none; }
   </div>
 </div>
 
-<canvas id="ambient" width="40" height="40" aria-hidden="true"></canvas>
 <div class="tb-probe" aria-hidden="true"></div>
 
 <header class="nav" id="nav">
@@ -539,7 +539,7 @@ html:not(.motion) .card-shadow{ display:none; }
 </header>
 
 <main id="top">
-  <section class="hero grain" aria-label="Dough Boys, Great Yarmouth">
+  <section class="hero" aria-label="Dough Boys, Great Yarmouth">
     <div class="hero-media">
       <video class="hero-video" autoplay muted loop playsinline preload="auto" poster="media/premises.webp" aria-hidden="true" tabindex="-1">
         <source src="media/premises.mp4" type="video/mp4">
@@ -556,7 +556,7 @@ html:not(.motion) .card-shadow{ display:none; }
       </div>
     </div>
     <a class="badge" href="#story" aria-label="Scroll down to the pizza">
-      <svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="badge-path" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs><text><textPath href="#badge-path" textLength="292" lengthAdjust="spacing">SCROLL FOR PIZZA &#x2726; SCROLL FOR PIZZA &#x2726; </textPath></text></svg>
+      <span class="badge-spin"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><path id="badge-path" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs><text><textPath href="#badge-path" textLength="292" lengthAdjust="spacing">SCROLL FOR PIZZA &#x2726; SCROLL FOR PIZZA &#x2726; </textPath></text></svg></span>
       <img src="img/pepperoni-160.webp" alt="" width="80" height="80">
     </a>
   </section>
@@ -570,7 +570,7 @@ html:not(.motion) .card-shadow{ display:none; }
 
       <div class="win win-oven" id="kitchen">
         <div class="win-in">
-          <video muted loop playsinline preload="metadata" poster="media/oven.webp" aria-hidden="true" tabindex="-1">
+          <video muted loop playsinline preload="auto" poster="media/oven.webp" aria-hidden="true" tabindex="-1">
             <source src="media/oven.mp4" type="video/mp4">
             <source src="media/oven.webm" type="video/webm">
           </video>
@@ -582,7 +582,7 @@ html:not(.motion) .card-shadow{ display:none; }
         <div class="pz-move">
           <div class="pz-tilt">
             <div class="pz-shadow"></div>
-            <svg class="ring" viewBox="0 0 1000 1000" aria-hidden="true"><defs><path id="ring-path" d="M500,500 m-452,0 a452,452 0 1,1 904,0 a452,452 0 1,1 -904,0"/></defs><text><textPath href="#ring-path" textLength="2830" lengthAdjust="spacing">DOUBLE PEPPERONI &#x2726; JUST GOOD PIZZA &#x2726; GREAT YARMOUTH &#x2726; NR30 3JG &#x2726; </textPath></text></svg>
+            <div class="ring" aria-hidden="true"><svg viewBox="0 0 1000 1000"><defs><path id="ring-path" d="M500,500 m-452,0 a452,452 0 1,1 904,0 a452,452 0 1,1 -904,0"/></defs><text><textPath href="#ring-path" textLength="2830" lengthAdjust="spacing">DOUBLE PEPPERONI &#x2726; JUST GOOD PIZZA &#x2726; GREAT YARMOUTH &#x2726; NR30 3JG &#x2726; </textPath></text></svg></div>
             <div class="pz-spin"><img src="img/pepperoni.webp" srcset="img/pepperoni-900.webp 900w, img/pepperoni.webp 1400w" sizes="(max-width: 899px) 90vw, 60vh" width="1400" height="1400" alt="Dough Boys Double Pepperoni: cupped pepperoni, melted cheese and a charred crust" decoding="async"></div>
           </div>
         </div>
@@ -605,7 +605,7 @@ html:not(.motion) .card-shadow{ display:none; }
       <div class="win win-dessert" id="desserts">
         <svg class="drip" aria-hidden="true" preserveAspectRatio="none"><defs><linearGradient id="choc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6EEEA"/><stop offset=".72" stop-color="#EBE0DC"/><stop offset="1" stop-color="#D8C6BF"/></linearGradient></defs><path class="drip-sh" d="" transform="translate(0 12)"/><path class="drip-top" d=""/></svg>
         <div class="win-in">
-          <video muted loop playsinline preload="metadata" poster="media/dessert.webp" aria-hidden="true" tabindex="-1">
+          <video muted loop playsinline preload="auto" poster="media/dessert.webp" aria-hidden="true" tabindex="-1">
             <source src="media/dessert.mp4" type="video/mp4">
             <source src="media/dessert.webm" type="video/webm">
           </video>
@@ -930,7 +930,6 @@ html:not(.motion) .card-shadow{ display:none; }
     return 'url(' + c.toDataURL('image/png') + ')';
   }
   try {
-    doc.style.setProperty('--grain-film', grainTex(160, [0, 0, 0], 0.16, [255, 244, 232], 0.1));
     doc.style.setProperty('--grain-paper', grainTex(160, [60, 12, 8], 0.07, null, 0));
   } catch (e) {}
 
@@ -1028,7 +1027,7 @@ html:not(.motion) .card-shadow{ display:none; }
   /* ---------- in-page links ---------- */
   var story = $('.story'), stage = $('.stage'), loyal = $('.loyal'), gal = $('.gallery'), menu = $('#menu'), hero = $('.hero'), cta = $('.cta');
   var vh = window.innerHeight, storyTop = 0, storyLen = 720, loyalTop = 0, loyalH = 0, galTop = 0, galDist = 0, galH = 0;
-  var menuTop = 0, menuBottom = 0, heroH = 0, ctaTop = 0, ctaH = 0, blockTops = [], docH = 0;
+  var menuTop = 0, menuBottom = 0, heroH = 0, ctaTop = 0, ctaH = 0, blockTops = [], docH = 0, innerH = window.innerHeight;
   var STOPS = { story: 150, kitchen: 385, desserts: 590 };
   document.addEventListener('click', function (e) {
     var a = e.target.closest && e.target.closest('a[href^="#"]');
@@ -1056,16 +1055,21 @@ html:not(.motion) .card-shadow{ display:none; }
     }, { rootMargin: '0px 0px -8% 0px' });
     $$('.rv, .rise, .foot-word').forEach(function (el) { io.observe(el); });
   } else $$('.rv, .rise, .foot-word').forEach(function (el) { el.classList.add('in'); });
+  /* looping animations (badge, banner, waving mascot, button shine) stop while their section is off screen */
+  if ('IntersectionObserver' in window) {
+    var animIO = new IntersectionObserver(function (es) { es.forEach(function (en) { en.target.classList.toggle('anim-off', !en.isIntersecting); }); });
+    $$('.hero, .cta, .foot').forEach(function (el) { animIO.observe(el); });
+  }
 
   var nav = $('#nav'), heroContent = $('.hero-content'), navPz = $('.nav-pz'), eatenShown = -1;
   var S = null, L = 0, G = 0;
   /* the menu's category bar sticks flush under the top bar */
   function setNavH() { doc.style.setProperty('--nav-h', nav.offsetHeight + 'px'); }
-  function navState() {
-    var y = window.scrollY, line = y + 40;
+  function navState(sy) {
+    var y = typeof sy === 'number' ? sy : window.scrollY, line = y + 40;
     doc.classList.toggle('scrolled', y > heroH * 0.7);
     /* the little pizza in the bar gets eaten a slice at a time as you scroll down */
-    var eaten = Math.min(8, Math.floor(clamp(y / Math.max(1, docH - window.innerHeight)) * 8 + 0.02));
+    var eaten = Math.min(8, Math.floor(clamp(y / Math.max(1, docH - innerH)) * 8 + 0.02));
     if (eaten !== eatenShown && navPz) { navPz.style.setProperty('--left', (360 - eaten * 45) + 'deg'); eatenShown = eaten; }
     var light = (line > menuTop && line < menuBottom) || (line > loyalTop && line < loyalTop + loyalH) || (motion && S !== null && S > 86 && S < 300);
     nav.classList.toggle('on-paper', light);
@@ -1081,7 +1085,7 @@ html:not(.motion) .card-shadow{ display:none; }
       heroH = hero.offsetHeight;
       menuTop = menu.getBoundingClientRect().top + window.scrollY; menuBottom = menuTop + menu.offsetHeight;
       loyalTop = loyal.getBoundingClientRect().top + window.scrollY; loyalH = loyal.offsetHeight;
-      docH = document.documentElement.scrollHeight;
+      docH = document.documentElement.scrollHeight; innerH = window.innerHeight;
       setNavH(); measureBlocks(); navState();
     };
     measureStatic();
@@ -1107,8 +1111,6 @@ html:not(.motion) .card-shadow{ display:none; }
   var linesK = $$('.copy-k .ln').concat([$('.copy-k .copy-side')]), linesD = $$('.copy-d .ln');
   var statEls = $$('.stats b'), flavs = $$('.flavours li'), sideD = $('.copy-d .copy-side');
   var tkEls = $$('.tk'), sprBox = $('.sprites'), wordEl = $('.word'), tbProbe = $('.tb-probe');
-  var amb = $('#ambient'), actx = null;
-  try { actx = amb.getContext('2d'); } catch (e) {}
   var W = 0, H = 0, winW = 0, winH = 0, pzR = 0, drips = [], wavePh = 0;
   /* TB: height hidden behind the phone's browser bars. PCX/PCY: where the pizza rests. The band is the free space
      between the headline and the name panel, which the pizza, its tags and the loose pepperoni must stay inside. */
@@ -1305,7 +1307,7 @@ html:not(.motion) .card-shadow{ display:none; }
     layoutChapter();
     pzR = pzWrap.offsetWidth / 2;
     heroH = hero.offsetHeight;
-    docH = document.documentElement.scrollHeight;
+    docH = document.documentElement.scrollHeight; innerH = window.innerHeight;
     menuTop = menu.getBoundingClientRect().top + window.scrollY; menuBottom = menuTop + menu.offsetHeight;
     loyalTop = loyal.getBoundingClientRect().top + window.scrollY; loyalH = loyal.offsetHeight;
     galTop = gal.getBoundingClientRect().top + window.scrollY; galH = gal.offsetHeight;
@@ -1315,12 +1317,11 @@ html:not(.motion) .card-shadow{ display:none; }
     drip.setAttribute('viewBox', '0 0 ' + winW + ' ' + winH);
     makeDrips(winW);
     layoutSprites();
-    if (amb) { amb.width = arch ? 16 : 2; amb.height = arch ? 9 : 2; }
     dirty = true;
   }
 
   var last = performance.now(), dirty = true, statShown = statEls.map(function () { return -1; });
-  var ambSrc = null, ambT = 0, lastDrip = -1, lastClip = '', lastS = null;
+  var lastDrip = -1, lastClip = '', lastS = null;
 
   function renderStory(S, t) {
     /* stage arrives with a domed top edge */
@@ -1444,7 +1445,6 @@ html:not(.motion) .card-shadow{ display:none; }
       el.style.opacity = a.toFixed(3);
     });
     copyD.style.visibility = S > 502 ? 'visible' : 'hidden';
-    ambSrc = S < 250 ? vHero : (d < 0.5 ? vOven : vDessert);
   }
 
   function renderLoyal(L) {
@@ -1492,8 +1492,8 @@ html:not(.motion) .card-shadow{ display:none; }
 
   /* only touch what actually changed this frame; an idle page does no style work at all */
   var lastSy = -1, lastL = -1, lastG = -1, lastTX = 0, lastTY = 0;
-  function render(S, L, G, t) {
-    var sy = window.scrollY, moved = sy !== lastSy || dirty;
+  function render(S, L, G, t, sy) {
+    var moved = sy !== lastSy || dirty;
     if (moved) {
       var hy = clamp(sy / vh);
       if (hy < 1 || dirty || lastSy < vh) {
@@ -1522,41 +1522,25 @@ html:not(.motion) .card-shadow{ display:none; }
     dirty = false;
   }
 
-  /* the soft light behind the arches on laptops: a 16x9 sample of the video, refreshed a few times a second */
-  var ambOn = true;
-  function ambient(t) {
-    if (!arch || !actx) return;
-    var show = window.scrollY < menuTop;
-    if (show !== ambOn) { amb.style.visibility = show ? '' : 'hidden'; ambOn = show; }
-    if (!show || !ambSrc || ambSrc.readyState < 2 || t - ambT < 300) return;
-    ambT = t;
-    actx.globalAlpha = 0.45;
-    try { actx.drawImage(ambSrc, 0, 0, amb.width, amb.height); } catch (e) {}
-  }
-
   function frame(t) {
+    /* read the scroll position before changing anything this frame: reading it after a change makes the browser lay the page out again on the spot */
+    var sy = window.scrollY;
     var dt = Math.min(0.064, (t - last) / 1000); last = t; lastDt = dt || 0.016;
+    /* every scene follows the scroll position exactly, frame by frame; nothing eases towards it, so nothing trails the wheel */
+    S = (sy + vh - storyTop) / vh * 100;
+    L = clamp((sy - loyalTop) / Math.max(1, loyalH - vh));
+    G = galDist ? clamp((sy - galTop) / galDist) : 0;
+    var k = 1 - Math.exp(-dt * 9);
+    tiltX += (tiltTX - tiltX) * k; tiltY += (tiltTY - tiltY) * k;
+    if (Math.abs(tiltTX - tiltX) < 0.01) tiltX = tiltTX;
+    if (Math.abs(tiltTY - tiltY) < 0.01) tiltY = tiltTY;
+    render(S, L, G, t, sy);
+    navState(sy);
     if (curOn) {
       var ck = 1 - Math.exp(-dt * 20);
       curX += (curTX - curX) * ck; curY += (curTY - curY) * ck;
       cur.style.transform = 'translate3d(' + f1(curX) + 'px,' + f1(curY) + 'px,0)';
     }
-    var sy = window.scrollY;
-    var goalS = (sy + vh - storyTop) / vh * 100;
-    var goalL = clamp((sy - loyalTop) / Math.max(1, loyalH - vh));
-    var goalG = galDist ? clamp((sy - galTop) / galDist) : 0;
-    if (S === null) { S = goalS; L = goalL; G = goalG; }
-    var k = 1 - Math.exp(-dt * 9);
-    S += (goalS - S) * k; L += (goalL - L) * k; G += (goalG - G) * (1 - Math.exp(-dt * 7));
-    if (Math.abs(goalS - S) < 0.02) S = goalS;
-    if (Math.abs(goalL - L) < 0.0004) L = goalL;
-    if (Math.abs(goalG - G) < 0.0004) G = goalG;
-    tiltX += (tiltTX - tiltX) * k; tiltY += (tiltTY - tiltY) * k;
-    if (Math.abs(tiltTX - tiltX) < 0.01) tiltX = tiltTX;
-    if (Math.abs(tiltTY - tiltY) < 0.01) tiltY = tiltTY;
-    render(S, L, G, t);
-    ambient(t);
-    navState();
     requestAnimationFrame(frame);
   }
 
