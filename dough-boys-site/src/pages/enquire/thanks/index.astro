@@ -1,0 +1,21 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PageHero from '../../../components/PageHero.astro';
+import { business, instagramUrl } from '../../../data/business';
+---
+<Base page="thanks">
+  <PageHero page="thanks" kicker="Enquiry sent"
+    lede="Thanks for getting in touch. We’ll reply by phone or email as soon as we can." />
+  <div class="paper">
+    <div class="paper-in prose">
+      <h2>While you wait</h2>
+      <ul>
+        <li>Pick your favourites from the <a href="/menu/">menu and prices</a>.</li>
+        <li>Find out how the <a href="/loyalty-card/">loyalty card</a> works.</li>
+        <li>Say hello on <a href={instagramUrl}>Instagram @{business.instagram}</a>.</li>
+      </ul>
+      <p>Sent something by mistake, or need to add a detail? Just send us another enquiry or a message on Instagram.</p>
+      <p><a class="ghost" href="/">Back to the homepage</a></p>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,32 @@
+---
+import { instagramUrl } from '../data/business';
+import type { PageKey } from '../data/pages';
+import Wordmark from './Wordmark.astro';
+interface Props { current: PageKey; home?: boolean; pzSrc?: string }
+const { current, home = false, pzSrc } = Astro.props;
+const links: { key: PageKey; href: string; label: string }[] = [
+  { key: 'menu', href: '/menu/', label: 'Menu' },
+  { key: 'loyalty', href: '/loyalty-card/', label: 'Loyalty card' },
+  { key: 'gallery', href: '/gallery/', label: 'Gallery' },
+  { key: 'find', href: '/find-us/', label: 'Find us' },
+];
+const on = (k: PageKey) => (k === current || (k === 'enquire' && current === 'thanks') ? 'page' : undefined);
+---
+<header class:list={['nav', { 'nav-home': home }]} id="nav">
+  <a class="nav-logo" href="/"><span class="sr-only">Dough Boys home page</span><Wordmark /></a>
+  <nav class="nav-links" aria-label="Main">
+    {links.map((l, i) => <a class:list={[{ wide: i > 0 }]} href={l.href} aria-current={on(l.key)}>{l.label}</a>)}
+  </nav>
+  <a class="nav-ig" href={instagramUrl}><span class="sr-only">Dough Boys on Instagram</span><svg aria-hidden="true"><use href="#i-ig"></use></svg></a>
+  {home && pzSrc && <a class="nav-pz" href="#top"><span class="sr-only">Back to the top</span><img src={pzSrc} alt="" width="80" height="80" decoding="async" /></a>}
+  <a class="pill" href="/enquire/" aria-current={on('enquire')}>Enquire</a>
+  <details class="nav-more">
+    <summary><span class="sr-only">All pages</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></summary>
+    <nav class="nav-sheet" aria-label="All pages">
+      <a href="/" aria-current={on('home')}>Home</a>
+      {links.map((l) => <a href={l.href} aria-current={on(l.key)}>{l.label}</a>)}
+      <a href="/enquire/" aria-current={on('enquire')}>Enquire</a>
+      <a href={instagramUrl}>Instagram</a>
+    </nav>
+  </details>
+</header>

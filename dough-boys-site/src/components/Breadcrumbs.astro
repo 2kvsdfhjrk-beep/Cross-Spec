@@ -1,0 +1,12 @@
+---
+import { trail, type PageKey } from '../data/pages';
+interface Props { page: PageKey }
+const items = trail(Astro.props.page);
+---
+<nav class="crumbs" aria-label="Breadcrumb">
+  <ol>
+    {items.map((c, i) => (
+      <li>{i < items.length - 1 ? <a href={c.path}>{c.name}</a> : <span aria-current="page">{c.name}</span>}</li>
+    ))}
+  </ol>
+</nav>

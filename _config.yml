@@ -1,0 +1,6 @@
+# GitHub Pages (Jekyll) settings for this repository.
+# The Dough Boys production site is built and hosted by Netlify from dough-boys-site/, so Pages should not publish
+# its source files. Everything that was already on Pages is unchanged.
+exclude:
+  - dough-boys-site
+  - netlify.toml

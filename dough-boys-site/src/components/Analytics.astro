@@ -1,0 +1,9 @@
+---
+/* Cloudflare Web Analytics: no cookies and no personal data, so no consent banner is needed (see the privacy policy).
+   Loads only when a token is set, and never on Netlify deploy previews or branch deploys. */
+const token = (import.meta.env.PUBLIC_CF_BEACON_TOKEN ?? '').trim();
+const context = process.env.CONTEXT ?? '';
+const preview = ['deploy-preview', 'branch-deploy', 'dev'].includes(context);
+const on = token && !preview;
+---
+{on && <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token })}></script>}

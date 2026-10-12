@@ -1,0 +1,45 @@
+# Netlify settings for the Dough Boys website (doughboysyarmouth.co.uk).
+# The site lives in the dough-boys-site folder of this repository; this file sits at the repository
+# root so Netlify finds it without any settings in its dashboard.
+
+[build]
+  base = "dough-boys-site"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# ---------- one canonical address: https://doughboysyarmouth.co.uk ----------
+# www goes straight to the bare domain in a single hop. Plain http is upgraded by Netlify's
+# automatic HTTPS, which also sends a single 301.
+[[redirects]]
+  from = "https://www.doughboysyarmouth.co.uk/*"
+  to = "https://doughboysyarmouth.co.uk/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.doughboysyarmouth.co.uk/*"
+  to = "https://doughboysyarmouth.co.uk/:splat"
+  status = 301
+  force = true
+
+# ---------- security headers for every response ----------
+# The Content-Security-Policy (which needs hashes of the inline code) and the preview-only
+# X-Robots-Tag are written to dist/_headers by scripts/postbuild.mjs at build time.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    X-Frame-Options = "SAMEORIGIN"
+    Cross-Origin-Opener-Policy = "same-origin"
+
+# Fingerprinted files (their names change whenever their content does) can be cached for a year.
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

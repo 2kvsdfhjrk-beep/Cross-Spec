@@ -1,0 +1,35 @@
+---
+import { Picture } from 'astro:assets';
+import Lockup from './Lockup.astro';
+import wave from '../assets/img/wave.webp';
+import { business } from '../data/business';
+interface Props { flat?: boolean }
+const { flat = false } = Astro.props;
+const burst = Array.from({ length: 14 }, (_, k) => {
+  const a = (k * 2 * Math.PI) / 14, f = (n: number) => n.toFixed(1);
+  return { x1: f(50 + 36 * Math.cos(a)), y1: f(50 + 36 * Math.sin(a)), x2: f(50 + 46 * Math.cos(a)), y2: f(50 + 46 * Math.sin(a)) };
+});
+---
+<div class:list={['card-scene', { 'card-flat': flat }]}>
+  <div class="card-shadow" aria-hidden="true"></div>
+  <div class="card3d" role="img" aria-label="The Dough Boys loyalty card. Front: the Dough Boys logo. Back: nine stamp spaces, then a free pizza.">
+    <div class="face front light-logo">
+      <div class="front-frame"></div>
+      <Lockup />
+      <p class="front-band">Loyalty card</p>
+    </div>
+    <div class="face back">
+      <p class="back-head">Earn a stamp with every pizza purchase!</p>
+      <ol class="slots">
+        {Array.from({ length: 9 }, (_, i) => (
+          <li class="slot"><span class="n">{i + 1}</span><span class="stamp"><svg viewBox="0 0 100 100"><use href="#i-stamp"></use></svg></span></li>
+        ))}
+        <li class="slot free"><svg class="burst" viewBox="0 0 100 100">{burst.map((l) => <line x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2}></line>)}</svg><span class="n">Free<br />pizza!</span></li>
+      </ol>
+      <Picture class="back-wave" src={wave} formats={['avif']} fallbackFormat="webp" widths={[120, 240]} sizes="120px" alt="" loading="lazy" />
+      <p class="back-thanks"><span class="script">Thank You!</span><small>We appreciate your support</small></p>
+      <p class="back-ig"><svg><use href="#i-ig"></use></svg>@{business.instagram}</p>
+    </div>
+  </div>
+  <slot />
+</div>

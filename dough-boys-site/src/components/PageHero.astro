@@ -1,0 +1,15 @@
+---
+import { pages, type PageKey } from '../data/pages';
+import Breadcrumbs from './Breadcrumbs.astro';
+interface Props { page: PageKey; kicker?: string; lede?: string; crumbs?: boolean }
+const { page, kicker, lede, crumbs = true } = Astro.props;
+---
+<div class="phero">
+  <div class="phero-in">
+    {crumbs && <Breadcrumbs page={page} />}
+    {kicker && <p class="kicker">{kicker}</p>}
+    <h1 class="phero-title">{pages[page].h1}</h1>
+    {lede && <p class="phero-lede">{lede}</p>}
+    <slot />
+  </div>
+</div>

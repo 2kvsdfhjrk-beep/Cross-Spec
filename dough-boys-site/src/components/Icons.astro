@@ -1,0 +1,16 @@
+---
+/* Inline sprite: the wordmark (used in the header and footer) and the small icons. */
+import wm from '../assets/brand/wordmark.json';
+interface Props { stamp?: boolean }
+const { stamp = false } = Astro.props;
+---
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <path id="db-word" fill-rule="evenodd" d={wm.d}></path>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h13M13 6l6 6-6 6"></path></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4.2"></circle><circle cx="17.4" cy="6.6" r=".6" fill="currentColor"></circle></symbol>
+    {stamp && (
+      <symbol id="i-stamp" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#A0161A" stroke-width="5"></circle><circle cx="50" cy="50" r="37" fill="none" stroke="#A0161A" stroke-width="2.5" stroke-dasharray="3 5"></circle><path fill="#A0161A" d="M30 34c13-6 27-6 40 0L50 80z"></path><circle fill="#F2DFC9" cx="44" cy="44" r="4.6"></circle><circle fill="#F2DFC9" cx="56" cy="52" r="4.2"></circle><circle fill="#F2DFC9" cx="49" cy="62" r="3.6"></circle><path fill="#A0161A" d="M27 30c15-8 31-8 46 0l-2 5c-13-6-29-6-42 0z"></path></symbol>
+    )}
+  </defs>
+</svg>

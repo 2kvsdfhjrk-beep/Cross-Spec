@@ -1,0 +1,37 @@
+/* The printed menu: the full menu page and the favourites on the homepage. */
+.sheet-paper{ position:relative; max-width:1240px; margin:0 auto; border:3px solid var(--wine); border-radius:22px; padding:clamp(28px,4.5vw,64px) clamp(18px,4.5vw,64px) clamp(32px,4.5vw,64px); color:var(--wine); --focus:var(--red); }
+.menu-head{ display:grid; justify-items:center; gap:10px; margin-bottom:clamp(24px,4vw,44px); }
+.menu-head .lockup{ width:min(88%,460px); }
+.menu-loc{ margin:0; font:700 12px/1 var(--f-sans); letter-spacing:.2em; text-transform:uppercase; color:var(--red); }
+.chips{ position:sticky; top:calc(env(safe-area-inset-top,0px) + var(--head-h)); z-index:3; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  margin:0 calc(-1 * clamp(18px,4.5vw,64px)) clamp(26px,4vw,40px); padding:10px clamp(18px,4.5vw,64px); background:#F1E8E1; box-shadow:0 -14px 0 #F1E8E1, 0 1px 0 var(--wine-a18); }
+.chips::-webkit-scrollbar{ display:none; }
+.chips a{ flex:none; text-decoration:none; font:600 12px/1 var(--f-sans); letter-spacing:.16em; text-transform:uppercase; padding:12px 15px 11px; border:2px solid var(--wine); border-radius:999px; transition:background-color .25s, color .25s; }
+@media (hover:hover){ .chips a:hover{ background:var(--wine); color:var(--paper); } }
+.menu-grid{ display:grid; gap:clamp(44px,5vw,64px); }
+.mblock{ scroll-margin-top:calc(env(safe-area-inset-top,0px) + var(--head-h) + 80px); }
+.mblock + .mblock{ margin-top:clamp(44px,5vw,60px); }
+.msec{ display:flex; align-items:center; gap:16px; margin:0 0 22px; font:700 clamp(32px,4.2vw,46px)/1 var(--f-cond); text-transform:uppercase; letter-spacing:.02em; }
+.msec::before,.msec::after{ content:""; flex:1; min-width:24px; height:9px; }
+/* each rule carries its dot on the outer end */
+.msec::before{ background:radial-gradient(circle at 4.5px 50%, currentColor 3.6px, transparent 4.2px) no-repeat, linear-gradient(currentColor,currentColor) 0 50%/100% 2px no-repeat; }
+.msec::after{ background:radial-gradient(circle at calc(100% - 4.5px) 50%, currentColor 3.6px, transparent 4.2px) no-repeat, linear-gradient(currentColor,currentColor) 0 50%/100% 2px no-repeat; }
+.items{ list-style:none; margin:0; padding:0; display:grid; gap:18px; }
+.items + .items,.items + .subhead{ margin-top:22px; }
+.it-row{ display:flex; align-items:baseline; gap:10px; }
+.item-name,.price{ margin:0; font:700 clamp(21px,2.2vw,25px)/1.1 var(--f-cond); text-transform:uppercase; letter-spacing:.012em; }
+.price{ font-variant-numeric:tabular-nums; white-space:nowrap; }
+.price small{ font-size:.62em; vertical-align:.38em; margin-right:1px; font-weight:700; }
+.lead{ flex:1; min-width:18px; border-bottom:2px dotted var(--wine-a35); transform:translateY(-6px); }
+.item p{ margin:5px 0 0; font:400 15px/1.45 var(--f-sans); max-width:44ch; color:#5b2427; }
+.subhead{ margin:0 0 4px; font:700 clamp(21px,2.2vw,25px)/1.1 var(--f-cond); text-transform:uppercase; }
+.subnote{ margin:0 0 16px; font:italic 400 15px/1.4 var(--f-sans); color:#5b2427; }
+.items.tight{ gap:9px; }
+.items.tight .item-name,.items.tight .price{ font-size:clamp(18px,1.9vw,21px); }
+.extra{ display:flex; align-items:center; justify-content:space-between; gap:16px; margin:26px 0 0; padding:16px 20px; border:2px solid var(--wine); border-radius:16px; }
+.extra b{ font:700 22px/1 var(--f-cond); text-transform:uppercase; }
+.extra span span{ display:block; font:400 14px/1.3 var(--f-sans); color:#5b2427; margin-top:3px; }
+.menu-foot{ margin:clamp(36px,5vw,56px) 0 0; text-align:center; font:500 14px/1.5 var(--f-sans); color:#5b2427; }
+@media (min-width:760px){ .menu-grid{ grid-template-columns:1fr 1fr; } .mcol-pizza{ grid-row:span 2; } }
+@media (min-width:1100px){ .menu-grid{ grid-template-columns:1.2fr 1fr 1fr; } .mcol-pizza{ grid-row:auto; } }
+@media (hover:hover){ .item:hover .item-name{ color:var(--berry); } }

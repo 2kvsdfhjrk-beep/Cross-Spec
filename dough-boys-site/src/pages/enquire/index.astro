@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { business, instagramDm } from '../../data/business';
+import '../../styles/form.css';
+---
+<Base page="enquire" pageType="ContactPage">
+  <PageHero page="enquire" kicker="Enquiries"
+    lede="Planning a party, an event or a big order? Tell us what you need and we’ll get back to you." />
+  <div class="paper">
+    <div class="paper-in enq">
+      <div class="enq-side">
+        <h2 class="h2">What we can do</h2>
+        <ul class="enq-list">
+          <li><span class="enq-dot" aria-hidden="true"></span><span><b>Parties and events</b>Birthdays, get-togethers and celebrations.</span></li>
+          <li><span class="enq-dot" aria-hidden="true"></span><span><b>Big orders</b>Pizza for the team, the family or a crowd.</span></li>
+          <li><span class="enq-dot" aria-hidden="true"></span><span><b>Anything else</b>A question about the menu, the loyalty card or anything else.</span></li>
+        </ul>
+        <p class="enq-alt">Prefer Instagram? Send us a message at <a href={instagramDm}>@{business.instagram}</a>{business.phone && <> or call <a href={`tel:${business.phone.replace(/\s+/g, '')}`}>{business.phone}</a></>}.</p>
+        <p class="enq-alt">Just want to see what we make first? Have a look at the <a href="/menu/">menu and prices</a> or the <a href="/gallery/">gallery</a>.</p>
+      </div>
+
+      <div class="enq-card">
+        <h2 class="h2">Send an enquiry</h2>
+        <form class="enq-form" id="enq-form" name="enquiry" method="POST" action="/enquire/thanks/" data-netlify="true" netlify-honeypot="company-website">
+          <input type="hidden" name="form-name" value="enquiry" />
+          <p class="f-hp"><label>Leave this empty <input name="company-website" type="text" tabindex="-1" autocomplete="off" /></label></p>
+          <fieldset class="f-chips">
+            <legend>What’s it for?</legend>
+            <label><input type="radio" name="type" value="Party or event" checked /><span>Party or event</span></label>
+            <label><input type="radio" name="type" value="Big order" /><span>Big order</span></label>
+            <label><input type="radio" name="type" value="Something else" /><span>Something else</span></label>
+          </fieldset>
+          <label class="f"><span>Your name</span><input id="f-name" name="name" type="text" autocomplete="name" required /></label>
+          <div class="f-two">
+            <label class="f"><span>Phone</span><input id="f-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-describedby="f-contact-hint" /></label>
+            <label class="f"><span>Email</span><input id="f-email" name="email" type="email" autocomplete="email" aria-describedby="f-contact-hint" /></label>
+          </div>
+          <p class="f-hint" id="f-contact-hint">Phone or email, whichever suits you. We need one of them to reply.</p>
+          <div class="f-two">
+            <label class="f"><span>Date <em>(optional)</em></span><input id="f-date" name="date" type="date" /></label>
+            <label class="f"><span>Guests <em>(optional)</em></span><input id="f-guests" name="guests" type="number" min="1" inputmode="numeric" /></label>
+          </div>
+          <label class="f"><span>Message</span><textarea id="f-msg" name="message" rows="5" required placeholder="For example: pizzas for 30 at a birthday party, around 6pm"></textarea></label>
+          <p class="f-error" id="f-error" role="alert" hidden></p>
+          <p class="f-note">We only use your details to reply to this enquiry. See our <a href="/privacy/">privacy policy</a>.</p>
+          <button class="eq eq-dark" type="submit"><span class="eq-t">Send enquiry</span><span class="eq-i" aria-hidden="true"><svg><use href="#i-arrow"></use></svg></span></button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script>
+    import '../../scripts/enquiry.js';
+  </script>
+</Base>

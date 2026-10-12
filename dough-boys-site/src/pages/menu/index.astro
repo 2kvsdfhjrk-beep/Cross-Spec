@@ -1,0 +1,72 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Lockup from '../../components/Lockup.astro';
+import MenuList from '../../components/MenuList.astro';
+import { menu, pizzaCount, fromPrice } from '../../data/menu';
+import { business } from '../../data/business';
+import '../../styles/menu.css';
+
+const site = Astro.site!;
+const menuId = new URL('/menu/#menu', site).href;
+/* Structured data for the menu: the same sections, items and prices as the page shows */
+const menuNode = {
+  '@type': 'Menu',
+  '@id': menuId,
+  name: `${business.name} menu`,
+  inLanguage: 'en-GB',
+  hasMenuSection: menu.map((s) => ({
+    '@type': 'MenuSection',
+    name: s.title,
+    hasMenuItem: s.groups.flatMap((g) => g.items).map((it) => ({
+      '@type': 'MenuItem',
+      name: it.name,
+      ...(it.desc ? { description: it.desc } : {}),
+      offers: { '@type': 'Offer', price: it.price.toFixed(2), priceCurrency: 'GBP' },
+    })),
+  })),
+};
+const cols = [['pizza'], ['sides', 'dips'], ['desserts', 'drinks']].map((ids) => ids.map((id) => menu.find((s) => s.id === id)!));
+---
+<Base page="menu" graph={[menuNode]} mainEntity={menuId}>
+  <PageHero page="menu" kicker="The menu"
+    lede={`${pizzaCount} pizzas from £${fromPrice}, garlic bread and mac & cheese, dessert pizzas, dips and cold drinks, all from our kiosk in Great Yarmouth.`} />
+  <div class="paper">
+    <div class="paper-in">
+      <div class="sheet-paper">
+        <div class="menu-head light-logo">
+          <Lockup />
+          <p class="menu-loc">Great Yarmouth · {business.address.postcode}</p>
+        </div>
+        <nav class="chips" aria-label="Menu sections">
+          {menu.map((s) => <a href={`#${s.id}`}>{s.title}</a>)}
+        </nav>
+        <div class="menu-grid">
+          {cols.map((col, ci) => (
+            <div class:list={['mcol', { 'mcol-pizza': ci === 0 }]}>
+              {col.map((s) => (
+                <section class="mblock" id={s.id} aria-labelledby={`h-${s.id}`}>
+                  <h2 class="msec" id={`h-${s.id}`}>{s.title}</h2>
+                  {s.groups.map((g) => (
+                    <>
+                      {g.title && <p class="subhead">{g.title}</p>}
+                      {g.note && <p class="subnote">{g.note}</p>}
+                      <MenuList items={g.items} tight={g.tight} />
+                    </>
+                  ))}
+                  {s.extra && <p class="extra"><span><b>{s.extra.name}</b><span>{s.extra.note}</span></span><span class="price"><small>£</small>{s.extra.price}</span></p>}
+                </section>
+              ))}
+            </div>
+          ))}
+        </div>
+        <p class="menu-foot">Prices in pounds sterling. Allergies or intolerances? Please tell us before you order and we’ll talk you through what’s in each pizza.</p>
+      </div>
+      <div class="cta-band">
+        <h2 class="h2">Feeding a crowd?</h2>
+        <p>Birthdays, parties, work lunches or a big family order: tell us what you need and we’ll get back to you.</p>
+        <a class="eq" href="/enquire/"><span class="eq-t">Enquire</span><span class="eq-i" aria-hidden="true"><svg><use href="#i-arrow"></use></svg></span></a>
+      </div>
+    </div>
+  </div>
+</Base>

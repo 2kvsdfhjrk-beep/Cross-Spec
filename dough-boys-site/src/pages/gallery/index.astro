@@ -1,0 +1,63 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import Lightbox from '../../components/Lightbox.astro';
+import { photos } from '../../data/gallery';
+import { videos } from '../../data/media';
+import '../../styles/gallery-page.css';
+
+const full = await Promise.all(photos.map((p) => getImage({ src: p.img, width: 1320, format: 'webp', quality: 70 })));
+const insidePoster = await getImage({ src: videos.inside.poster, width: 536, format: 'webp', quality: 70 });
+const site = Astro.site!;
+/* the photos as an image gallery for search engines; every image is on the page */
+const galleryNode = {
+  '@type': 'ImageGallery',
+  '@id': new URL('/gallery/#photos', site).href,
+  name: 'Dough Boys pizza photos',
+  image: photos.map((p, i) => ({ '@type': 'ImageObject', contentUrl: new URL(full[i].src, site).href, caption: p.caption, description: p.alt })),
+};
+---
+<Base page="gallery" graph={[galleryNode]} mainEntity={galleryNode['@id']}>
+  <PageHero page="gallery" kicker="Gallery"
+    lede="Fresh out of the oven and straight into the box, plus busy nights at the kiosk. Select any photo to see it bigger." />
+  <div class="paper">
+    <div class="paper-in">
+      <div class="shots">
+        {photos.map((p, i) => (
+          <figure class="shot" id={p.slug}>
+            <a class="shot-link" href={full[i].src} data-full={full[i].src} data-cap={p.caption}>
+              <Picture src={p.img} formats={['avif']} fallbackFormat="webp" quality={48} widths={[480, 720, 960]}
+                sizes="(min-width: 1240px) 390px, (min-width: 900px) 30vw, (min-width: 600px) 46vw, 92vw" alt={p.alt}
+                loading={i === 0 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : undefined} />
+            </a>
+            <figcaption>{p.caption} <span>{p.meta}</span></figcaption>
+          </figure>
+        ))}
+        <figure class="shot" id="inside">
+          <div class="shot-video">
+            <video controls muted loop playsinline preload="none" data-poster={insidePoster.src} width="536" height="954"
+              aria-label="A walk around inside the Dough Boys kiosk: the counter, two pizza ovens and the dessert display">
+              {videos.inside.sources.map((s) => <source src={s.src} type={s.type} media={s.media} />)}
+            </video>
+          </div>
+          <figcaption>Step inside <span>Video</span></figcaption>
+        </figure>
+      </div>
+      <div class="cta-band">
+        <h2 class="h2">Hungry yet?</h2>
+        <p>Every pizza here is on the menu, from the Double Pepperoni to the Hot Meat.</p>
+        <p class="band-links"><a class="ghost" href="/menu/">See the menu and prices</a></p>
+      </div>
+    </div>
+  </div>
+  <Fragment slot="after">
+    <Lightbox />
+    <script>
+      import { initLightbox } from '../../scripts/lightbox.js';
+      import { lazyPosters } from '../../scripts/posters.js';
+      initLightbox('.shot-link[data-full]');
+      lazyPosters();
+    </script>
+  </Fragment>
+</Base>

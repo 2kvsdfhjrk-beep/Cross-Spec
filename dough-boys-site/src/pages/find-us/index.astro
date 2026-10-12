@@ -1,0 +1,50 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import { business, instagramUrl, instagramDm, mapsUrl, appleMapsUrl, hoursText, companyDisclosure } from '../../data/business';
+import kioskDay from '../../assets/img/gallery/kiosk-day.jpg';
+const a = business.address;
+---
+<Base page="find" pageType="ContactPage">
+  <PageHero page="find" kicker="Find us"
+    lede={`Our pizza kiosk is in Great Yarmouth, ${a.postcode}. Here’s how to find us and how to get in touch.`} />
+  <div class="paper">
+    <div class="paper-in cols">
+      <div class="facts">
+        <section aria-labelledby="where">
+          <h2 class="h2" id="where">Where we are</h2>
+          <address class="address">{business.name}<br />{a.street && <>{a.street}<br /></>}{a.locality}<br />{a.postcode}</address>
+          <p class="band-links"><a class="ghost" href={mapsUrl}>Open in Google Maps</a> <a class="ghost" href={appleMapsUrl}>Open in Apple Maps</a></p>
+        </section>
+        <section aria-labelledby="hours">
+          <h2 class="h2" id="hours">Opening times</h2>
+          {hoursText.length ? (
+            <dl class="hours">{hoursText.map((h) => <><dt>{h.days}</dt><dd>{h.times}</dd></>)}</dl>
+          ) : (
+            <p>For today’s opening times, check our <a href={instagramUrl}>Instagram</a> or send us a message before you set off.</p>
+          )}
+        </section>
+        <section aria-labelledby="contact">
+          <h2 class="h2" id="contact">Get in touch</h2>
+          <p>Message us on Instagram at <a href={instagramDm}>@{business.instagram}</a>.</p>
+          {business.phone && <p>Call us on <a href={`tel:${business.phone.replace(/\s+/g, '')}`}>{business.phone}</a>.</p>}
+          {business.email && <p>Email <a href={`mailto:${business.email}`}>{business.email}</a>.</p>}
+          <p>Planning a party or a big order? <a href="/enquire/">Send us an enquiry</a>.</p>
+        </section>
+        {companyDisclosure && (
+          <section aria-labelledby="company">
+            <h2 class="h2" id="company">Company details</h2>
+            <p class="small-print">{companyDisclosure}</p>
+          </section>
+        )}
+      </div>
+      <figure class="photo-fig">
+        <Picture src={kioskDay} formats={['avif']} fallbackFormat="webp" quality={55} widths={[480, 720, 960, 1320]}
+          sizes="(min-width: 1240px) 590px, (min-width: 900px) 46vw, 92vw"
+          alt="The Dough Boys kiosk in daylight with two Dough Boys banners and an A-board out front" loading="lazy" />
+        <figcaption>Look for the Dough Boys banners and the A-board out front.</figcaption>
+      </figure>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,126 @@
+---
+/*
+  The only place page metadata is written. Every page passes its registry key; anything missing stops the build.
+  Structured data describes only what the page shows: the business, the site, the page and its breadcrumbs.
+*/
+import { pages, trail, type PageKey } from '../data/pages';
+import { business, instagramUrl, hasCompany } from '../data/business';
+import { menu } from '../data/menu';
+
+interface Props {
+  page: PageKey;
+  graph?: Record<string, unknown>[]; // extra page-specific nodes, e.g. the Menu
+  pageType?: string; // schema.org type for the page node
+  mainEntity?: string; // @id of the node the page is about
+  ogImage?: string;
+  ogImageAlt?: string;
+}
+
+const { page: key, graph = [], pageType = 'WebPage', mainEntity, ogImage = '/og.jpg',
+  ogImageAlt = 'The Dough Boys logo, Just Good Pizza, Great Yarmouth NR30 3JG, beside a Double Pepperoni pizza' } = Astro.props;
+const page = pages[key];
+if (!page) throw new Error(`No metadata for page "${String(key)}". Add it to src/data/pages.ts.`);
+
+const site = Astro.site;
+if (!site) throw new Error('Set "site" in astro.config.mjs');
+const base = site.href; // https://doughboysyarmouth.co.uk/
+const isNotFound = key === 'notFound';
+const canonical = new URL(page.path, site).href;
+const image = new URL(ogImage, site).href;
+const crumbs = trail(key);
+
+const env = import.meta.env;
+const googleVerify = key === 'home' ? (env.PUBLIC_GOOGLE_SITE_VERIFICATION ?? '').trim() : '';
+const bingVerify = key === 'home' ? (env.PUBLIC_BING_SITE_VERIFICATION ?? '').trim() : '';
+
+/* ---------- structured data ---------- */
+const prices = menu.flatMap((s) => s.groups.flatMap((g) => g.items.map((i) => i.price))).filter((p) => p > 0);
+const gbp = (p: number) => `£${Number.isInteger(p) ? p : p.toFixed(2)}`;
+const a = business.address;
+const restaurant: Record<string, unknown> = {
+  '@type': 'Restaurant',
+  '@id': `${base}#business`,
+  name: business.name,
+  slogan: business.slogan,
+  url: base,
+  logo: `${base}logo.png`,
+  image: [`${base}og.jpg`],
+  servesCuisine: 'Pizza',
+  priceRange: `${gbp(Math.min(...prices))}–${gbp(Math.max(...prices))}`,
+  hasMenu: `${base}menu/`,
+  address: {
+    '@type': 'PostalAddress',
+    ...(a.street ? { streetAddress: a.street } : {}),
+    addressLocality: a.locality,
+    addressRegion: a.region,
+    postalCode: a.postcode,
+    addressCountry: a.country,
+  },
+  sameAs: [instagramUrl],
+};
+if (business.phone) restaurant.telephone = business.phone;
+if (business.email) restaurant.email = business.email;
+if (hasCompany) restaurant.legalName = business.company.legalName;
+if (business.openingHours.length) {
+  restaurant.openingHoursSpecification = business.openingHours.map((h) => ({
+    '@type': 'OpeningHoursSpecification', dayOfWeek: h.days, opens: h.opens, closes: h.closes,
+  }));
+}
+
+const nodes: Record<string, unknown>[] = [
+  restaurant,
+  { '@type': 'WebSite', '@id': `${base}#website`, url: base, name: business.name, inLanguage: 'en-GB', publisher: { '@id': `${base}#business` } },
+];
+if (!isNotFound) {
+  nodes.push({
+    '@type': pageType,
+    '@id': `${canonical}#webpage`,
+    url: canonical,
+    name: page.title,
+    description: page.description,
+    inLanguage: 'en-GB',
+    isPartOf: { '@id': `${base}#website` },
+    about: { '@id': `${base}#business` },
+    ...(mainEntity ? { mainEntity: { '@id': mainEntity } } : {}),
+    ...(crumbs.length > 1 ? { breadcrumb: { '@id': `${canonical}#breadcrumb` } } : {}),
+  });
+  if (crumbs.length > 1) {
+    nodes.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${canonical}#breadcrumb`,
+      itemListElement: crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.name, item: new URL(c.path, site).href })),
+    });
+  }
+}
+nodes.push(...graph);
+/* "<" is escaped so the JSON can never close its own script tag */
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': nodes }).replace(/</g, '\\u003c');
+---
+<title>{page.title}</title>
+<meta name="description" content={page.description} />
+{!isNotFound && <link rel="canonical" href={canonical} />}
+{!page.index && <meta name="robots" content="noindex, follow" />}
+<meta name="theme-color" content="#1C0406" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={business.name} />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:title" content={page.title} />
+<meta property="og:description" content={page.description} />
+<meta property="og:url" content={isNotFound ? base : canonical} />
+<meta property="og:image" content={image} />
+<meta property="og:image:type" content="image/jpeg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={ogImageAlt} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={page.title} />
+<meta name="twitter:description" content={page.description} />
+<meta name="twitter:image" content={image} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+{googleVerify && <meta name="google-site-verification" content={googleVerify} />}
+{bingVerify && <meta name="msvalidate.01" content={bingVerify} />}
+<script type="application/ld+json" is:inline set:html={jsonLd} />

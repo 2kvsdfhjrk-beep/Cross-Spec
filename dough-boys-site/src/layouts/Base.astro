@@ -1,0 +1,46 @@
+---
+import { Font } from 'astro:assets';
+import Seo from '../components/Seo.astro';
+import Icons from '../components/Icons.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Analytics from '../components/Analytics.astro';
+import type { PageKey } from '../data/pages';
+import '../styles/base.css';
+
+interface Props {
+  page: PageKey;
+  home?: boolean; // the homepage: header over the video, big footer
+  graph?: Record<string, unknown>[];
+  pageType?: string;
+  mainEntity?: string;
+  preloadScript?: boolean; // preload the script font when it shows on the first screen
+  stamp?: boolean; // include the loyalty stamp icon
+  pzSrc?: string;
+}
+const { page, home = false, graph, pageType, mainEntity, preloadScript = false, stamp = false, pzSrc } = Astro.props;
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <slot name="head-first" />
+    <Seo page={page} graph={graph} pageType={pageType} mainEntity={mainEntity} />
+    <Font cssVariable="--font-cond" preload={[{ weight: 800 }]} />
+    <Font cssVariable="--font-script" preload={preloadScript} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <slot name="top" />
+    <Icons stamp={stamp} />
+    <Header current={page} home={home} pzSrc={pzSrc} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer big={home} />
+    <slot name="after" />
+    <Analytics />
+  </body>
+</html>

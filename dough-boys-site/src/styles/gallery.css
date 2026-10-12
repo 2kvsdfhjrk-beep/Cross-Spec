@@ -1,0 +1,13 @@
+/* The gallery page */
+.shots{ display:grid; gap:clamp(18px,2.6vw,32px); grid-template-columns:repeat(auto-fill,minmax(min(100%,280px),1fr)); align-items:start; }
+.shot{ margin:0; display:grid; gap:12px; }
+.shot-link{ display:block; position:relative; overflow:hidden; border-radius:22px; background:var(--wine-2); cursor:zoom-in; }
+.shot:nth-child(3n+2) .shot-link{ border-radius:999px 999px 22px 22px; }
+.shot-link img,.shot-link video{ width:100%; height:auto; aspect-ratio:3/4; object-fit:cover; transition:transform .6s cubic-bezier(.2,.8,.2,1); }
+@media (hover:hover){ .shot-link:hover img{ transform:scale(1.04); } }
+.shot figcaption{ display:flex; justify-content:space-between; align-items:baseline; gap:12px; font:700 clamp(20px,2vw,26px)/1.1 var(--f-cond); text-transform:uppercase; color:var(--wine); }
+.shot figcaption span{ font:600 11px/1 var(--f-sans); letter-spacing:.18em; color:#5b2427; }
+.shot-video{ border-radius:22px; overflow:hidden; background:var(--wine-2); }
+.shot-video video{ width:100%; height:auto; aspect-ratio:536/954; object-fit:cover; }
+.shot-intro{ grid-column:1 / -1; }
+@media (min-width:900px){ .shot-intro{ grid-column:span 2; } }

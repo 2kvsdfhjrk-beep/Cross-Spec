@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageHero from '../../components/PageHero.astro';
+import LoyaltyCard from '../../components/LoyaltyCard.astro';
+import '../../styles/card.css';
+---
+<Base page="loyalty" stamp>
+  <PageHero page="loyalty" kicker="Loyalty card"
+    lede="Get a stamp every time you buy a pizza. Fill all nine and your next pizza is on us." />
+  <div class="paper bun">
+    <div class="paper-in">
+      <div class="cols">
+        <div>
+          <h2 class="h2">How it works</h2>
+          <ol class="steps">
+            <li><b>Ask for a card</b>Next time you’re at the kiosk, ask us for a Dough Boys loyalty card.</li>
+            <li><b>Collect your stamps</b>Every pizza you buy earns a stamp, and the card has room for nine.</li>
+            <li><b>Enjoy a free pizza</b>Once all nine are stamped, your next pizza is on us.</li>
+          </ol>
+        </div>
+        <div>
+          <h2 class="h2">What’s on the card</h2>
+          <p class="lead-p">The front carries our logo. The back has nine stamp spaces with the promise printed across the top: <q>Earn a stamp with every pizza purchase!</q> The last space is the one you’re after: a free pizza.</p>
+          <p class="lead-p">It’s our way of saying thank you for coming back.</p>
+        </div>
+      </div>
+      <figure class="card-fig">
+        <LoyaltyCard flat />
+        <figcaption>The front and back of the Dough Boys loyalty card, with all nine stamps collected.</figcaption>
+      </figure>
+      <div class="cta-band">
+        <h2 class="h2">Ready for your first stamp?</h2>
+        <p>Pick a pizza from the menu, then come and find us in Great Yarmouth.</p>
+        <p class="band-links"><a class="ghost" href="/menu/">See the menu and prices</a> <a class="ghost" href="/find-us/">How to find us</a></p>
+      </div>
+    </div>
+  </div>
+</Base>

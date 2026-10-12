@@ -1,0 +1,3 @@
+/* Everything the gallery page needs beyond base.css, in one file */
+@import './lightbox.css';
+@import './gallery.css';

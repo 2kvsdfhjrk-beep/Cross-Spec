@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+---
+<Base page="notFound">
+  <PageHero page="notFound" kicker="Error 404" crumbs={false}
+    lede="The page may have moved, or the link might have a typo. One of these should get you back on track." />
+  <div class="paper">
+    <div class="paper-in prose">
+      <h2>Try one of these</h2>
+      <ul>
+        <li><a href="/">The Dough Boys homepage</a></li>
+        <li><a href="/menu/">Our pizza menu and prices</a></li>
+        <li><a href="/enquire/">Parties, events and big orders</a></li>
+        <li><a href="/find-us/">How to find the kiosk</a></li>
+      </ul>
+    </div>
+  </div>
+</Base>

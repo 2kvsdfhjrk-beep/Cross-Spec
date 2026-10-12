@@ -1,0 +1,16 @@
+# build output
+dist/
+.astro/
+.netlify/
+
+# dependencies
+node_modules/
+
+# environment files (keep .env.example)
+.env
+.env.*
+!.env.example
+
+# logs and OS files
+npm-debug.log*
+.DS_Store

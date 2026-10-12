@@ -1,0 +1,6 @@
+---
+import wm from '../assets/brand/wordmark.json';
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<svg class:list={['wordmark', cls]} viewBox={wm.viewBox} aria-hidden="true" focusable="false"><use href="#db-word"></use></svg>

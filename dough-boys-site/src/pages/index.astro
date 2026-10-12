@@ -1,0 +1,236 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Lockup from '../components/Lockup.astro';
+import LoyaltyCard from '../components/LoyaltyCard.astro';
+import MenuList from '../components/MenuList.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { videos } from '../data/media';
+import { photos } from '../data/gallery';
+import { favourites, pizzaCount, fromPrice, menu } from '../data/menu';
+import { instagramUrl, business, mapsUrl } from '../data/business';
+import pepperoni from '../assets/img/pepperoni.png';
+import eventImg from '../assets/img/event.webp';
+import cup1 from '../assets/img/ing/cup1.webp';
+import cup2 from '../assets/img/ing/cup2.webp';
+import cup3 from '../assets/img/ing/cup3.webp';
+import cup4 from '../assets/img/ing/cup4.webp';
+import cup5 from '../assets/img/ing/cup5.webp';
+import cup6 from '../assets/img/ing/cup6.webp';
+import cup7 from '../assets/img/ing/cup7.webp';
+import jal2 from '../assets/img/ing/jal2.webp';
+import jal4 from '../assets/img/ing/jal4.webp';
+import jal6 from '../assets/img/ing/jal6.webp';
+import '../styles/home-page.css';
+
+const pz160 = await getImage({ src: pepperoni, width: 160, format: 'webp' });
+const ovenPoster = await getImage({ src: videos.oven.poster, width: 720, format: 'webp', quality: 70 });
+const dessertPoster = await getImage({ src: videos.dessert.poster, width: 720, format: 'webp', quality: 70 });
+const insidePoster = await getImage({ src: videos.inside.poster, width: 536, format: 'webp', quality: 70 });
+const full = await Promise.all(photos.map((p) => getImage({ src: p.img, width: 1320, format: 'webp', quality: 70 })));
+
+const cups = [cup1, cup2, cup3, cup4, cup5, cup6, cup7];
+const confetti = [cup1, jal2, cup3, cup5, jal4, cup2, jal6, cup6, cup4, cup7];
+const letters = [...'Pepperoni'];
+const counts = { pizzas: pizzaCount, sides: menu[1].groups[0].items.length, desserts: menu[2].groups.reduce((n, g) => n + g.items.length, 0), dips: menu[3].groups[0].items.length };
+const flavours = menu[2].groups[0].items.map((i) => i.name);
+const arrow = '<svg><use href="#i-arrow"></use></svg>';
+---
+<Base page="home" home preloadScript stamp pzSrc={pz160.src}>
+  <script is:inline slot="head">document.documentElement.classList.toggle('motion',matchMedia('(prefers-reduced-motion: no-preference)').matches)</script>
+
+  <div class="loader" aria-hidden="true" slot="top">
+    <div class="loader-in"><Lockup /></div>
+  </div>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-media">
+      <Picture src={videos.premises.poster} formats={['avif']} fallbackFormat="webp" quality={40} widths={[360, 540, 720]}
+        sizes="(min-width: 900px) and (min-aspect-ratio: 1/1) min(45vh, 495px), max(100vw, 56.25vh)"
+        alt="" loading="eager" fetchpriority="high" />
+      <video class="hero-video" muted loop playsinline preload="none" aria-hidden="true">
+        {videos.premises.sources.map((s) => <source src={s.src} type={s.type} media={s.media} />)}
+      </video>
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="hero-content">
+      <h1 class="hero-title" id="hero-title"><span class="sr-only">Dough Boys: </span><Lockup /><span class="hero-h1">Pizza in Great Yarmouth</span></h1>
+      <p class="hero-lede">Pizzas, sides and dessert pizzas from our kiosk in Great Yarmouth, {business.address.postcode}. Parties and big orders too.</p>
+      <div class="hero-ctas">
+        <a class="eq" href="/enquire/"><span class="eq-t">Enquire</span><span class="eq-i" aria-hidden="true" set:html={arrow} /></a>
+        <a class="text-link" href="/menu/">See the menu</a>
+      </div>
+    </div>
+    <a class="badge" href="#story">
+      <span class="sr-only">Scroll down to the pizza</span>
+      <span class="badge-spin" aria-hidden="true"><svg viewBox="0 0 120 120"><defs><path id="badge-path" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"></path></defs><text><textPath href="#badge-path" textLength="292" lengthAdjust="spacing">SCROLL FOR PIZZA &#x2726; SCROLL FOR PIZZA &#x2726; </textPath></text></svg></span>
+      <img src={pz160.src} alt="" width="80" height="80" decoding="async" />
+    </a>
+  </section>
+
+  <section class="story" id="story" aria-label="The pizza, the kitchen and dessert">
+    <div class="dome" aria-hidden="true"></div>
+    <div class="stage">
+      <div class="st-bg" aria-hidden="true"><div class="halftone"></div></div>
+      <p class="kicker ch-kicker"><b>01</b>The pizza</p>
+      <p class="word" aria-hidden="true">{letters.map((c) => <span class="clip"><span class="ch">{c}</span></span>)}</p>
+
+      <div class="win win-oven" id="kitchen">
+        <div class="win-in">
+          <video muted loop playsinline preload="none" data-poster={ovenPoster.src} aria-hidden="true">
+            {videos.oven.sources.map((s) => <source src={s.src} type={s.type} media={s.media} />)}
+          </video>
+          <div class="win-shade"></div>
+        </div>
+      </div>
+
+      <div class="pizza-wrap">
+        <div class="pz-move">
+          <div class="pz-tilt">
+            <div class="pz-shadow"></div>
+            <div class="ring" aria-hidden="true"><svg viewBox="0 0 1000 1000"><defs><path id="ring-path" d="M500,500 m-452,0 a452,452 0 1,1 904,0 a452,452 0 1,1 -904,0"></path></defs><text><textPath href="#ring-path" textLength="2830" lengthAdjust="spacing">DOUBLE PEPPERONI &#x2726; JUST GOOD PIZZA &#x2726; GREAT YARMOUTH &#x2726; NR30 3JG &#x2726; </textPath></text></svg></div>
+            <div class="pz-spin">
+              <Picture src={pepperoni} formats={['avif']} fallbackFormat="webp" quality={60} widths={[640, 960, 1400]} sizes="(max-width: 899px) 90vw, 60vh"
+                alt="Dough Boys Double Pepperoni: cupped pepperoni, melted cheese and a charred crust" loading="lazy" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sprites" aria-hidden="true">
+        {Array.from({ length: 17 }, (_, i) => <div class="spr"><img src={cups[i % cups.length].src} alt="" width="220" height="220" loading="lazy" decoding="async" /></div>)}
+      </div>
+      <div class="tickets" aria-hidden="true">
+        <p class="tk"><small>On top</small><b>Pepperoni (lots)</b></p>
+        <p class="tk"><small>Finished with</small><b>Grana Padano</b></p>
+        <p class="tk"><small>And</small><b>Herbs</b></p>
+      </div>
+      <p class="lots script" aria-hidden="true">(lots)</p>
+
+      <div class="pz-info">
+        <h2 class="pz-name">Double Pepperoni</h2>
+        <p class="pz-desc">Pepperoni (lots), herbs and Grana Padano on a blistered, charred crust.</p>
+        <div class="pz-row"><span class="pz-price">£14</span><a class="text-link" href="/menu/">See the full menu</a></div>
+      </div>
+
+      <div class="win win-dessert" id="desserts">
+        <svg class="drip" aria-hidden="true" preserveAspectRatio="none"><defs><linearGradient id="choc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6EEEA"></stop><stop offset=".72" stop-color="#EBE0DC"></stop><stop offset="1" stop-color="#D8C6BF"></stop></linearGradient></defs><path class="drip-sh" d="M0 0" transform="translate(0 12)"></path><path class="drip-top" d="M0 0"></path></svg>
+        <div class="win-in">
+          <video muted loop playsinline preload="none" data-poster={dessertPoster.src} aria-hidden="true">
+            {videos.dessert.sources.map((s) => <source src={s.src} type={s.type} media={s.media} />)}
+          </video>
+          <div class="win-shade"></div>
+        </div>
+      </div>
+
+      <div class="copy copy-k">
+        <div class="copy-main">
+          <p class="kicker ln"><b>02</b>The kitchen</p>
+          <h2 class="big"><span class="ln">Two ovens.</span> <span class="ln">Zero fuss.</span></h2>
+          <p class="sub ln">Toppings prepped. Ovens lit. Pizza out.</p>
+        </div>
+        <ul class="stats copy-side" aria-label="On the menu">
+          <li><b data-n={counts.pizzas}>{counts.pizzas}</b><span>Pizzas</span></li>
+          <li><b data-n={counts.sides}>{counts.sides}</b><span>Sides</span></li>
+          <li><b data-n={counts.desserts}>{counts.desserts}</b><span>Desserts</span></li>
+          <li><b data-n={counts.dips}>{counts.dips}</b><span>Dips</span></li>
+        </ul>
+      </div>
+
+      <div class="copy copy-d">
+        <div class="copy-main">
+          <p class="kicker ln"><b>03</b>Dessert</p>
+          <h2 class="script-title script"><span class="ln">Dessert</span> <span class="ln">pizzas</span></h2>
+          <p class="sub ln">Same dough, topped differently. <span class="tag9">9″ · £8</span></p>
+        </div>
+        <ul class="flavours copy-side" aria-label="Dessert pizza flavours">
+          {flavours.map((f) => <li>{f}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="teaser" aria-labelledby="fav-title">
+    <div class="sheet-paper rv">
+      <div class="menu-head light-logo">
+        <Lockup />
+        <p class="menu-loc">Great Yarmouth · {business.address.postcode}</p>
+      </div>
+      <h2 class="msec" id="fav-title">Favourites</h2>
+      <MenuList items={favourites} class="teaser-grid" />
+      <p class="teaser-more">{pizzaCount} pizzas from £{fromPrice}, plus sides, dessert pizzas, dips and drinks.
+        <a class="text-link" href="/menu/">See the full menu and prices</a></p>
+    </div>
+  </section>
+
+  <section class="loyal" id="loyalty" aria-labelledby="loyal-title">
+    <div class="loyal-stage">
+      <div class="halftone" aria-hidden="true"></div>
+      <div class="loyal-copy">
+        <p class="kicker">Loyalty card</p>
+        <h2 class="loyal-title" id="loyal-title">Every pizza earns a stamp.</h2>
+        <p class="loyal-sub">Fill all nine and your next pizza is on us. Ask for a card next time you’re at the kiosk.</p>
+        <p class="loyal-count" aria-hidden="true"><b><span class="lc-n">9</span>/9</b><small>stamps</small></p>
+        <a class="text-link" href="/loyalty-card/">How the loyalty card works</a>
+      </div>
+      <LoyaltyCard>
+        {confetti.map((c) => <img class="confetti" src={c.src} alt="" width="220" height="220" loading="lazy" decoding="async" />)}
+      </LoyaltyCard>
+    </div>
+  </section>
+
+  <section class="gallery" id="gallery" aria-labelledby="gal-title">
+    <div class="gal-stage">
+      <div class="gal-track">
+        <div class="gal-head">
+          <p class="kicker">Gallery</p>
+          <h2 class="gal-title rise" id="gal-title"><span class="w"><span>Straight</span></span> <span class="w"><span>out</span></span> <span class="w script"><span>the box.</span></span></h2>
+          <p class="gal-sub">Real pizzas and busy nights at the kiosk. Tap any photo to see it bigger.</p>
+          <a class="text-link" href="/gallery/">See the full gallery</a>
+        </div>
+        <figure class="tile arch">
+          <div class="tile-btn"><span class="tag-video">Inside the kiosk</span><video class="gal-video" muted loop playsinline preload="none" data-poster={insidePoster.src}>
+            {videos.inside.sources.map((s) => <source src={s.src} type={s.type} media={s.media} />)}
+          </video></div>
+          <figcaption>Step inside <span class="sr-only">: a video walking around inside the kiosk, past the counter, the two pizza ovens and the dessert display</span><span aria-hidden="true">Video</span></figcaption>
+        </figure>
+        {photos.map((p, i) => (
+          <figure class:list={['tile', { arch: i % 2 === 1 }]}>
+            <a class="tile-btn" href={`/gallery/#${p.slug}`} data-full={full[i].src} data-cap={p.caption}>
+              <Picture src={p.img} formats={['avif']} fallbackFormat="webp" quality={48} widths={[480, 720, 960]}
+                sizes="(min-width: 900px) min(30vw, 504px), min(82vw, 456px)" alt={p.alt} loading="lazy" />
+            </a>
+            <figcaption>{p.caption} <span>{p.meta}</span></figcaption>
+          </figure>
+        ))}
+        <div class="gal-end" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-title">
+    <Picture class="cta-bg" src={eventImg} formats={['avif']} fallbackFormat="webp" quality={55} widths={[640, 960, 1320]} sizes="100vw" alt="" loading="lazy" />
+    <div class="cta-mq" aria-hidden="true"><div class="cta-mq-in"><span>Parties ✦ Events ✦ Big orders ✦ Just good pizza ✦&nbsp;</span><span>Parties ✦ Events ✦ Big orders ✦ Just good pizza ✦&nbsp;</span></div></div>
+    <div class="cta-in">
+      <p class="kicker">Enquiries</p>
+      <h2 class="cta-title rise" id="cta-title"><span class="w"><span>Got</span></span> <span class="w"><span>something</span></span> <span class="w script"><span>in mind?</span></span></h2>
+      <p class="cta-copy">Parties, events, big orders or just a question. Tell us what you need and we’ll get back to you.</p>
+      <a class="eq" href="/enquire/"><span class="eq-t">Enquire</span><span class="eq-i" aria-hidden="true" set:html={arrow} /></a>
+      <p class="cta-alt">Or message us on Instagram: <a href={instagramUrl}>@{business.instagram}</a></p>
+    </div>
+    <div class="find" id="find">
+      <p class="kicker">Find the kiosk</p>
+      <p class="find-place">Great Yarmouth<br />{business.address.postcode}</p>
+      <div class="find-links"><a class="text-link" href="/find-us/">How to find us</a><a class="text-link" href={mapsUrl}>Open in Google Maps</a></div>
+    </div>
+  </section>
+
+  <Fragment slot="after">
+    <div class="tb-probe" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"><span>View</span></div>
+    <Lightbox />
+    <script>
+      import '../scripts/home.js';
+    </script>
+  </Fragment>
+</Base>

@@ -1,0 +1,8 @@
+---
+/* The full logo (mascot, wordmark and tagline). It lives in one cached file; each part takes its colour from the page. */
+import lockupUrl from '../assets/brand/lockup.svg?url';
+import wm from '../assets/brand/wordmark.json';
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<svg class:list={['lockup', cls]} viewBox={wm.lockupViewBox} aria-hidden="true" focusable="false"><use class="lf" href={`${lockupUrl}#fill`}></use><use class="li" href={`${lockupUrl}#ink`}></use><use class="lt" href={`${lockupUrl}#tag`}></use></svg>

@@ -1,0 +1,18 @@
+---
+import { money, type MenuItem } from '../data/menu';
+interface Props { items: MenuItem[]; tight?: boolean; tag?: 'h3' | 'h4'; class?: string }
+const { items, tight = false, tag = 'h3', class: cls } = Astro.props;
+const Tag = tag;
+---
+<ul class:list={['items', { tight }, cls]}>
+  {items.map((it) => (
+    <li class="item">
+      <div class="it-row">
+        <Tag class="item-name">{it.name}</Tag>
+        <span class="lead" aria-hidden="true"></span>
+        <span class="price">{it.price === 0 ? 'Free' : <><small>£</small>{money(it.price)}</>}</span>
+      </div>
+      {it.desc && <p>{it.desc}</p>}
+    </li>
+  ))}
+</ul>

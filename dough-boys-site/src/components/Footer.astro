@@ -1,0 +1,40 @@
+---
+import { Picture } from 'astro:assets';
+import { business, instagramUrl, addressLine, companyDisclosure, hasCompany } from '../data/business';
+import Wordmark from './Wordmark.astro';
+import wave from '../assets/img/wave.webp';
+interface Props { big?: boolean }
+const { big = false } = Astro.props;
+const year = new Date().getFullYear();
+const owner = hasCompany ? business.company.legalName : business.name;
+---
+<footer class:list={['foot', { 'foot-big': big }]}>
+  {big && (
+    <div class="foot-top">
+      <p class="foot-thanks"><span class="script">Thanks for scrolling.</span>Now go and get a pizza.</p>
+      <Picture class="foot-wave" src={wave} formats={['avif']} fallbackFormat="webp" widths={[216, 432]} sizes="168px" alt="" loading="lazy" />
+    </div>
+  )}
+  <Wordmark class="foot-word" />
+  <div class="foot-grid">
+    <nav class="foot-nav" aria-label="Footer">
+      <ul>
+        <li><a href="/menu/">Menu and prices</a></li>
+        <li><a href="/enquire/">Parties and big orders</a></li>
+        <li><a href="/loyalty-card/">Loyalty card</a></li>
+        <li><a href="/gallery/">Gallery</a></li>
+        <li><a href="/find-us/">Find us</a></li>
+        <li><a href="/privacy/">Privacy policy</a></li>
+      </ul>
+    </nav>
+    <div class="foot-contact">
+      <p><b>{business.name}</b> &middot; {business.slogan}</p>
+      <p>{addressLine}</p>
+      {business.phone && <p><a href={`tel:${business.phone.replace(/\s+/g, '')}`}>{business.phone}</a></p>}
+      {business.email && <p><a href={`mailto:${business.email}`}>{business.email}</a></p>}
+      <p><a href={instagramUrl}>Instagram @{business.instagram}</a></p>
+    </div>
+  </div>
+  {companyDisclosure && <p class="foot-legal">{companyDisclosure}</p>}
+  <p class="foot-small">&copy; {year} {owner}</p>
+</footer>
