@@ -8,9 +8,10 @@ Prepared 12 October 2026 against `action.md`. The new site is in `dough-boys-sit
 The website is built and checked, ready for Netlify. Three things stand between it and going live, and all three
 need you:
 
-1. **Company details.** Send the registered company name, company number and registered office address. The
-   production build deliberately stops until they are in `src/data/business.ts`, because a limited company must show
-   them on its website.
+1. **Company details.** Send the registered company name, company number and registered office address. Once the
+   site is on doughboysyarmouth.co.uk, the production build deliberately stops until they are in
+   `src/data/business.ts`, because a limited company must show them on its website. Until then it builds normally at
+   its netlify.app address, so you can preview it.
 2. **The domain.** Buy `doughboysyarmouth.co.uk` (if not already yours) and point it at Netlify.
 3. **Netlify.** Connect this GitHub repository. `netlify.toml` already holds every setting.
 
@@ -186,7 +187,7 @@ environment variable.
 
 | # | Check | Result | Evidence |
 | --- | --- | --- | --- |
-| 1 | Production build passes cleanly | Pass, with one deliberate stop | `npm run build` exits 0 with no warnings that affect output. With `CONTEXT=production` and the company fields still empty it stops with "Company details missing… (Companies Act 2006)", as designed. With test company details in a scratch copy, the production build passes, sends no `X-Robots-Tag`, and the footer, copyright line and structured data show the company. |
+| 1 | Production build passes cleanly | Pass, with one deliberate stop | `npm run build` exits 0 with no warnings that affect output. With `CONTEXT=production` for doughboysyarmouth.co.uk and the company fields still empty it stops with "Company details missing… (Companies Act 2006)", as designed; for a netlify.app address it builds, so the site can be previewed first. With test company details in a scratch copy, the production build passes, sends no `X-Robots-Tag`, and the footer, copyright line and structured data show the company. |
 | 2 | Each template fetched without JavaScript | Pass | `scripts/check-site.mjs` fetched the raw HTML of all 8 pages. Main text, the single h1, title, description, canonical, Open Graph, favicons and parsed JSON-LD are present on every one. |
 | 3 | HTTP, www and trailing-slash variants each a single 301 | Partly verified; finish after launch | Netlify's own parsers accept both `www` rules. Netlify's local server returns one `301` from `www.doughboysyarmouth.co.uk/menu/` straight to `https://doughboysyarmouth.co.uk/menu/`, and that address returns 200. `http`→`https` and `/menu`→`/menu/` are handled by Netlify itself on the live domain. Run `npm run check:site -- https://doughboysyarmouth.co.uk` after launch: it tests all four in one go. |
 | 4 | Unknown URL returns 404 with the custom page | Pass | `/this-page-does-not-exist/` returns status 404 with the "Sorry, we can't find that page" page and links to home, menu, enquire and find us. |
@@ -206,8 +207,8 @@ no policy violations, console errors or failed requests, and the homepage film s
 
 ## Not completed, and why
 
-- **Company disclosure.** Waiting for the legal name, company number and registered office. Production deploys stop
-  until they are added.
+- **Company disclosure.** Waiting for the legal name, company number and registered office. Production deploys on
+  doughboysyarmouth.co.uk stop until they are added.
 - **Live-domain checks:**
   - the `http`→`https` and `/menu`→`/menu/` redirects;
   - live caching headers;

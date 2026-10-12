@@ -1,0 +1,1 @@
+import{r as e,t}from"./posters.BpixiV36.js";e(`.shot-link[data-full]`),t();

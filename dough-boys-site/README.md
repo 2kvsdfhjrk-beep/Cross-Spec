@@ -66,6 +66,18 @@ npm run check:site -- https://doughboysyarmouth.co.uk   # the same on the live s
 `check:site` expects a running copy; locally that is `npx netlify-cli dev --dir dist` (port 8888), which also applies
 the headers and redirects from `netlify.toml`.
 
+## Preview copy on GitHub Pages
+
+Until Netlify is set up, a preview of the built site is published at
+https://2kvsdfhjrk-beep.github.io/Cross-Spec/dough-boys-preview/ (hidden from search engines). Refresh it with:
+
+```sh
+npm run build && npm run preview:pages   # rewrites dist/ into ../dough-boys-preview/, then commit and push
+```
+
+It cannot send enquiries (that needs Netlify) and leaves out the WebM videos. Delete `../dough-boys-preview/` once the
+Netlify site is live.
+
 ## Deploy on Netlify
 
 1. In Netlify, choose **Add new site > Import an existing project** and pick this GitHub repository.
@@ -76,11 +88,13 @@ the headers and redirects from `netlify.toml`.
    as an alias, then point the domain's DNS at Netlify. HTTPS certificates are issued automatically.
 5. Under **Forms**, turn on form detection and add an email notification so enquiries reach your inbox.
 
-### Before the first production deploy
+### Before going live on the domain
 
 As a limited company, the site has to show the registered company name, number, place of registration and registered
-office (Companies Act 2006). Fill in the `company` fields in `src/data/business.ts`. **Until they are filled in, the
-production build on Netlify stops with an error that says so.** Deploy previews and local builds still work.
+office (Companies Act 2006). Fill in the `company` fields in `src/data/business.ts`. **Once the site is on
+doughboysyarmouth.co.uk, the production build on Netlify stops with an error until they are filled in.** Before the
+domain is added, the site builds normally at its `netlify.app` address, so you can preview it; local builds and deploy
+previews always work.
 
 ### Environment variables
 
@@ -89,7 +103,7 @@ production build on Netlify stops with an error that says so.** Deploy previews 
 | `PUBLIC_CF_BEACON_TOKEN` | Cloudflare Web Analytics token. Empty: no analytics. Never loads on deploy previews. |
 | `PUBLIC_GOOGLE_SITE_VERIFICATION` | Only if you verify Google Search Console by meta tag rather than DNS. |
 | `PUBLIC_BING_SITE_VERIFICATION` | Only if you verify Bing Webmaster Tools by meta tag. |
-| `CONTEXT` | Set by Netlify. Only `production` is indexable and enforces the company details. |
+| `CONTEXT`, `URL` | Set by Netlify. Only `production` is indexable; a production build whose `URL` is doughboysyarmouth.co.uk also requires the company details. |
 
 ## Headers, redirects and caching
 

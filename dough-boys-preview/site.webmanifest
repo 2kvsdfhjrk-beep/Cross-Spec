@@ -1,0 +1,16 @@
+{
+  "name": "Dough Boys",
+  "short_name": "Dough Boys",
+  "description": "Just good pizza from our kiosk in Great Yarmouth.",
+  "lang": "en-GB",
+  "start_url": "/Cross-Spec/dough-boys-preview/",
+  "scope": "/Cross-Spec/dough-boys-preview/",
+  "display": "browser",
+  "background_color": "#1C0406",
+  "theme_color": "#1C0406",
+  "icons": [
+    { "src": "/Cross-Spec/dough-boys-preview/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/Cross-Spec/dough-boys-preview/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/Cross-Spec/dough-boys-preview/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

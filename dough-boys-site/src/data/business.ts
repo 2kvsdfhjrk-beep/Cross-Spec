@@ -3,8 +3,8 @@
   the privacy policy and the structured data for search engines always agree.
 
   Optional fields: leave them as '' (or []) and they are simply left off the site.
-  Company fields: required by law for a limited company. A production build on Netlify
-  stops with an error until they are filled in, so the site can never go live without them.
+  Company fields: required by law for a limited company. Once the site is on doughboysyarmouth.co.uk, the
+  production build on Netlify stops with an error until they are filled in, so it can never go live without them.
 */
 
 export type Day = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
@@ -71,15 +71,19 @@ export const hoursText = business.openingHours.map((h) => {
   return { days, times: `${to12(h.opens)} to ${to12(h.closes)}` };
 });
 
-/* Netlify sets CONTEXT. Only the real production deploy is held to the company-details rule. */
+/* Netlify sets CONTEXT, and URL to the site's main address: its netlify.app address until the custom domain is
+   added, then https://doughboysyarmouth.co.uk. The rule applies once the site is on the real domain, so it can be
+   previewed on Netlify before the details are in. */
 const context = process.env.CONTEXT ?? '';
+const host = (() => { try { return new URL(process.env.URL ?? '').hostname.replace(/^www\./, ''); } catch { return ''; } })();
+const onLiveDomain = context === 'production' && host === new URL(business.url).hostname;
 if (!hasCompany) {
   const msg =
     `Company details missing in src/data/business.ts: ${companyMissing.join(', ')}. ` +
     'A limited company must show its registered name, number, place of registration and registered office on its website (Companies Act 2006).';
-  if (context === 'production' || process.env.REQUIRE_COMPANY_DETAILS === '1') throw new Error(msg);
+  if (onLiveDomain || process.env.REQUIRE_COMPANY_DETAILS === '1') throw new Error(msg);
   else if (!(globalThis as { __dbWarned?: boolean }).__dbWarned) {
     (globalThis as { __dbWarned?: boolean }).__dbWarned = true;
-    console.warn(`\n[dough-boys] ${msg} Preview builds continue; the production build will stop here.\n`);
+    console.warn(`\n[dough-boys] ${msg} This build continues; a production build for doughboysyarmouth.co.uk will stop here.\n`);
   }
 }

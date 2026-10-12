@@ -10,7 +10,8 @@
     "build": "astro build && node scripts/postbuild.mjs",
     "preview": "astro preview",
     "check:site": "node scripts/check-site.mjs",
-    "check:html": "html-validate \"dist/**/*.html\""
+    "check:html": "html-validate \"dist/**/*.html\"",
+    "preview:pages": "node scripts/pages-preview.mjs"
   },
   "dependencies": {
     "astro": "^7.3.8",
